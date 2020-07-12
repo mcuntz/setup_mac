@@ -1,0 +1,66 @@
+###############################################################################
+# Practical stuff
+alias lpstat='lpstat -s'
+alias more='more -u'
+alias zip='zip -r'
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -ip'
+alias pwd='echo $PWD'
+function ff() { find . -name \*$1\* -print ; }
+function iff() { find . -iname \*$1\* -print ; }
+alias g='grep -Ein'
+alias t='tail -250'
+alias xx='chmod 755'
+alias ll='ls -alF'
+alias la='ls -alF'
+alias lh='ls -ahlF'
+alias ltr='ls -atrF'
+alias lltr='ls -altrF'
+alias ls='ls -F'
+#diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical 
+alias diff='diff -bBiwrs'
+alias trashall='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\* -o -name \#\*\# -o -name .xvpics -o -name WS_FTP.LOG -o -name Backup\*.wbk -o -name ftperror\* -o -name ftpout\* \) -print -exec rm -f {} \; '
+alias trash=trashall
+alias bc='bc -l'
+alias h='history 50'
+alias ilocate='locate -i'
+function c() {
+    echo "${1}" | sed -e 's/[eE]+*/\*10\^/g' | bc -l
+}
+
+##########################################################################################################
+# Telnet and FTP
+alias ftp='ftp -i'
+alias qgadi="ssh gadi 'source /etc/bashrc ; qstat -u moc801'"
+alias qexplor="ssh explor 'source /etc/bashrc ; squeue -u zzy20'"
+
+##########################################################################################################
+# TeX
+alias dvips='dvips -j0 -Ppdf -Pdownload35 -G0 -t a4 -D 1200 -Z -mode ljfzzz'
+alias dvipdf='dvipdfmx'
+alias xdvi='xdvi -hush'
+alias dvi='xdvi -hush'
+# function techit() { IN=${1%.*}; latex ${IN}; latex ${IN}; echo ' '; echo 'BIBLIO'; echo ' '; bibtex ${IN}; latex ${IN}; latex ${IN}; latex ${IN}; \dvips -Ppdf -o ${IN}.ps ${IN} ; }
+function techit() {
+    IN=${1%.*}
+    printf "\nLaTeX 1\n\n"
+    pdflatex ${IN}
+    pdflatex ${IN}
+    printf "\nBIBLIO\n\n"
+    bibtex ${IN};
+    printf "\nLaTeX 2\n\n"
+    pdflatex ${IN}
+    pdflatex ${IN}
+    latex_count=5
+    while grep -Es 'Rerun (LaTeX|to get cross-references right)' ${IN}.log && [ ${latex_count} -gt 0 ] ; do
+	pdflatex ${IN}
+	((latex_count--))
+    done
+}
+function cleartech() { IN=${1%.*}; \rm ${IN}.{abs,aux,bbl,blg,brf,dvi,fff,idx,ilg,ind,lof,log,lot,nav,out,snm,spl,tex.flc,tex~,toc,ttt,thm} ; }
+# function pcleartech() { IN=${1%.*}; cleartech ${IN} ; \rm ${IN}.{ps,pdf} ; }
+alias cleantech=cleartech
+# alias pcleantech=pcleartech
+# function techdiss() { latex diss; latex diss; bibtex kap01; bibtex kap02; bibtex kap03; bibtex kap04; bibtex sum; latex diss; latex diss; latex diss; \dvips -Ppdf -o diss.ps diss ; }
+# function cleardiss() { cleartech diss; cleartech deck; cleartech title; cleartech abstract; cleartech toc; cleartech kap01; cleartech kap02; cleartech kap03; cleartech kap04; cleartech sum; cleartech lof; cleartech lot; cleartech merci ; }

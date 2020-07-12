@@ -1,0 +1,436 @@
+# C-c C-e  for export within Emacs
+#+OPTIONS: toc:nil
+#+TITLE: Setting up macOS for software development
+
+Author: Matthias Cuntz, mc (at) macu (dot) de\\
+Modified: 11.07.2020
+
+Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
+
+This is a reminder for myself how to setup a new Mac or updating the OS, which might be useful for others. The repository includes some of my dot-files as a reference.
+
+* Bootable installer for macOS on USB
+  From [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
+  1. Download a macOS installer such as macOS Catalina from the App Store. When the macOS installer opens, quit it without continuing installation.
+
+  2. Format a USB flash drive of at least 12 GB storage as /Mac OS Extended/ with name InstallCatalina, for example.
+
+  3. In Terminal type:
+
+     #+BEGIN_SRC bash
+         sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallCatalina
+     #+END_SRC
+
+
+* Installing macOS with the bootable installer
+  Also from [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
+  1. Connect USB drive, restart while holding Option (alt) key.
+
+  2. Select Install macOS.
+
+  3. Format Volume with APFS in Disk Utility.
+
+  4. Install macOS.
+
+
+* Setup macOS
+  The steps are intented to be done (roughly) in order.
+  1. *Check for system updates*
+
+      Check for updates of macOS in /System Preferences/ > /Software Update/.
+
+  1. *Set preferences of macOS and standard apps*
+
+     Set /System Preferences/ such as:
+     - /Sharing/ > /Computer Name/,
+
+     - unsetting  all tickboxes in /Mission Control/,
+
+     - set /Keyboard/ > /Modifier Keys.../ > /Caps Lock Key/ to /No Action/
+
+     Set preferences in standard macOS apps such as:
+     - Terminal
+       + set /Shell/ > /When the shell exists:/ to /Close if the shell exited cleanly/
+
+       + unset tickbox /Advanced/ > /Set locale environment variables on startup/
+
+     - Finder
+       + set tickbox /Advanced/ > /Show all filename extensions/
+
+  1. *Set the default shell*
+
+     Apple is now using /zsh/ as its default shell. If you want to stay with /bash/, change it in the terminal:
+
+     #+BEGIN_SRC bash
+         chsh -s /bin/bash
+     #+END_SRC
+
+     To get rid of the nagging reminder that the default shell is now zsh every time you open a new terminal window, set in your .bash\under{}profile:
+
+     #+BEGIN_SRC bash
+         export BASH_SILENCE_DEPRECATION_WARNING=1
+     #+END_SRC
+
+  1. *Restore backup*
+
+     Transfer files from you backup media either directly or using a Time Machine backup.
+
+  1. *Xcode*
+
+     A full Xcode installation is not always needed. Most often, the Xcode Command Line Tools (CLT) are enough, for example for Homebrew. But some development software needs a full Xcode installation such as the FreePGI Fortran Compiler. So one can, for example, install the Xcode CLT only, and install the full Xcode only if another program demands it.
+
+     Install the Xcode CLT from the terminal:
+
+     #+BEGIN_SRC bash
+         xcode-select --install
+     #+END_SRC
+
+     The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools.
+
+  1. *App Store*
+
+     Check your account in the App Store. There are bundled apps such as Keynote, Numbers, etc., which you should open once to get over the welcome screens and offered tutorials.
+
+     It also shows you a list of previously installed apps on other systems. Install what you still want and open it once.
+
+     My essential apps from the App Store are:\\
+     Keynote/Pages/Numbers, iMovie,\\
+     Engauge Digitizer, The Unarchiver, WordService, HiddenMe.
+
+  1. *XQuartz*
+
+     XQuartz is the X-window system running on macOS, needed for \ast{}nix GUI programs. Get it from [[http://xquartz.macosforge.org/][XQuartz]].
+
+  1. *Homebrew*
+
+     Install [[http://brew.sh][Homebrew]] for easy \ast{}nix package installation.
+
+     #+BEGIN_SRC bash
+         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+     #+END_SRC
+
+     - *GNU compiler and netCDF software*
+
+       The gcc suite includes gfortran. Install the netcdf-C version, which comes with ncdump, etc., ncview and nco. One can also install cdo with homebrew. We install cdo by hand later using the /install\under{}netcdf/ script because cdo is quite a bit faster when compiled with the Intel compiler and not with the GNU compiler.
+
+       #+BEGIN_SRC bash
+           for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
+               brew install ${i} ; done
+           brew cask install java
+           for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
+       #+END_SRC
+
+     - *Install more practical software*
+
+       Some more practical software such as imagemagick for images, ffmpeg for movies, htop for extended top, pandoc to convert between markup languages, fd for a faster find, and ripgrep for grepping across a directory tree; plus some others. 
+
+       #+BEGIN_SRC bash
+           for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config pandoc \
+                doxygen tree git fd bat ripgrep ; do \
+                brew install ${i} ; done
+           brew install fzf
+           /usr/local/opt/fzf/install
+       #+END_SRC
+
+  1. *Set your default shell #2*
+
+     Apple moved to zsh because of the license change of bash from GPLv2 to GPLv3 with its version 4.0. The current bash shell on macOS is hence 3.2 from 2007. If you want to use the latest version of bash, install it with Homebrew, "whitelist" the new shell as a login shell, and choose it as your default login shell:
+
+     #+BEGIN_SRC bash
+         brew install bash
+         # add the following line to /etc/shells
+         # /usr/local/bin/bash
+         sudo nano /etc/shells
+         chsh -s /usr/local/bin/bash
+     #+END_SRC
+
+     Note that your shell scripts will probably still use the Apple default bash shell because they often have the shebang line =#!/bin/bash=. The most portable way to write scripts is to use =#!/usr/bin/env bash= as your shebang. This will take the first bash in your =$PATH=, which would now be =/usr/local/bin/bash=.
+
+     You can now use /bash-completion/ with the new bash shell.
+
+     #+BEGIN_SRC bash
+         brew install bash-completion@2
+     #+END_SRC
+
+     You then have to put the following lines in your .bash\under{}profile to use bash-completion:
+
+     #+BEGIN_SRC bash
+         export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+         [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && source "/usr/local/etc/profile.d/bash_completion.sh"
+     #+END_SRC
+
+     You can do the exact same steps for the /zsh/ shell. Apples version is rather new but if you want to have the newest developments, install zsh with homebrew, whitelist it and use it as your default shell. If you use /zsh/, you might want to check out [[https://ohmyz.sh][Oh My ZSH]] for easy configuration of /zsh/. 
+
+  1. *Emacs*
+
+     I used to use [[http://aquamacs.org][Aquamacs]], but use [[https://www.spacemacs.org][Spacemacs]] now. The latter is very fast, but has a steep learning curve. At the moment I am not using the two most praised modes: helm and evil. I also needed quite some configuration in the =dotspacemacs/user-config= section of .spacemacs.
+
+     To install Spacemacs:
+
+     #+BEGIN_SRC bash
+         brew tap d12frosted/emacs-plus
+         brew install emacs-plus
+         sudo ln -s /usr/local/opt/emacs-plus@26/Emacs.app /Applications
+         cd ${HOME}
+         if [[ -f .emacs ]] ; then mv .emacs .emacs.bak ; fi
+         if [[ -d .emacs.d ]] ; then mv .emacs.d .emacs.d.bak ; fi
+         git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d         
+     #+END_SRC
+
+     I also installed the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] by cloning the repository and dragging the OTF folder into Font Book.
+
+  1. *LaTeX*
+
+     One can download from [[https://tug.org/mactex/][MacTeX]] or use a homebrew cask. I have chosen homebrew's cask this time because I use the BasicTeX installation and I hope that homebrew will handle the update between years, which is always a hassle otherwise. The full MacTex installation including all GUIs and programs is:
+
+     #+BEGIN_SRC bash
+         brew cask install mactex
+     #+END_SRC
+
+     The minimal LaTeX installation is:
+
+     #+BEGIN_SRC bash
+         brew cask install basictex
+     #+END_SRC
+
+     If you chose BasicTeX, then some common LaTeX packages can be installed with:
+
+     #+BEGIN_SRC bash
+         sudo tlmgr update --self ; \
+         for i in wasysym german titlesec wasy elsarticle \
+             supertabular lineno helvetic textpos multirow subfigure appendix lipsum \
+             dinbrief a0poster wallpaper collection-fontsrecommended dvipng kastrup \
+             boondox newtx type1cm ucs dvipng a0poster floatflt enumitem lastpage \
+             hyphenat footmisc chemfig units ntheorem algorithms cleveref a4wide \
+             lettrine mdframed needspace preprint xifthen ifmtarg algorithmicx \
+             changepage sidecap sttools marginnote draftwatermark everypage fontinst \
+             fltpoint tabfigures mnsymbol mdsymbol collection-fontutils fontaxes was \
+             pdfcrop latexmk fncychap tabulary varwidth framed capt-of ; do \
+         sudo tlmgr install ${i} ; done
+     #+END_SRC
+
+  1. *Freeware*
+
+     Some essential Freeware for me:
+     - [[http://www.freemacsoft.net/appcleaner/][AppCleaner]], for removing apps and all their traces,
+
+     - [[https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html][Adobe Reader]], because Preview has problems with some PDFs,
+
+     - [[https://www.mozilla.org/en-US/firefox/all/][Firefox Developer Edition]], Safari is not always supported. [[https://www.google.com/chrome/][Chrome]] is probably the most supported browser. I use [[https://www.opera.com][Opera]] as my standard browser at the moment,
+
+     - [[http://www.chachatelier.fr/latexit/][LaTeXiT]], exporting LaTeX equations as graphics,
+
+     - [[http://www.skype.com/en/][Skype]], video calls,
+
+     - [[https://www.sourcetreeapp.com][SourceTree]], git GUI originally for bitbucket but works with other git repositories as well.
+
+     - [[https://www.spotify.com/][Spotify]], streaming music,
+
+     - [[http://www.videolan.org/vlc/][VLC]], video player for all formats,
+
+     - [[https://rectangleapp.com][Rectangle]], moving windows with keystrokes.
+
+     Other less essential Freeware that I use:
+     - [[https://www.giss.nasa.gov/tools/panoply/download/][Panoply]], which needs [[https://www.java.com/en/download/][Java]],
+
+     - [[https://www.pgroup.com/products/community.htm][FreePGI Fortran compiler]], which needs a full /Xcode/ installation,
+
+     - [[https://www.deepl.com/app][DeepL]], like /Google Translate/.
+
+  1. *Myriad Pro*
+
+     I like the Myriad Pro font and AGU journals currently use it. The Myriad Pro font comes with the Adobe Acrobat Reader.
+
+     To install for non-LaTeX programs, one can install in Font Book the four /otf/-files from the directory '/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/Resource/Font'.
+
+     An extended set of glyphs are given in the zip file 'MyriadPro.zip':\\
+     unzip MyriadPro.zip and drag the folder with the .otf files into Font Book.
+
+     To install Myriad Pro for LaTeX, using the Adobe fonts, one can launch the following commands in terminal:
+
+     #+BEGIN_SRC bash
+         for i in fontinst fltpoint tabfigures mnsymbol mdsymbol collection-fontutils ; do \
+             sudo tlmgr install ${i} ; done
+         git clone https://github.com/sebschub/FontPro.git
+         cd FontPro
+         mkdir otf
+         FONT=MyriadPro
+         cp "/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
+         ./scripts/makeall ${FONT}
+         echo y | sudo ./scripts/install
+         sudo updmap-sys --enable Map=${FONT}.map
+         sudo -H mktexlsr
+         kpsewhich ${FONT}.map
+         cd ..
+         \rm -fr FontPro
+     #+END_SRC
+
+  1. *Python*
+
+     macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. Installation of Python versions can be a real mess at times, as noted by [[https://xkcd.com/1987/][XKCD]]:
+
+     #+ATTR_HTML: :alt Python path on my system :align center :width 300 :height 300
+     [[https://imgs.xkcd.com/comics/python_environment.png]]
+
+     So I am using /pyenv/ now, and if I am motivated also /pyenv-virtualenvwrapper/. See the great article [[https://medium.com/faun/pyenv-multi-version-python-development-on-mac-578736fb91aa][pyenv: Multi-version Python development on Mac]] by Dirk Avery.
+
+     To install pyenv with homebrew:
+
+     #+BEGIN_SRC bash
+         brew install pyenv
+         brew install openssl readline sqlite3 xz zlib
+     #+END_SRC
+
+     You have to set the following in your .bash\under{}profile so that the shell always finds the currently chosen Python version as first entry.
+
+     #+BEGIN_SRC bash
+         export PYENV_ROOT="${HOME}/.pyenv"
+         export PATH=${PYENV_ROOT}/bin:${PATH}
+         if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
+     #+END_SRC
+
+     - *pyenv 101*
+
+       After starting a new shell, for example by doing =exec $SHELL=, you can start installing and using different Python versions:
+
+       #+BEGIN_SRC bash
+           pyenv install --list
+           pyenv install 3.8.3
+           pyenv rehash
+           pyenv global 3.8.3
+       #+END_SRC
+
+       Remember that you always have to rehash after you installed a new version.
+   
+       /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
+
+       #+BEGIN_SRC bash
+           pyenv install miniconda3-4.7.12
+           pyenv rehash
+           pyenv shell miniconda3-4.7.12
+           conda create --name testproject
+           conda activate testproject
+       #+END_SRC
+
+       You can then install (conda and pip) packages in the testproject:
+
+       #+BEGIN_SRC bash
+           conda install numpy scipy matplotlib
+       #+END_SRC
+
+       To return to the default Python version:
+
+       #+BEGIN_SRC bash
+           conda deactivate
+           pyenv shell --unset
+       #+END_SRC
+
+       If git tells /gettext not found/ after installing anaconda/miniconda, see [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
+
+       You can also use virtual environments with /pyenv/:
+
+       #+BEGIN_SRC bash
+           pyenv-virtualenvwrapper
+       #+END_SRC
+
+       You have to put the following in your .bash\under{}profile:
+
+       #+BEGIN_SRC bash
+           if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+       #+END_SRC
+
+       Virtual environments can then be created as:
+
+       #+BEGIN_SRC bash
+           pyenv virtualenv 3.8.3 testproject
+           pyenv activate testproject
+           pyenv install ipython
+       #+END_SRC
+
+       This virtual environments can then be used as any installed Python version with /pyenv/.
+
+     - *Essential Python packages*
+
+       Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with pip or conda. These are currently in my main environment:\\
+       numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, pytest, pytest-cov
+
+       and mostly this subset in the virtual environments:\\
+       numpy, scipy, matplotlib, seaborn, ipython, pandas, netcdf4, xlrd
+ 
+       #+BEGIN_SRC bash
+           # essential subset
+           for i in numpy scipy matplotlib seaborn ipython pandas netcdf4 xlrd ; do \
+               pip install ${i} ; done
+           # other standard packages
+           for i in cartopy jupyter statsmodels scikit-learn schwimmbad tqdm xarray numexpr \
+               bottleneck wxpython sphinx sphinx_rtd_theme pytest pytest-cov ; do \
+               pip install ${i} ; done
+           # install basemap directly from github
+           pip install https://github.com/matplotlib/basemap/archive/master.zip
+           # mpi4py will be installed after installing openmpi later
+           # env MPICC=/usr/local/openmpi-4.0.2-gfortran/bin/mpicc pip install mpi4py
+       #+END_SRC
+
+       Replace /pip/ with /conda/ if using conda environments. There is also a conda package for basemap.
+
+  1. *locate*
+
+     Create locate database so that you can search files with the locate command:
+
+     #+BEGIN_SRC bash
+         sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+     #+END_SRC
+
+  1. *Payware*
+  
+     Install Payware, which is for me:
+     - Microsoft Office,
+    
+     - [[https://www.antidote.info/en][Antidote]], spell and grammar checker for English and French, 
+
+     - [[http://www.papersapp.com/mac/][Papers]], reference manager,
+   
+     - [[http://www.nag.co.uk/downloads/npdownloads.asp][NAG compiler]], very meticulous Fortran compiler,
+
+     - [[https://software.intel.com/en-us/parallel-studio-xe][Intel compiler]], C/C++/Fortran compiler producing very fast code,
+
+     - [[https://www.cyberghostvpn.com/][CyberGhost]], VPN client,
+
+     - [[https://www.harrisgeospatial.com/Software-Technology/IDL][IDL]], interactive data language.
+
+  1. *Additional software*
+
+     Install additional software from you institution or similar such as VPN clients, cloud services, etc. For INRAE this is: Symantec Antivirus, GlobalProtect VPN, StorageMadeEasy.
+
+  1. *netcdf4\under{}fortran and openmpi development packages*
+
+     Use the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] to install netcdf4\under{}fortran and openmpi development packages for different Fortran compilers. The script is well documented and we just describe the general steps.
+     - Look for the latest version numbers of netcdf4\under{}fortran and openmpi (addresses are given in install\under{}netcdf) and set them below /donetcdf4\under{}fortran/ and /doopenmpi/.
+
+     - Set both /donetcdf4\under{}fortran/ and /doopenmpi/ to 1.
+
+     - Check that ~prefix=/usr/local~.
+
+     - Set Fortran compiler, e.g. ~fortran_compilers="gfortran"~.
+
+     - For PGI, you also have to set the ~pgipath~.
+
+     After having installed openmpi, one can also install mpi4py in python:
+
+     #+BEGIN_SRC bash
+         env MPICC=/usr/local/openmpi-4.0.4-gfortran/bin/mpicc pip install mpi4py
+     #+END_SRC
+
+  1. *cdo*
+
+     hdf5 from homebrew is not thread-safe so cdo will need the -L flag if piping.
+
+     #+BEGIN_SRC bash
+         alias cdo="cdo -L"
+     #+END_SRC
+
+     Also Apple's clang is not yet OpenMP-enabled so that cdo will not use OpenMP. cdo is running also much faster when compiled with Intel.
+     
+     *ToDo*
+
+     So I install cdo using the [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] script. One will need to add OpenMP to the CFLAGS: ~CFLAGS=-fopenmp~ (-fopenmp for gfortran and ifort, -openmp for nagfor and pgfortran, -qopenmp for others).
