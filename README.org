@@ -220,6 +220,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      - [[http://www.chachatelier.fr/latexit/][LaTeXiT]], exporting LaTeX equations as graphics,
 
+     - [[https://rectangleapp.com][Rectangle]], moving windows with keystrokes.
+
      - [[http://www.skype.com/en/][Skype]], video calls,
 
      - [[https://www.sourcetreeapp.com][SourceTree]], git GUI originally for bitbucket but works with other git repositories as well.
@@ -227,8 +229,6 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      - [[https://www.spotify.com/][Spotify]], streaming music,
 
      - [[http://www.videolan.org/vlc/][VLC]], video player for all formats,
-
-     - [[https://rectangleapp.com][Rectangle]], moving windows with keystrokes.
 
      Other less essential Freeware that I use:
      - [[https://www.giss.nasa.gov/tools/panoply/download/][Panoply]], which needs [[https://www.java.com/en/download/][Java]],
@@ -301,6 +301,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        #+END_SRC
 
        Remember that you always have to rehash after you installed a new version.
+
+       Note that I install as:
+
+       #+BEGIN_SRC bash
+           env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.8.3
+       #+END_SRC
+
+       because I use wxPython, which needs Python to be framework. See the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]].
    
        /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
 
@@ -352,14 +360,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      - *Essential Python packages*
 
        Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with pip or conda. These are currently in my main environment:\\
-       numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, pytest, pytest-cov
+       numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, pytest, pytest-cov, flake8
 
        and mostly this subset in the virtual environments:\\
-       numpy, scipy, matplotlib, seaborn, ipython, pandas, netcdf4, xlrd
+       numpy, scipy, matplotlib, seaborn, ipython, pandas, netcdf4, xlrd, flake8
  
        #+BEGIN_SRC bash
            # essential subset
-           for i in numpy scipy matplotlib seaborn ipython pandas netcdf4 xlrd ; do \
+           for i in numpy scipy matplotlib seaborn ipython pandas netcdf4 xlrd flake8 ; do \
                pip install ${i} ; done
            # other standard packages
            for i in cartopy jupyter statsmodels scikit-learn schwimmbad tqdm xarray numexpr \
