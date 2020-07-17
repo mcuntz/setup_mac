@@ -179,6 +179,12 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      I also installed the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] by cloning the repository and dragging the OTF folder into Font Book.
 
+     And I immediately install aspell for spell checking within Spacemacs.
+
+     #+BEGIN_SRC bash
+         brew install aspell
+     #+END_SRC
+
   1. *LaTeX*
 
      One can download from [[https://tug.org/mactex/][MacTeX]] or use a homebrew cask. I have chosen homebrew's cask this time because I use the BasicTeX installation and I hope that homebrew will handle the update between years, which is always a hassle otherwise. The full MacTex installation including all GUIs and programs is:
@@ -376,7 +382,6 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            # install basemap directly from github
            pip install https://github.com/matplotlib/basemap/archive/master.zip
            # mpi4py will be installed after installing openmpi later
-           # env MPICC=/usr/local/openmpi-4.0.2-gfortran/bin/mpicc pip install mpi4py
        #+END_SRC
 
        Replace /pip/ with /conda/ if using conda environments. There is also a conda package for basemap.

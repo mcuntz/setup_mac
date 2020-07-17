@@ -103,7 +103,6 @@ set -o noclobber
 export PS1="\u@\h:\w> "
 # default editor
 export EDITOR="emacs"
-export ALTERNATE_EDITOR="nano"
 export EMAIL="mc@macu.de"
 export HISTFILESIZE=20000
 export LANG="en_AU"
