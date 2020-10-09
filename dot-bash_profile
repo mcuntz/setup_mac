@@ -29,19 +29,33 @@ fi
 prepath() {
     # return prepended arbitrary PATH variable
     #   export MANPATH=$(${MANPATH} /path/to/add)
-    if ! echo ${1} | grep -E -q "(^|:)${2}($|:)" ; then
-        [[ -d ${2} ]] && echo ${2}:${1} || echo ${1}
+    if [[ $# -gt 1 ]] ; then
+        if ! echo ${1} | grep -E -q "(^|:)${2}($|:)" ; then
+            # /path/to/add not yet in PATH; /path/to/add must exist
+            [[ -d ${2} ]] && echo ${2}:${1} || echo ${1}
+        else
+            # /path/to/add already in PATH
+            echo ${1}
+        fi
     else
-        echo ${1}
+        # PATH does not exist yet; /path/to/add must exist
+        [[ -d ${1} ]] && echo ${1} || echo ""
     fi
 }
 apppath() {
     # return appended arbitrary PATH variable
     #   export MANPATH=$(${MANPATH} /path/to/add)
-    if ! echo ${1} | grep -E -q "(^|:)${2}($|:)" ; then
-        [[ -d ${2} ]] && echo ${1}:${2} || echo ${1}
+    if [[ $# -gt 1 ]] ; then
+        if ! echo ${1} | grep -E -q "(^|:)${2}($|:)" ; then
+            # /path/to/add not yet in PATH; /path/to/add must exist
+            [[ -d ${2} ]] && echo ${1}:${2} || echo ${1}
+        else
+            # /path/to/add already in PATH
+            echo ${1}
+        fi
     else
-        echo ${1}
+        # PATH does not exist yet; /path/to/add must exist
+        [[ -d ${1} ]] && echo ${1} || echo ""
     fi
 }
 
@@ -53,15 +67,14 @@ if [[ -d ${HOME}/../shared/local ]] ; then
     # explor
     export PATH=$(prepath ${PATH} ${HOME}/../shared/local/bin)
     export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/../shared/local/lib)
-    export MANPATH=$(apppath ${MANPATH} ${HOME}/local/man)
     export MANPATH=$(apppath ${MANPATH} ${HOME}/../shared/local/man)
 else
     # other
     export PATH=$(prepath ${PATH} ${HOME}/local/bin)
     export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/local/lib)
-    export MANPATH=$(apppath ${MANPATH} ${HOME}/local/man)
     export MANPATH=$(apppath ${MANPATH} ${HOME}/local/share/man)
 fi
+export MANPATH=$(apppath ${MANPATH} ${HOME}/local/man)
 # pip install --user
 export PATH=$(prepath ${PATH} ${HOME}/bin)
 # homebrew
@@ -249,24 +262,24 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
 fi
 
 # Special MacBoock Air 2014
-if [[ "${ether}" == "68:a8:6d:07:30:20" ]] ; then
+if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.1.node-lock.air
 fi
 
 # Special MacBoock Pro UFZ 2014
-if [[ "${ether}" == "6c:40:08:8a:b5:ca" ]] ; then
+if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.1.node-lock.macbook
 fi
 
 # Special MacBoock Pro INRA 2016
-if [[ "${ether}" == "c4:b3:01:cd:f0:ab" ]] ; then
+if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.2.full.mcinra
     export INTEL_LICENSE_FILE=${HOME}/bin/licences/ifort_licence_2019.lic.mcinra
     export HOMEBREW_NO_ANALYTICS=1
 fi
 
 # Special MacBoock Pro 16" INRA 2020
-if [[ "${ether}" == "3c:22:fb:19:20:c8" ]] ; then
+if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export BASH_SILENCE_DEPRECATION_WARNING=1
     export HOMEBREW_NO_ANALYTICS=1
 fi
