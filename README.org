@@ -3,19 +3,39 @@
 #+TITLE: Setting up macOS for software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 11.07.2020
+Modified: 09.10.2020
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
 This is a reminder for myself how to setup a new Mac or updating the OS, which might be useful for others. The repository includes some of my dot-files as a reference.
 
+* Before starting
+  1. You might want to use iCloud for your /Contacts/, /Calendars/, /Reminders/, /Notes/, and /Keychain/. If you had not switched it on, you should do this a couple of hours before installation because it takes some time until things get synchronised. Some logoff/login might also help. You can check all but /Keychain/ on [[https://www.icloud.com][icloud.com]]. You can switch it off again on the updated system after synchronisation finished, if not wanted.
+
+  2. Backup all your files including Documents, Movies, Pictures. Check Desktop as well.
+
+  3. Also store all your dot-files and dot-directories from the =${HOME}= directory such as .bash\under{}profile, .bashrc and .ssh.
+
+  4. You might want to write down your /Computer Name/ from /System Preferences/ > /Sharing/.
+
+  5. You might also like to write down your username, typing in the terminal:
+
+     #+BEGIN_SRC bash
+         whoami
+     #+END_SRC
+
+  6. A list of your installed programs in /Applications/ might come in handy.
+
+
 * Bootable installer for macOS on USB
   From [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
   1. Download a macOS installer such as macOS Catalina from the App Store. When the macOS installer opens, quit it without continuing installation.
 
-  2. Format a USB flash drive of at least 12 GB storage as /Mac OS Extended/ with name InstallCatalina, for example.
+     The installer should have a size of about 8 GB. Based on your Mac, only a much smaller app might have been downloaded, which would later download the actual files during installation. This does not allow to create a bootable thumb drive. Then you have to get the full installer by using, for example, [[https://wccftech.com/how-to/how-to-download-macos-catalina-installer/][macOS Catalina Patcher]].
 
-  3. In Terminal type:
+  1. Format a USB flash drive of at least 12 GB storage as /Mac OS Extended/ with name InstallCatalina, for example.
+
+  1. In Terminal type:
 
      #+BEGIN_SRC bash
          sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallCatalina
@@ -26,11 +46,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   Also from [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
   1. Connect USB drive, restart while holding Option (alt) key.
 
-  2. Select Install macOS.
+  1. Select Install macOS.
 
-  3. Format Volume with APFS in Disk Utility.
+  1. Format Volume with APFS in Disk Utility.
 
-  4. Install macOS.
+  1. Install macOS.
 
 
 * Setup macOS
@@ -73,7 +93,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
   1. *Restore backup*
 
-     Transfer files from you backup media either directly or using a Time Machine backup.
+     Transfer files from your backup media either directly or using a Time Machine backup.
 
   1. *Xcode*
 
@@ -94,8 +114,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      It also shows you a list of previously installed apps on other systems. Install what you still want and open it once.
 
      My essential apps from the App Store are:\\
-     Keynote/Pages/Numbers, iMovie,\\
-     Engauge Digitizer, The Unarchiver, WordService, HiddenMe.
+     Keynote/Pages/Numbers, iMovie, Engauge Digitizer, The Unarchiver, WordService, HiddenMe.
 
   1. *XQuartz*
 
@@ -126,7 +145,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
        #+BEGIN_SRC bash
            for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config pandoc \
-                doxygen tree git fd bat ripgrep ; do \
+                doxygen tree git fd bat ripgrep r subversion ; do \
                 brew install ${i} ; done
            brew install fzf
            /usr/local/opt/fzf/install
@@ -159,7 +178,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && source "/usr/local/etc/profile.d/bash_completion.sh"
      #+END_SRC
 
-     You can do the exact same steps for the /zsh/ shell. Apples version is rather new but if you want to have the newest developments, install zsh with homebrew, whitelist it and use it as your default shell. If you use /zsh/, you might want to check out [[https://ohmyz.sh][Oh My ZSH]] for easy configuration of /zsh/. 
+     You can do the exact same steps for the /zsh/ shell. Apples version is rather new but if you want to have the newest developments, install zsh with homebrew, whitelist it and use it as your default shell. If you use /zsh/, you might want to check out [[https://ohmyz.sh][Oh My ZSH]] for easy configuration of /zsh/.
+
+     After a system update such as from /System Preferences/ > /Software Update/, there might be a link =Relocated Items/= on your Desktop pointing to =/Users/Shared/Relocated Items=. This is a copy of the new version from the step above. As long as Apple does not modify =/etc/shells= during an update, the edited version stays untouched. One can safely delete the link on the Desktop or even the directory under =/Users/Shared=. It does not hurt to do a =cat /etc/shells= in the terminal before, checking that your edits are still there.
 
   1. *Emacs*
 
@@ -203,7 +224,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      #+BEGIN_SRC bash
          sudo tlmgr update --self ; \
-         for i in wasysym german titlesec wasy elsarticle \
+         for i in \
+             wasysym german titlesec wasy elsarticle \
              supertabular lineno helvetic textpos multirow subfigure appendix lipsum \
              dinbrief a0poster wallpaper collection-fontsrecommended dvipng kastrup \
              boondox newtx type1cm ucs dvipng a0poster floatflt enumitem lastpage \
@@ -211,8 +233,10 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
              lettrine mdframed needspace preprint xifthen ifmtarg algorithmicx \
              changepage sidecap sttools marginnote draftwatermark everypage fontinst \
              fltpoint tabfigures mnsymbol mdsymbol collection-fontutils fontaxes was \
-             pdfcrop latexmk fncychap tabulary varwidth framed capt-of ; do \
-         sudo tlmgr install ${i} ; done
+             pdfcrop latexmk fncychap tabulary varwidth framed capt-of \
+             makecell xstring moreverb wrapfig adjustbox collectbox threeparttable \
+             capt-of \
+             ; do sudo tlmgr install ${i} ; done
      #+END_SRC
 
   1. *Freeware*
@@ -361,12 +385,12 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            pyenv install ipython
        #+END_SRC
 
-       This virtual environments can then be used as any installed Python version with /pyenv/.
+       This virtual environments can then be used just as any installed Python version with /pyenv/.
 
      - *Essential Python packages*
 
        Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with pip or conda. These are currently in my main environment:\\
-       numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, pytest, pytest-cov, flake8
+       numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, numpydoc, pytest, pytest-cov, flake8, gdal
 
        and mostly this subset in the virtual environments:\\
        numpy, scipy, matplotlib, seaborn, ipython, pandas, netcdf4, xlrd, flake8
@@ -377,10 +401,13 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
                pip install ${i} ; done
            # other standard packages
            for i in cartopy jupyter statsmodels scikit-learn schwimmbad tqdm xarray numexpr \
-               bottleneck wxpython sphinx sphinx_rtd_theme pytest pytest-cov ; do \
+               bottleneck wxpython sphinx sphinx_rtd_theme numpydoc pytest pytest-cov ; do \
                pip install ${i} ; done
            # install basemap directly from github
            pip install https://github.com/matplotlib/basemap/archive/master.zip
+           # gdal needs to know the installed gdal version
+           pip install GDAL==$(gdal-config --version) \
+               --global-option=build_ext --global-option="-I/usr/local/include”
            # mpi4py will be installed after installing openmpi later
        #+END_SRC
 
