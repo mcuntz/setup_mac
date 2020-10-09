@@ -46,11 +46,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   Also from [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
   1. Connect USB drive, restart while holding Option (alt) key.
 
-  1. Select Install macOS.
+  1. Select /Install macOS/.
 
-  1. Format Volume with APFS in Disk Utility.
+  1. Select /Disk Utility/. Choose the /Internal/ disk. /Erase/ it using the /Format/ APFS. Then quit /Disk Utility/.
 
-  1. Install macOS.
+  1. Select /Install macOS/ and follow the prompts.
 
 
 * Setup macOS
@@ -70,9 +70,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      Set preferences in standard macOS apps such as:
      - Terminal
-       + set /Shell/ > /When the shell exists:/ to /Close if the shell exited cleanly/
+       + set /Profiles/ > /Shell/ > /When the shell exists:/ to /Close if the shell exited cleanly/
 
-       + unset tickbox /Advanced/ > /Set locale environment variables on startup/
+       + unset tickbox /Profiles/ > /Advanced/ > /Set locale environment variables on startup/
 
      - Finder
        + set tickbox /Advanced/ > /Show all filename extensions/
