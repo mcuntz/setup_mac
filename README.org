@@ -105,6 +105,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          xcode-select --install
      #+END_SRC
 
+     This did not work for me recently, telling that it cannot reach the server. Downloading the installer package from the [[https://developer.apple.com/download/more/?=command%20line%20tools][Apple Developer website]] (you have to login with your Apple ID) worked but led to problems with installing Python later. So I installed full Xcode package.
+
      The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools.
 
   1. *App Store*
@@ -135,8 +137,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        #+BEGIN_SRC bash
            for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
                brew install ${i} ; done
-           brew cask install java
            for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
+           brew cask install panoply
+           brew cask install adoptopenjdk
        #+END_SRC
 
      - *Install more practical software*
@@ -180,7 +183,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      You can do the exact same steps for the /zsh/ shell. Apples version is rather new but if you want to have the newest developments, install zsh with homebrew, whitelist it and use it as your default shell. If you use /zsh/, you might want to check out [[https://ohmyz.sh][Oh My ZSH]] for easy configuration of /zsh/.
 
-     After a system update such as from /System Preferences/ > /Software Update/, there might be a link =Relocated Items/= on your Desktop pointing to =/Users/Shared/Relocated Items=. This is a copy of the new version from the step above. As long as Apple does not modify =/etc/shells= during an update, the edited version stays untouched. One can safely delete the link on the Desktop or even the directory under =/Users/Shared=. It does not hurt to do a =cat /etc/shells= in the terminal before, checking that your edits are still there.
+     After a system update such as from /System Preferences/ > /Software Update/, there might be a link =Relocated Items/= on your Desktop pointing to =/Users/Shared/Relocated Items=. This is a copy of the changed =/etc/shells=. As long as Apple does not modify =/etc/shells= during an update, the edited version stays untouched, though. One can safely delete the link on the Desktop and also the directory under =/Users/Shared=. It does not hurt to do a =cat /etc/shells= in the terminal before, checking that your edits are still there.
 
   1. *Emacs*
 
@@ -191,16 +194,21 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      #+BEGIN_SRC bash
          brew tap d12frosted/emacs-plus
          brew install emacs-plus
-         sudo ln -s /usr/local/opt/emacs-plus@26/Emacs.app /Applications
+         sudo ln -s /usr/local/opt/emacs-plus@27/Emacs.app /Applications
+     #+END_SRC
+
+     And if you changed from another Emacs:
+
+     #+BEGIN_SRC bash
          cd ${HOME}
          if [[ -f .emacs ]] ; then mv .emacs .emacs.bak ; fi
          if [[ -d .emacs.d ]] ; then mv .emacs.d .emacs.d.bak ; fi
-         git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d         
+         git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
      #+END_SRC
 
      I also installed the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] by cloning the repository and dragging the OTF folder into Font Book.
 
-     And I immediately install aspell for spell checking within Spacemacs.
+     I immediately installed aspell for spell checking within Spacemacs.
 
      #+BEGIN_SRC bash
          brew install aspell
@@ -261,8 +269,6 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      - [[http://www.videolan.org/vlc/][VLC]], video player for all formats,
 
      Other less essential Freeware that I use:
-     - [[https://www.giss.nasa.gov/tools/panoply/download/][Panoply]], which needs [[https://www.java.com/en/download/][Java]],
-
      - [[https://www.pgroup.com/products/community.htm][FreePGI Fortran compiler]], which needs a full /Xcode/ installation,
 
      - [[https://www.deepl.com/app][DeepL]], like /Google Translate/.
@@ -325,9 +331,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
        #+BEGIN_SRC bash
            pyenv install --list
-           pyenv install 3.8.3
+           pyenv install 3.9.0
            pyenv rehash
-           pyenv global 3.8.3
+           pyenv global 3.9.0
        #+END_SRC
 
        Remember that you always have to rehash after you installed a new version.
@@ -335,7 +341,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        Note that I install as:
 
        #+BEGIN_SRC bash
-           env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.8.3
+           env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.9.0
+           pyenv rehash
+           pyenv global 3.9.0
        #+END_SRC
 
        because I use wxPython, which needs Python to be framework. See the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]].
@@ -380,7 +388,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        Virtual environments can then be created as:
 
        #+BEGIN_SRC bash
-           pyenv virtualenv 3.8.3 testproject
+           pyenv virtualenv 3.9.0 testproject
            pyenv activate testproject
            pyenv install ipython
        #+END_SRC
@@ -394,7 +402,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
        and mostly this subset in the virtual environments:\\
        numpy, scipy, matplotlib, seaborn, ipython, pandas, netcdf4, xlrd, flake8
- 
+
+       You would have to source your .bash\under{}profile again if you do this just after installing pyenv.
+
        #+BEGIN_SRC bash
            # essential subset
            for i in numpy scipy matplotlib seaborn ipython pandas netcdf4 xlrd flake8 ; do \
