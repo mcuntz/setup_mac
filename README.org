@@ -144,7 +144,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      - *Install more practical software*
 
-       Some more practical software such as imagemagick for images, ffmpeg for movies, htop for extended top, pandoc to convert between markup languages, fd for a faster find, and ripgrep for grepping across a directory tree; plus some others. 
+       Some more practical software such as imagemagick for images, ffmpeg for movies, htop for extended top, pandoc to convert between markup languages, fd for a faster find, and ripgrep for grepping across a directory tree; plus some others.
 
        #+BEGIN_SRC bash
            for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config pandoc \
@@ -327,27 +327,59 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      - *pyenv 101*
 
-       After starting a new shell, for example by doing =exec $SHELL=, you can start installing and using different Python versions:
+       After starting a new shell, for example by doing =exec ${SHELL}=, you can start installing and using different Python versions:
 
        #+BEGIN_SRC bash
            pyenv install --list
-           pyenv install 3.9.0
+           pyenv install 3.8.3
            pyenv rehash
-           pyenv global 3.9.0
+           pyenv global 3.8.3
        #+END_SRC
 
        Remember that you always have to rehash after you installed a new version.
 
-       Note that I install as:
+       Try to rehash first if a problem occurs with /pyenv/. For example, some new homebrew packages might upgrade /pyenv/ as well. Then you get an error such as
 
        #+BEGIN_SRC bash
-           env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.9.0
-           pyenv rehash
-           pyenv global 3.9.0
+           /Users/cuntz/.pyenv/shims/python: line 21:
+           /usr/local/Cellar/pyenv/1.2.19/libexec/pyenv:
+           No such file or directory
        #+END_SRC
 
-       because I use wxPython, which needs Python to be framework. See the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]].
-   
+       =pyenv rehash= resolves the issue.
+
+       Note that I install Python versions as:
+
+       #+BEGIN_SRC bash
+           env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.8.3
+           pyenv rehash
+           pyenv global 3.8.3
+       #+END_SRC
+
+       because I use /wxPython/ sometimes, which needs Python to be framework. See the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]].
+
+       It is also possible that your Python version installed with /pyenv/ might clash with Apple's Tcl/Tk library. This gives in the best case a deprecation warning like:
+
+       #+BEGIN_SRC bash
+           DEPRECATION WARNING: The system version of Tk is deprecated and
+           may be removed in a future release. Please don't rely on it.
+           Set TK_SILENCE_DEPRECATION=1 to suppress this warning.
+       #+END_SRC
+
+       if you want to use the /tkinter/ module. You have to install /tcl-tk/ from homebrew first and then reinstall Python:
+
+       #+BEGIN_SRC bash
+           brew install tcl-tk
+           pyenv uninstall 3.8.3
+           pyenv rehash
+           env PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/usr/local/opt/tcl-tk/include' \
+               --with-tcltk-libs='-L/usr/local/opt/tcl-tk/lib -ltcl8.6 -ltk8.6' \
+               --enable-framework" pyenv install 3.8.3
+           pyenv rehash
+       #+END_SRC
+
+       Note that /tcl-tk/ is keg-only in homebrew. =env= allows using the homebrew version with Python while not interfering with macOS provided Tcl/Tk installation.
+
        /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
 
        #+BEGIN_SRC bash
@@ -388,7 +420,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        Virtual environments can then be created as:
 
        #+BEGIN_SRC bash
-           pyenv virtualenv 3.9.0 testproject
+           pyenv virtualenv 3.8.3 testproject
            pyenv activate testproject
            pyenv install ipython
        #+END_SRC
@@ -398,7 +430,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      - *Essential Python packages*
 
        Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with pip or conda. These are currently in my main environment:\\
-       numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, numpydoc, pytest, pytest-cov, flake8, gdal
+       numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, bs4
 
        and mostly this subset in the virtual environments:\\
        numpy, scipy, matplotlib, seaborn, ipython, pandas, netcdf4, xlrd, flake8
@@ -411,13 +443,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
                pip install ${i} ; done
            # other standard packages
            for i in cartopy jupyter statsmodels scikit-learn schwimmbad tqdm xarray numexpr \
-               bottleneck wxpython sphinx sphinx_rtd_theme numpydoc pytest pytest-cov ; do \
+               bottleneck wxpython sphinx sphinx_rtd_theme numpydoc pytest pytest-cov \
+               f90nml bs4 ; do \
                pip install ${i} ; done
            # install basemap directly from github
            pip install https://github.com/matplotlib/basemap/archive/master.zip
            # gdal needs to know the installed gdal version
            pip install GDAL==$(gdal-config --version) \
-               --global-option=build_ext --global-option="-I/usr/local/include”
+               --global-option=build_ext --global-option="-I/usr/local/include"
            # mpi4py will be installed after installing openmpi later
        #+END_SRC
 
@@ -432,14 +465,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      #+END_SRC
 
   1. *Payware*
-  
+
      Install Payware, which is for me:
      - Microsoft Office,
-    
-     - [[https://www.antidote.info/en][Antidote]], spell and grammar checker for English and French, 
+
+     - [[https://www.antidote.info/en][Antidote]], spell and grammar checker for English and French,
 
      - [[http://www.papersapp.com/mac/][Papers]], reference manager,
-   
+
      - [[http://www.nag.co.uk/downloads/npdownloads.asp][NAG compiler]], very meticulous Fortran compiler,
 
      - [[https://software.intel.com/en-us/parallel-studio-xe][Intel compiler]], C/C++/Fortran compiler producing very fast code,
@@ -480,7 +513,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      #+END_SRC
 
      Also Apple's clang is not yet OpenMP-enabled so that cdo will not use OpenMP. cdo is running also much faster when compiled with Intel.
-     
+
      *ToDo*
 
      So I install cdo using the [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] script. One will need to add OpenMP to the CFLAGS: ~CFLAGS=-fopenmp~ (-fopenmp for gfortran and ifort, -openmp for nagfor and pgfortran, -qopenmp for others).
