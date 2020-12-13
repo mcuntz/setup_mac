@@ -147,8 +147,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        Some more practical software such as imagemagick for images, ffmpeg for movies, htop for extended top, pandoc to convert between markup languages, fd for a faster find, and ripgrep for grepping across a directory tree; plus some others.
 
        #+BEGIN_SRC bash
-           for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config pandoc \
-                doxygen tree git fd bat ripgrep r subversion ; do \
+           for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config \
+                pandoc doxygen tree git fd bat ripgrep r subversion ; do \
                 brew install ${i} ; done
            brew install fzf
            /usr/local/opt/fzf/install
@@ -234,16 +234,16 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          sudo tlmgr update --self ; \
          for i in \
              wasysym german titlesec wasy elsarticle \
-             supertabular lineno helvetic textpos multirow subfigure appendix lipsum \
-             dinbrief a0poster wallpaper collection-fontsrecommended dvipng kastrup \
-             boondox newtx type1cm ucs dvipng a0poster floatflt enumitem lastpage \
-             hyphenat footmisc chemfig units ntheorem algorithms cleveref a4wide \
-             lettrine mdframed needspace preprint xifthen ifmtarg algorithmicx \
-             changepage sidecap sttools marginnote draftwatermark everypage fontinst \
-             fltpoint tabfigures mnsymbol mdsymbol collection-fontutils fontaxes was \
-             pdfcrop latexmk fncychap tabulary varwidth framed capt-of \
-             makecell xstring moreverb wrapfig adjustbox collectbox threeparttable \
-             capt-of \
+             supertabular lineno helvetic textpos multirow subfigure appendix \
+             lipsum dinbrief a0poster wallpaper collection-fontsrecommended \
+             dvipng kastrup boondox newtx type1cm ucs dvipng a0poster floatflt \
+             enumitem lastpage hyphenat footmisc chemfig units ntheorem \
+             algorithms cleveref a4wide lettrine mdframed needspace preprint \
+             xifthen ifmtarg algorithmicx changepage sidecap sttools marginnote \
+             draftwatermark everypage fontinst fltpoint tabfigures mnsymbol \
+             mdsymbol collection-fontutils fontaxes was pdfcrop latexmk fncychap \
+             tabulary varwidth framed capt-of makecell xstring moreverb wrapfig \
+             adjustbox collectbox threeparttable capt-of \
              ; do sudo tlmgr install ${i} ; done
      #+END_SRC
 
@@ -285,7 +285,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      To install Myriad Pro for LaTeX, using the Adobe fonts, one can launch the following commands in terminal:
 
      #+BEGIN_SRC bash
-         for i in fontinst fltpoint tabfigures mnsymbol mdsymbol collection-fontutils ; do \
+         for i in fontinst fltpoint tabfigures mnsymbol mdsymbol \
+             collection-fontutils ; do \
              sudo tlmgr install ${i} ; done
          git clone https://github.com/sebschub/FontPro.git
          cd FontPro
@@ -439,12 +440,12 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
        #+BEGIN_SRC bash
            # essential subset
-           for i in numpy scipy matplotlib seaborn ipython pandas netcdf4 xlrd flake8 ; do \
-               pip install ${i} ; done
+           for i in numpy scipy matplotlib seaborn ipython pandas netcdf4 \
+               xlrd flake8 ; do pip install ${i} ; done
            # other standard packages
-           for i in cartopy jupyter statsmodels scikit-learn schwimmbad tqdm xarray numexpr \
-               bottleneck wxpython sphinx sphinx_rtd_theme numpydoc pytest pytest-cov \
-               f90nml bs4 ; do \
+           for i in cartopy jupyter statsmodels scikit-learn schwimmbad \
+               tqdm xarray numexpr bottleneck wxpython sphinx sphinx_rtd_theme \
+               numpydoc pytest pytest-cov f90nml bs4 ; do \
                pip install ${i} ; done
            # install basemap directly from github
            pip install https://github.com/matplotlib/basemap/archive/master.zip
