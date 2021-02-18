@@ -31,6 +31,8 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     octave
+     windows-scripts
      ;; windows-scripts
      yaml
      csv
@@ -378,10 +380,33 @@ you should place your code here."
        (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
        (define-key flyspell-mouse-map [mouse-3] #'undefined)))
   ;;
+  ;; flycheck
+  (setq flycheck-checker-error-threshold 800)
+  ;;
   ;; rst
   (eval-after-load "rst"
     '(progn
        (setq make-backup-files t)))
+  ;;
+  ;; keyboard macros
+  (fset 'comment-on-line-above
+        [?\C-k ?\C-p ?\C-e return ?\C-y tab ?\C-n ?\C-e])
+  ;;
+  ;; Use f90-indent-line instead on f90-indent-region on a region of code
+  ;; because they behave differently for continuation lines
+  (add-hook 'f90-mode-hook 'f90-indent-lines)
+  (defun f90-indent-lines ()
+    "Apply f90-indent-line on all lines of a region."
+    (interactive)
+    (save-excursion
+      (message "This might take a while.")
+      (goto-char (region-beginning))
+      (while (< (point) (region-end))
+        (f90-indent-line)
+        (forward-line 1))
+      )
+    (delete-trailing-whitespace)
+    )
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
