@@ -283,6 +283,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - [[http://www.videolan.org/vlc/][VLC]], video player for all formats,
 
+   - [[https://keepingyouawake.app/][KeepingYouAwake]], prevent mac from going to sleep,
+
    Other less essential Freeware that I use:
    - [[https://www.pgroup.com/products/community.htm][FreePGI Fortran compiler]], which needs a full /Xcode/ installation,
 
