@@ -57,6 +57,7 @@ values."
      ;; git
      markdown
      org
+     spacemacs-org
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
@@ -289,7 +290,6 @@ values."
    ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
    ;; emphasis the current one). (default 'all)
    dotspacemacs-highlight-delimiters 'all
-
    ;; If non nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
    dotspacemacs-persistent-server nil
@@ -364,11 +364,11 @@ you should place your code here."
     '(progn
        (setq org-support-shift-select t)
        (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+       (add-hook 'org-mode-hook 'toc-org-mode)
        (define-key org-mode-map (kbd "<M-right>") 'right-word)
        (define-key org-mode-map (kbd "<M-left>") 'left-word)
        (define-key org-mode-map (kbd "<M-S-right>") nil)
        (define-key org-mode-map (kbd "<M-S-left>") nil)))
-  ;;
   ;; flyspell
   (setq ispell-program-name "/usr/local/bin/aspell")
   ;; right-click on word to correct spelling
@@ -428,13 +428,12 @@ you should place your code here."
    ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- '(custom-enabled-themes (quote (manoj-dark)))
+ '(custom-enabled-themes '(manoj-dark))
  '(custom-safe-themes
-   (quote
-    ("cd305434a9a9a71788554f92f8d935f0f573826cbf707a45b1e8ef315beb846a" "d557e66cf50ffd3b8f98fe0782ab4dd3bbaa41ffe84080957cbf9ba05e562f3d" "b38e0fe4053f32810c0e4a41646d90c22483a9f939179776ea5758467c9ec839" "d2aab54c604182531495a02870d807a8e09ceccc14229605359ca6bbdb3b23e7" default)))
+   '("cd305434a9a9a71788554f92f8d935f0f573826cbf707a45b1e8ef315beb846a" "d557e66cf50ffd3b8f98fe0782ab4dd3bbaa41ffe84080957cbf9ba05e562f3d" "b38e0fe4053f32810c0e4a41646d90c22483a9f939179776ea5758467c9ec839" "d2aab54c604182531495a02870d807a8e09ceccc14229605359ca6bbdb3b23e7" default))
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
-   (quote
-    (ess-smart-equals ess-R-data-view ctable ess flycheck-dmd-dub d-mode powershell alert log4e gntp htmlize gnuplot helm helm-core wgrep smex ivy-hydra flyspell-correct-ivy counsel-projectile counsel swiper ivy yaml-mode csv-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby auctex-latexmk auctex yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill tagedit spaceline slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs request rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy paradox osx-trash osx-dictionary open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc macrostep lorem-ipsum live-py-mode linum-relative link-hint launchctl indent-guide hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-css-scss helm-ag google-translate golden-ratio gh-md flyspell-correct-helm flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav dumb-jump diminish cython-mode column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-dictionary auto-compile anaconda-mode aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
- '(safe-local-variable-values (quote ((require-trailing-newline . t))))
+   '(org-category-capture alert log4e gntp markdown-mode dash-functional haml-mode flyspell-correct pos-tip flycheck ctable ess inf-ruby auctex pythonic define-word yapfify yaml-mode xterm-color ws-butler winum which-key wgrep web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smex slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs request rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode powershell popwin pip-requirements persp-mode pbcopy paradox osx-trash osx-dictionary org-projectile org-present org-pomodoro org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode minitest markdown-toc macrostep lorem-ipsum live-py-mode linum-relative link-hint launchctl ivy-hydra indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make google-translate golden-ratio gnuplot gh-md flyspell-correct-ivy flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu ess-smart-equals ess-R-data-view eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav dumb-jump diminish cython-mode csv-mode counsel-projectile column-enforce-mode clean-aindent-mode chruby bundler auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk anaconda-mode aggressive-indent adaptive-wrap ace-window ace-link))
+ '(safe-local-variable-values '((require-trailing-newline . t)))
  '(tool-bar-mode nil))
+

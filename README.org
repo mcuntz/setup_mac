@@ -156,8 +156,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
              brew install ${i} ; done
          for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
-         brew cask install panoply
-         brew cask install adoptopenjdk
+         brew install --cask panoply
+         brew install --cask adoptopenjdk
      #+END_SRC
 
    - *Install more practical software*
@@ -208,9 +208,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    To install Spacemacs:
 
    #+BEGIN_SRC bash
-       brew tap d12frosted/emacs-plus
-       brew install emacs-plus
-       sudo ln -s /usr/local/opt/emacs-plus@27/Emacs.app /Applications
+       brew install --cask emacs
    #+END_SRC
 
    And if you changed from another Emacs:
@@ -222,7 +220,12 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
    #+END_SRC
 
-   I also installed the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] by cloning the repository and dragging the OTF folder into Font Book.
+   I also installed the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]]:
+
+   #+BEGIN_SRC bash
+       brew tap homebrew/cask-fonts
+       brew install --cask font-source-code-pro
+   #+END_SRC
 
    I immediately installed aspell for spell checking within Spacemacs.
 
@@ -235,13 +238,13 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    One can download from [[https://tug.org/mactex/][MacTeX]] or use a homebrew cask. I have chosen homebrew's cask this time because I use the BasicTeX installation and I hope that homebrew will handle the update between years, which is always a hassle otherwise. The full MacTex installation including all GUIs and programs is:
 
    #+BEGIN_SRC bash
-       brew cask install mactex
+       brew install --cask mactex
    #+END_SRC
 
    The minimal LaTeX installation is:
 
    #+BEGIN_SRC bash
-       brew cask install basictex
+       brew install --cask basictex
    #+END_SRC
 
    If you chose BasicTeX, then some common LaTeX packages can be installed with:
