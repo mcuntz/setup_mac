@@ -3,7 +3,7 @@
 #+TITLE: Setting up macOS for software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 18.02.2021
+Modified: 09.05.2021
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
@@ -73,7 +73,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
   1. Select /Install macOS/.
 
-  1. Select /Disk Utility/. Choose the /Internal/ disk. /Erase/ it using the /Format/ APFS. Then quit /Disk Utility/.
+  1. Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
+
+  1. Select any other internal volumes in the sidebar, then click the delete volume (–) button in the toolbar to delete that volume. Disregard any internal volume named Macintosh HD or Macintosh HD – Data, as well as any volumes in the External and Disk Images sections of the sidebar.
+
+     Then quit /Disk Utility/.
 
   1. Select /Install macOS/ and follow the prompts.
 
