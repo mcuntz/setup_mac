@@ -39,14 +39,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
   2. Backup all your files including Documents, Movies, Pictures. Check Desktop as well.
 
-  3. Also store all your dot-files and dot-directories from the =${HOME}= directory such as .bash\under{}profile, .bashrc and .ssh.
+  3. Also store all your dot-files and dot-directories from the =${HOME}= directory such as =.bash_profile=, =.bashrc= and =.ssh=.
 
   4. You might want to write down your /Computer Name/ from /System Preferences/ > /Sharing/.
 
   5. You might also like to write down your username, typing in the terminal:
 
      #+BEGIN_SRC bash
-         whoami
+       whoami
      #+END_SRC
 
   6. A list of your installed programs in /Applications/ might come in handy.
@@ -63,7 +63,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   1. In Terminal type:
 
      #+BEGIN_SRC bash
-         sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallCatalina
+       sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallCatalina
      #+END_SRC
 
 
@@ -109,13 +109,13 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    Apple is now using /zsh/ as its default shell. If you want to stay with /bash/, change it in the terminal:
 
    #+BEGIN_SRC bash
-       chsh -s /bin/bash
+     chsh -s /bin/bash
    #+END_SRC
 
-   To get rid of the nagging reminder that the default shell is now zsh every time you open a new terminal window, set in your .bash\under{}profile:
+   To get rid of the nagging reminder that the default shell is now zsh every time you open a new terminal window, set in your =.bash_profile=:
 
    #+BEGIN_SRC bash
-       export BASH_SILENCE_DEPRECATION_WARNING=1
+     export BASH_SILENCE_DEPRECATION_WARNING=1
    #+END_SRC
 
 ** Restore backup
@@ -127,7 +127,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    Install the Xcode CLT from the terminal:
 
    #+BEGIN_SRC bash
-       xcode-select --install
+     xcode-select --install
    #+END_SRC
 
    This did not work for me recently, telling that it cannot reach the server. Downloading the installer package from the [[https://developer.apple.com/download/more/?=command%20line%20tools][Apple Developer website]] (you have to login with your Apple ID) worked but led to problems with installing Python later. So I installed full Xcode package.
@@ -149,7 +149,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    Install [[http://brew.sh][Homebrew]] for easy \ast{}nix package installation.
 
    #+BEGIN_SRC bash
-       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
    #+END_SRC
 
    - *GNU compiler and netCDF software*
@@ -157,11 +157,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      The gcc suite includes gfortran. Install the netcdf-C version, which comes with ncdump, etc., ncview and nco. One can also install cdo with homebrew. We install cdo by hand later using the /install\under{}netcdf/ script because cdo is quite a bit faster when compiled with the Intel compiler and not with the GNU compiler.
 
      #+BEGIN_SRC bash
-         for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
-             brew install ${i} ; done
-         for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
-         brew install --cask panoply
-         brew install --cask adoptopenjdk
+       for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
+           brew install ${i} ; done
+       for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
+       brew install --cask panoply
+       brew install --cask adoptopenjdk
      #+END_SRC
 
    - *Install more practical software*
@@ -169,22 +169,22 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      Some more practical software such as imagemagick for images, ffmpeg for movies, htop for extended top, pandoc to convert between markup languages, fd for a faster find, and ripgrep for grepping across a directory tree; plus some others.
 
      #+BEGIN_SRC bash
-         for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config \
-              pandoc doxygen tree git fd bat ripgrep r subversion ; do \
-              brew install ${i} ; done
-         brew install fzf
-         /usr/local/opt/fzf/install
+       for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config \
+            pandoc doxygen tree git fd bat ripgrep r subversion ; do \
+            brew install ${i} ; done
+       brew install fzf
+       /usr/local/opt/fzf/install
      #+END_SRC
 
 ** Set your default shell #2
    Apple moved to zsh because of the license change of bash from GPLv2 to GPLv3 with its version 4.0. The current bash shell on macOS is hence 3.2 from 2007. If you want to use the latest version of bash, install it with Homebrew, "whitelist" the new shell as a login shell, and choose it as your default login shell:
 
    #+BEGIN_SRC bash
-       brew install bash
-       # add the following line to /etc/shells
-       # /usr/local/bin/bash
-       sudo nano /etc/shells
-       chsh -s /usr/local/bin/bash
+     brew install bash
+     # add the following line to /etc/shells
+     # /usr/local/bin/bash
+     sudo nano /etc/shells
+     chsh -s /usr/local/bin/bash
    #+END_SRC
 
    Note that your shell scripts will probably still use the Apple default bash shell because they often have the shebang line =#!/bin/bash=. The most portable way to write scripts is to use =#!/usr/bin/env bash= as your shebang. This will take the first bash in your =$PATH=, which would now be =/usr/local/bin/bash=.
@@ -192,15 +192,19 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    You can now use /bash-completion/ with the new bash shell.
 
    #+BEGIN_SRC bash
-       brew install bash-completion@2
+     brew install bash-completion@2
    #+END_SRC
 
-   You then have to put the following lines in your .bash\under{}profile to use bash-completion:
+   You then have to put the following lines in your =.bash_profile= to use bash-completion:
 
    #+BEGIN_SRC bash
-       export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-       [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && source "/usr/local/etc/profile.d/bash_completion.sh"
+     if [[ -f "/usr/local/etc/profile.d/bash_completion.sh" ]] ; then
+         export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+         source "/usr/local/etc/profile.d/bash_completion.sh"
+     fi
    #+END_SRC
+
+   Note that these lines have to after the sourcing of =.fzf.bash= in your =.bash_profile= if you installed /fzf/, otherwise you get an error such as =programmable_completion: source: possible retry loop=.
 
    You can do the exact same steps for the /zsh/ shell. Apples version is rather new but if you want to have the newest developments, install zsh with homebrew, whitelist it and use it as your default shell. If you use /zsh/, you might want to check out [[https://ohmyz.sh][Oh My ZSH]] for easy configuration of /zsh/.
 
@@ -212,62 +216,64 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    To install Spacemacs:
 
    #+BEGIN_SRC bash
-       brew install --cask emacs
+     brew install --cask emacs
    #+END_SRC
 
    And if you changed from another Emacs:
 
    #+BEGIN_SRC bash
-       cd ${HOME}
-       if [[ -f .emacs ]] ; then mv .emacs .emacs.bak ; fi
-       if [[ -d .emacs.d ]] ; then mv .emacs.d .emacs.d.bak ; fi
-       git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+     cd ${HOME}
+     if [[ -f .emacs ]] ; then mv .emacs .emacs.bak ; fi
+     if [[ -d .emacs.d ]] ; then mv .emacs.d .emacs.d.bak ; fi
+     git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
    #+END_SRC
 
    I also installed the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]]:
 
    #+BEGIN_SRC bash
-       brew tap homebrew/cask-fonts
-       brew install --cask font-source-code-pro
+     brew tap homebrew/cask-fonts
+     brew install --cask font-source-code-pro
    #+END_SRC
 
    I immediately installed aspell for spell checking within Spacemacs.
 
    #+BEGIN_SRC bash
-       brew install aspell
+     brew install aspell
    #+END_SRC
+
+   Spacemacs could not access external disks on my system (Catalina, 10.15.7) system because it had not the right permissions. I had to give /Full Disk Access/ to =/usr/bin/ruby= following [[https://emacs.stackexchange.com/questions/53026/how-to-restore-file-system-access-in-macos-catalina/53037#53037][this]]: Open /System Preferences/ -> /Security & Privacy/ -> /Privacy/, select /Full Disk Access/ in the left pane, then click + and add =/usr/bin/ruby= to resolve the issue. =/usr= is hidden by default on macOS but you can toggle visibility in Finder by using Shift+Command+Period.
 
 ** LaTeX
 
    One can download from [[https://tug.org/mactex/][MacTeX]] or use a homebrew cask. I have chosen homebrew's cask this time because I use the BasicTeX installation and I hope that homebrew will handle the update between years, which is always a hassle otherwise. The full MacTex installation including all GUIs and programs is:
 
    #+BEGIN_SRC bash
-       brew install --cask mactex
+     brew install --cask mactex
    #+END_SRC
 
    The minimal LaTeX installation is:
 
    #+BEGIN_SRC bash
-       brew install --cask basictex
+     brew install --cask basictex
    #+END_SRC
 
    If you chose BasicTeX, then some common LaTeX packages can be installed with:
 
    #+BEGIN_SRC bash
-       sudo tlmgr update --self ; \
-       for i in \
-           wasysym german titlesec wasy elsarticle \
-           supertabular lineno helvetic textpos multirow subfigure appendix \
-           lipsum dinbrief a0poster wallpaper collection-fontsrecommended \
-           dvipng kastrup boondox newtx type1cm ucs dvipng a0poster floatflt \
-           enumitem lastpage hyphenat footmisc chemfig units ntheorem \
-           algorithms cleveref a4wide lettrine mdframed needspace preprint \
-           xifthen ifmtarg algorithmicx changepage sidecap sttools marginnote \
-           draftwatermark everypage fontinst fltpoint tabfigures mnsymbol \
-           mdsymbol collection-fontutils fontaxes was pdfcrop latexmk fncychap \
-           tabulary varwidth framed capt-of makecell xstring moreverb wrapfig \
-           adjustbox collectbox threeparttable capt-of \
-           ; do sudo tlmgr install ${i} ; done
+     sudo tlmgr update --self ; \
+     for i in \
+         wasysym german titlesec wasy elsarticle \
+         supertabular lineno helvetic textpos multirow subfigure appendix \
+         lipsum dinbrief a0poster wallpaper collection-fontsrecommended \
+         dvipng kastrup boondox newtx type1cm ucs dvipng a0poster floatflt \
+         enumitem lastpage hyphenat footmisc chemfig units ntheorem \
+         algorithms cleveref a4wide lettrine mdframed needspace preprint \
+         xifthen ifmtarg algorithmicx changepage sidecap sttools marginnote \
+         draftwatermark everypage fontinst fltpoint tabfigures mnsymbol \
+         mdsymbol collection-fontutils fontaxes was pdfcrop latexmk fncychap \
+         tabulary varwidth framed capt-of makecell xstring moreverb wrapfig \
+         adjustbox collectbox threeparttable capt-of \
+         ; do sudo tlmgr install ${i} ; done
    #+END_SRC
 
 ** Freeware
@@ -290,13 +296,6 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - [[http://www.videolan.org/vlc/][VLC]], video player for all formats,
 
-   - [[https://keepingyouawake.app/][KeepingYouAwake]], prevent mac from going to sleep,
-
-   Other less essential Freeware that I use:
-   - [[https://www.pgroup.com/products/community.htm][FreePGI Fortran compiler]], which needs a full /Xcode/ installation,
-
-   - [[https://www.deepl.com/app][DeepL]], like /Google Translate/.
-
 ** Myriad Pro
    I like the Myriad Pro font and AGU journals currently use it. The Myriad Pro font comes with the Adobe Acrobat Reader.
 
@@ -308,21 +307,21 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    To install Myriad Pro for LaTeX, using the Adobe fonts, one can launch the following commands in terminal:
 
    #+BEGIN_SRC bash
-       for i in fontinst fltpoint tabfigures mnsymbol mdsymbol \
-           collection-fontutils ; do \
-           sudo tlmgr install ${i} ; done
-       git clone https://github.com/sebschub/FontPro.git
-       cd FontPro
-       mkdir otf
-       FONT=MyriadPro
-       cp "/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
-       ./scripts/makeall ${FONT}
-       echo y | sudo ./scripts/install
-       sudo updmap-sys --enable Map=${FONT}.map
-       sudo -H mktexlsr
-       kpsewhich ${FONT}.map
-       cd ..
-       \rm -fr FontPro
+     for i in fontinst fltpoint tabfigures mnsymbol mdsymbol \
+         collection-fontutils ; do \
+         sudo tlmgr install ${i} ; done
+     git clone https://github.com/sebschub/FontPro.git
+     cd FontPro
+     mkdir otf
+     FONT=MyriadPro
+     cp "/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
+     ./scripts/makeall ${FONT}
+     echo y | sudo ./scripts/install
+     sudo updmap-sys --enable Map=${FONT}.map
+     sudo -H mktexlsr
+     kpsewhich ${FONT}.map
+     cd ..
+     \rm -fr FontPro
    #+END_SRC
 
 ** Python
@@ -331,21 +330,21 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    #+ATTR_HTML: :alt Python path on my system :align center :width 300 :height 300
    [[https://imgs.xkcd.com/comics/python_environment.png]]
 
-   So I am using /pyenv/ now, and if I am motivated also /pyenv-virtualenvwrapper/. See the great article [[https://medium.com/faun/pyenv-multi-version-python-development-on-mac-578736fb91aa][pyenv: Multi-version Python development on Mac]] by Dirk Avery.
+   So I am using /pyenv/ and /pyenv-virtualenv/ now. See the great article [[https://medium.com/faun/pyenv-multi-version-python-development-on-mac-578736fb91aa][pyenv: Multi-version Python development on Mac]] by Dirk Avery.
 
    To install pyenv with homebrew:
 
    #+BEGIN_SRC bash
-       brew install pyenv
-       brew install openssl readline sqlite3 xz zlib
+     brew install pyenv
+     brew install openssl readline sqlite3 xz zlib
    #+END_SRC
 
-   You have to set the following in your .bash\under{}profile so that the shell always finds the currently chosen Python version as first entry.
+   You have to set the following in your =.bash_profile= so that the shell always finds the currently chosen Python version as first entry.
 
    #+BEGIN_SRC bash
-       export PYENV_ROOT="${HOME}/.pyenv"
-       export PATH=${PYENV_ROOT}/bin:${PATH}
-       if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
+     export PYENV_ROOT="${HOME}/.pyenv"
+     export PATH=${PYENV_ROOT}/bin:${PATH}
+     if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
    #+END_SRC
 
    - *pyenv 101*
@@ -353,128 +352,118 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      After starting a new shell, for example by doing =exec ${SHELL}=, you can start installing and using different Python versions:
 
      #+BEGIN_SRC bash
-         pyenv install --list
-         pyenv install 3.8.3
-         pyenv rehash
-         pyenv global 3.8.3
+       pyenv install --list
+       pyenv install 3.8.9
+       pyenv rehash
+       pyenv global 3.8.9
      #+END_SRC
 
-     Remember that you always have to rehash after you installed a new version.
+     Remember that you always have to /rehash/ after you installed a new version.
 
      Try to rehash first if a problem occurs with /pyenv/. For example, some new homebrew packages might upgrade /pyenv/ as well. Then you get an error such as
 
      #+BEGIN_SRC bash
-         /Users/cuntz/.pyenv/shims/python: line 21:
-         /usr/local/Cellar/pyenv/1.2.19/libexec/pyenv:
-         No such file or directory
+       /Users/cuntz/.pyenv/shims/python: line 21:
+       /usr/local/Cellar/pyenv/1.2.19/libexec/pyenv:
+       No such file or directory
      #+END_SRC
 
      =pyenv rehash= resolves the issue.
 
-     Note that I install Python versions as:
+     Note that I actually install Python versions as:
 
      #+BEGIN_SRC bash
-         env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.8.3
-         pyenv rehash
-         pyenv global 3.8.3
+       brew install tcl-tk
+       env PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/usr/local/opt/tcl-tk/include' \
+           --with-tcltk-libs='-L/usr/local/opt/tcl-tk/lib -ltcl8.6 -ltk8.6' \
+           --enable-framework" pyenv install 3.8.9
+       pyenv rehash
      #+END_SRC
 
-     because I use /wxPython/ sometimes, which needs Python to be framework. See the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]].
-
-     It is also possible that your Python version installed with /pyenv/ might clash with Apple's Tcl/Tk library. This gives in the best case a deprecation warning like:
+     Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). It is possible that a Python version installed with /pyenv/ clashes with Apple's Tcl/Tk library if one wants to use the /tkinter/ module. This gives in the best case a deprecation warning like:
 
      #+BEGIN_SRC bash
-         DEPRECATION WARNING: The system version of Tk is deprecated and
-         may be removed in a future release. Please don't rely on it.
-         Set TK_SILENCE_DEPRECATION=1 to suppress this warning.
+       DEPRECATION WARNING: The system version of Tk is deprecated and
+       may be removed in a future release. Please don't rely on it.
+       Set TK_SILENCE_DEPRECATION=1 to suppress this warning.
      #+END_SRC
 
-     if you want to use the /tkinter/ module. You have to install /tcl-tk/ from homebrew first and then reinstall Python:
-
-     #+BEGIN_SRC bash
-         brew install tcl-tk
-         pyenv uninstall 3.8.3
-         pyenv rehash
-         env PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/usr/local/opt/tcl-tk/include' \
-             --with-tcltk-libs='-L/usr/local/opt/tcl-tk/lib -ltcl8.6 -ltk8.6' \
-             --enable-framework" pyenv install 3.8.3
-         pyenv rehash
-     #+END_SRC
-
-     Note that /tcl-tk/ is keg-only in homebrew. =env= in the command above allows using the homebrew version with Python while not interfering with the macOS provided Tcl/Tk installation.
-
-     /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
-
-     #+BEGIN_SRC bash
-         pyenv install miniconda3-4.7.12
-         pyenv rehash
-         pyenv shell miniconda3-4.7.12
-         conda create --name testproject
-         conda activate testproject
-     #+END_SRC
-
-     You can then install (conda and pip) packages in the testproject:
-
-     #+BEGIN_SRC bash
-         conda install numpy scipy matplotlib
-     #+END_SRC
-
-     To return to the default Python version:
-
-     #+BEGIN_SRC bash
-         conda deactivate
-         pyenv shell --unset
-     #+END_SRC
-
-     If git tells /gettext not found/ after installing anaconda/miniconda, see [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
+   So I install /tcl-tk/ from homebrew first and then (re-)install Python giving the path of the homebrew Tcl/TK library. Note that /tcl-tk/ is keg-only in homebrew. =env= in the command above allows using the homebrew version with Python while not interfering with the macOS provided Tcl/Tk installation.
 
      You can also use virtual environments with /pyenv/:
 
      #+BEGIN_SRC bash
-         pyenv-virtualenvwrapper
+       brew install pyenv-virtualenv
      #+END_SRC
 
-     You have to put the following in your .bash\under{}profile:
+     You have to put the following in your =.bash_profile=:
 
      #+BEGIN_SRC bash
-         if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+       if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
      #+END_SRC
 
      Virtual environments can then be created as:
 
      #+BEGIN_SRC bash
-         pyenv virtualenv 3.8.3 testproject
-         pyenv activate testproject
-         pyenv install ipython
+       pyenv virtualenv 3.8.9 testproject
      #+END_SRC
 
-     This virtual environments can then be used just as any installed Python version with /pyenv/.
+     This virtual environments /testproject/ can then be used just as any installed Python version with /pyenv/.
+
+   - *pyenv and anaconda*
+
+     /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
+
+     #+BEGIN_SRC bash
+       pyenv install miniconda3-4.7.12
+       pyenv rehash
+       pyenv shell miniconda3-4.7.12
+       conda create --name testproject
+       conda activate testproject
+     #+END_SRC
+
+     You can then install (conda and pip) packages in the testproject:
+
+     #+BEGIN_SRC bash
+       conda install numpy scipy matplotlib
+     #+END_SRC
+
+     To return to the default Python version:
+
+     #+BEGIN_SRC bash
+       conda deactivate
+       pyenv shell --unset
+     #+END_SRC
+
+     If git tells /gettext not found/ after installing anaconda/miniconda, see [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
    - *Essential Python packages*
 
      Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with pip or conda. These are currently in my main environment:\\
-     numpy, scipy, matplotlib, cartopy, basemap, seaborn, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, bs4
+     numpy, scipy, matplotlib, cartopy, basemap, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, bs4
 
-     and mostly this subset in the virtual environments:\\
-     numpy, scipy, matplotlib, seaborn, ipython, pandas, netcdf4, xlrd, flake8
+     and mostly this subset in other virtual environments:\\
+     numpy, scipy, matplotlib, ipython, pandas, netcdf4, xlrd, flake8
 
-     You would have to source your .bash\under{}profile again if you do this just after installing pyenv.
+     You would have to source your =.bash_profile= again if you do this just after installing pyenv.
 
      #+BEGIN_SRC bash
-         # essential subset
-         for i in numpy scipy matplotlib seaborn ipython pandas netcdf4 \
-             xlrd flake8 ; do pip install ${i} ; done
-         # other standard packages
-         for i in cartopy jupyter statsmodels scikit-learn schwimmbad \
-             tqdm xarray numexpr bottleneck wxpython sphinx sphinx_rtd_theme \
-             numpydoc pytest pytest-cov f90nml bs4 ; do \
-             pip install ${i} ; done
-         # install basemap directly from github
-         pip install https://github.com/matplotlib/basemap/archive/master.zip
-         # gdal needs to know the installed gdal version
-         pip install GDAL==$(gdal-config --version) \
-             --global-option=build_ext --global-option="-I/usr/local/include"
-         # mpi4py will be installed after installing openmpi later
+       # essential subset
+       pyenv virtualenv 3.8.9 pystd
+       pyenv global pystd
+       for i in numpy scipy matplotlib ipython pandas netcdf4 \
+           xlrd flake8 ; do pip install ${i} ; done
+       # other standard packages
+       for i in cartopy jupyter statsmodels scikit-learn schwimmbad \
+           tqdm xarray numexpr bottleneck wxpython sphinx sphinx_rtd_theme \
+           numpydoc pytest pytest-cov f90nml bs4 ; do \
+           pip install ${i} ; done
+       # install basemap directly from github
+       pip install https://github.com/matplotlib/basemap/archive/master.zip
+       # gdal needs to know the installed gdal version
+       pip install GDAL==$(gdal-config --version) \
+           --global-option=build_ext --global-option="-I/usr/local/include"
+       # mpi4py will be installed after installing openmpi later
      #+END_SRC
 
      Replace /pip/ with /conda/ if using conda environments. There is also a conda package for basemap.
@@ -483,7 +472,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    Create locate database so that you can search files with the locate command:
 
    #+BEGIN_SRC bash
-       sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+     sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
    #+END_SRC
 
 ** Payware
@@ -520,14 +509,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    After having installed openmpi, one can also install mpi4py in python:
 
    #+BEGIN_SRC bash
-       env MPICC=/usr/local/openmpi-4.0.4-gfortran/bin/mpicc pip install mpi4py
+     env MPICC=/usr/local/openmpi-4.0.4-gfortran/bin/mpicc pip install mpi4py
    #+END_SRC
 
 ** cdo
    hdf5 from homebrew is not thread-safe so cdo will need the -L flag if piping.
 
    #+BEGIN_SRC bash
-       alias cdo="cdo -L"
+     alias cdo="cdo -L"
    #+END_SRC
 
    Also Apple's clang is not yet OpenMP-enabled so that cdo will not use OpenMP. cdo is running also much faster when compiled with Intel.
