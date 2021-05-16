@@ -3,7 +3,7 @@
 #+TITLE: Setting up macOS for software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 09.05.2021
+Modified: 16.05.2021
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
