@@ -61,6 +61,10 @@ apppath() {
 }
 
 # PATH
+# anaconda might install netcdf, which is hence in ~/.pyenv/shims
+# but anaconda might not be the active python version and ncdump,
+# for example, might not work -> use version of homebrew
+export PATH=$(prepath ${PATH} /usr/local/opt/netcdf/bin)
 export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
@@ -151,6 +155,12 @@ fi
 # Aliases
 [[ -f ${HOME}/.bashrc ]] && source ~/.bashrc
 
+# command line fuzzy finder
+if [[ -f ~/.fzf.bash ]] ; then
+    source ~/.fzf.bash
+    export FZF_DEFAULT_COMMAND=fd
+fi
+
 # bash completion
 if [[ -f "/usr/local/etc/profile.d/bash_completion.sh" ]] ; then
     export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
@@ -160,13 +170,7 @@ fi
 [[ -f ${HOME}/prog/github/ido/ido_bash_complete ]] && source ${HOME}/prog/github/ido/ido_bash_complete
 [[ -f ${HOME}/prog/jams/bash/jams_bash_complete ]] && source ${HOME}/prog/jams/bash/jams_bash_complete
 [[ -f ${HOME}/prog/jams/utils/jams_utils_complete ]] && source ${HOME}/prog/jams/utils/jams_utils_complete
-[[ -f ${HOME}/prog/jams/utils/cdoCompletions.bash ]] && source ${HOME}/prog/jams/utils/cdoCompletions.bash
-
-# command line fuzzy finder
-if [[ -f ~/.fzf.bash ]] ; then
-   source ~/.fzf.bash
-   export FZF_DEFAULT_COMMAND=fd
-fi
+# [[ -f ${HOME}/prog/jams/utils/cdoCompletions.bash ]] && source ${HOME}/prog/jams/utils/cdoCompletions.bash
 
 # --------------------------------------------------------------------
 # Interactive session - machine-specific  settings
