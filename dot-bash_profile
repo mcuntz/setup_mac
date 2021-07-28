@@ -7,10 +7,20 @@
 # set paths at MPI Hamburg even when non-interactive
 [[ -e /client/etc/profile.zmaw ]] && source /client/etc/profile.zmaw
 
+# set homebrew also in non-interactive scripts
+if [[ -d /opt/homebrew ]] ; then
+    # eval $(/opt/homebrew/bin/brew shellenv)
+    # or by hand to append rather than prepand path
+    export HOMEBREW_PREFIX="/opt/homebrew";
+    export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+    export HOMEBREW_REPOSITORY="/opt/homebrew";
+    export PATH=${PATH}:/opt/homebrew/bin
+fi
+
 # use pyenv also in non-interactive scripts
 if [[ -d ${HOME}/.pyenv ]] ; then
     export PYENV_ROOT="${HOME}/.pyenv"
-    export PATH=${PYENV_ROOT}/bin:${PATH}
+    export PATH=${PYENV_ROOT}/shims:${PATH}
     if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
     if which pyenv-virtualenv-init > /dev/null ; then eval "$(pyenv virtualenv-init -)" ; fi
 fi
@@ -65,6 +75,7 @@ apppath() {
 # but anaconda might not be the active python version and ncdump,
 # for example, might not work -> use version of homebrew
 export PATH=$(prepath ${PATH} /usr/local/opt/netcdf/bin)
+export PATH=$(prepath ${PATH} /opt/homebrew/opt/netcdf/bin)
 export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
@@ -85,9 +96,12 @@ export MANPATH=$(apppath ${MANPATH} ${HOME}/local/man)
 export PATH=$(prepath ${PATH} ${HOME}/bin)
 # homebrew
 export PATH=$(apppath ${PATH} /usr/local/sbin)
+export PATH=$(apppath ${PATH} /opt/homebrew/sbin)
+export INFOPATH=$(prepath ${INFOPATH} /opt/homebrew/share/info)
 # mac
 export MANPATH=$(apppath ${MANPATH} /usr/share/man)
 export MANPATH=$(apppath ${MANPATH} /usr/local/share/man)
+export MANPATH=$(prepath ${MANPATH} /opt/homebrew/share/man)
 
 # MANPATH after install_netcdf
 export MANPATH=$(apppath ${MANPATH} ${HOME}/bin/man)
@@ -166,6 +180,10 @@ if [[ -f "/usr/local/etc/profile.d/bash_completion.sh" ]] ; then
     export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
     source "/usr/local/etc/profile.d/bash_completion.sh"
 fi
+if [[ -f "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] ; then
+    export BASH_COMPLETION_COMPAT_DIR="/opt/homebrew/etc/bash_completion.d"
+    source "/opt/homebrew/etc/profile.d/bash_completion.sh"
+fi
 [[ -f ${HOME}/bin/binCompletions.bash ]] && source ${HOME}/bin/binCompletions.bash
 [[ -f ${HOME}/prog/github/ido/ido_bash_complete ]] && source ${HOME}/prog/github/ido/ido_bash_complete
 [[ -f ${HOME}/prog/jams/bash/jams_bash_complete ]] && source ${HOME}/prog/jams/bash/jams_bash_complete
@@ -224,6 +242,10 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
     osdigit=$(( $osver - 4 ))
     for ((i=9; i<=19; i++)) ; do
         [[ ${osver} -eq ${i} && -f ${HOME}/.bashrc.10.${osdigit} ]] && source ~/.bashrc.10.${osdigit}
+    done
+    osdigit=$(( $osver - 15 ))
+    for ((i=20; i<=20; i++)) ; do
+        [[ ${osver} -eq ${i} && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ~/.bashrc.11.${osdigit}
     done
 elif [[ "${ossystem}" == "CYGWIN" ]] ; then
     [[ -f ${HOME}/.bashrc.cygwin ]] && source ${HOME}/.bashrc.cygwin
