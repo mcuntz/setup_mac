@@ -493,7 +493,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      You would have to source your =.bash_profile= again if you install with /pip/ or /conda/ just after installing /pyenv/.
 
-     There is currently a problem with Apple's Accelerate framework on Apple Silicon (M1) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library or the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and homebrew installs into =/usr/local=; this directory is searched automatically You still need to use /proj/ version < 8 for /cartopy/, though, i.e. you need the =PKG_CONFIG_PATH= variable.
+     There is currently a problem with Apple's Accelerate framework on Apple Silicon (M1) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library or the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and homebrew installs into =/usr/local=; this directory is searched automatically. You still need to use /proj/ version < 8 for /cartopy/, though, i.e. you need the =PKG_CONFIG_PATH= variable.
  
      #+BEGIN_SRC bash
        # essential subset
@@ -521,9 +521,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        # Uninstall it if already installed
        [[ -z $(pip freeze | grep shapely) ]] && pip uninstall -y shapely
        if [[ "$(uname -m)" == "arm64" ]] ; then
-           # workaround for Shapely on macOS on Apple Silicon (M1)
-           cd ..
-           git clone git@github.com:mcuntz/Shapely.git
+           # includes support for Shapely on macOS on Apple Silicon (M1)
+           git clone https://github.com/mcuntz/Shapely.git
            cd Shapely
            pip install .
            cd ..
