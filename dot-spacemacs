@@ -30,7 +30,9 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(tern
+     javascript
+     rust
      octave
      windows-scripts
      ;; windows-scripts
@@ -64,7 +66,7 @@ values."
      spell-checking
      syntax-checking
      ;; version-control
-     ;; treemacs ;; "Unknown layer" now
+     ;; treemacs
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -153,9 +155,8 @@ values."
                                :size 15
                                :weight normal
                                :width normal
-                               :powerline-scale 1.2)
-
-   ;; The leader key (default "SPC")
+                               :powerline-scale 1.1)
+   ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The key used for Emacs commands (M-x) (after pressing on the leader key).
    ;; (default "SPC")
@@ -283,7 +284,7 @@ values."
    dotspacemacs-folding-method 'evil
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
-   dotspacemacs-smartparens-strict-mode nil
+   dotspacemacs-smartparens-strict-mode t
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc…
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
@@ -329,7 +330,7 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-    ;;
+  ;;
   ;; key bindings
   ;; (global-set-key [f1]       'advertised-undo)
   (global-set-key (kbd "<f2>")      'query-replace-regexp)
@@ -354,6 +355,45 @@ you should place your code here."
   (set-scroll-bar-mode 'right)
   ;; (setq tab-always-indent t) ; if nil, tab opens helm suggestions
   ;;
+  ;; f90
+  (setq f90-directive-comment-re "#")
+  ;; Use f90-indent-line instead on f90-indent-region on a region of code
+  ;; because they behave differently for continuation lines
+  (add-hook 'f90-mode-hook 'f90-indent-lines)
+  (defun f90-indent-lines ()
+    "Apply f90-indent-line on all lines of a region."
+    (interactive)
+    (save-excursion
+      (message "This might take a while.")
+      (goto-char (region-beginning))
+      (while (< (point) (region-end))
+        (f90-indent-line)
+        (forward-line 1))
+      )
+    (delete-trailing-whitespace)
+    )
+  (setq f90-comment-region "! ")
+  (defun f90-eddypro-style ()
+    (interactive)
+    (setq f90-do-indent 4)
+    (setq f90-if-indent 4)
+    (setq f90-type-indent 4)
+    (setq f90-program-indent 4)
+    (setq f90-associate-indent 4)
+    (setq f90-critical-indent 4)
+    (setq f90-continuation-indent 4)
+    )
+  (defun f90-default-style ()
+    (interactive)
+    (setq f90-do-indent 3)
+    (setq f90-if-indent 3)
+    (setq f90-type-indent 3)
+    (setq f90-program-indent 2)
+    (setq f90-associate-indent 2)
+    (setq f90-critical-indent 2)
+    (setq f90-continuation-indent 5)
+    )
+  ;;
   ;; ivy
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
@@ -372,7 +412,7 @@ you should place your code here."
        (define-key org-mode-map (kbd "<M-S-left>") nil)))
   ;;
   ;; flyspell
-  (setq ispell-program-name "/opt/homebrew/bin/aspell")
+  (setq ispell-program-name "/usr/local/bin/aspell")
   ;; right-click on word to correct spelling
   ;; (setq mac-emulate-three-button-mouse t)
   ;; (define-key key-translation-map (kbd "<C-down-mouse-1>") (kbd "<down-mouse-2>"))
@@ -410,23 +450,6 @@ you should place your code here."
   (fset 'comment-on-line-above
         [?\C-k ?\C-p ?\C-e return ?\C-y tab ?\C-n ?\C-e])
   ;;
-  ;; f90
-  (setq f90-directive-comment-re "#")
-  ;; Use f90-indent-line instead on f90-indent-region on a region of code
-  ;; because they behave differently for continuation lines
-  (add-hook 'f90-mode-hook 'f90-indent-lines)
-  (defun f90-indent-lines ()
-    "Apply f90-indent-line on all lines of a region."
-    (interactive)
-    (save-excursion
-      (message "This might take a while.")
-      (goto-char (region-beginning))
-      (while (< (point) (region-end))
-        (f90-indent-line)
-        (forward-line 1))
-      )
-    (delete-trailing-whitespace)
-    )
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -436,19 +459,14 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- '(custom-enabled-themes '(manoj-dark))
- '(custom-safe-themes
-   '("cd305434a9a9a71788554f92f8d935f0f573826cbf707a45b1e8ef315beb846a" "d557e66cf50ffd3b8f98fe0782ab4dd3bbaa41ffe84080957cbf9ba05e562f3d" "b38e0fe4053f32810c0e4a41646d90c22483a9f939179776ea5758467c9ec839" "d2aab54c604182531495a02870d807a8e09ceccc14229605359ca6bbdb3b23e7" default))
+ ;; '(custom-enabled-themes '(manoj-dark))
  '(evil-want-Y-yank-to-eol nil)
+ '(package-selected-packages
+   '(web-beautify toml-mode racer rust-mode org-category-capture alert log4e gntp livid-mode skewer-mode simple-httpd json-mode json-snatcher js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode flyspell-correct flycheck-rust pos-tip flycheck ctable ess coffee-mode cargo markdown-mode inf-ruby auctex pythonic define-word yapfify yaml-mode xterm-color ws-butler winum which-key wgrep web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smex slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs request rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode powershell popwin pip-requirements persp-mode pbcopy paradox osx-trash osx-dictionary org-present org-pomodoro org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode minitest markdown-toc macrostep lorem-ipsum live-py-mode linum-relative link-hint launchctl ivy-hydra indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make google-translate golden-ratio gnuplot gh-md flyspell-correct-ivy flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu ess-smart-equals ess-R-data-view eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav dumb-jump diminish cython-mode csv-mode counsel-projectile column-enforce-mode clean-aindent-mode chruby bundler auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk anaconda-mode aggressive-indent adaptive-wrap ace-window ace-link))
  '(safe-local-variable-values '((require-trailing-newline . t)))
- '(tool-bar-mode nil)
- ;; '(package-selected-packages
- ;;   '(org-category-capture alert log4e gntp markdown-mode dash-functional haml-mode flyspell-correct pos-tip flycheck ctable ess inf-ruby auctex pythonic define-word yapfify yaml-mode xterm-color ws-butler winum which-key wgrep web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smex slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs request rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode powershell popwin pip-requirements persp-mode pbcopy paradox osx-trash osx-dictionary org-projectile org-present org-pomodoro org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode minitest markdown-toc macrostep lorem-ipsum live-py-mode linum-relative link-hint launchctl ivy-hydra indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make google-translate golden-ratio gnuplot gh-md flyspell-correct-ivy flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu ess-smart-equals ess-R-data-view eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav dumb-jump diminish cython-mode csv-mode counsel-projectile column-enforce-mode clean-aindent-mode chruby bundler auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk anaconda-mode aggressive-indent adaptive-wrap ace-window ace-link))
- )
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

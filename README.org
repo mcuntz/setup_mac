@@ -1,24 +1,25 @@
 # C-c C-e  for export within Emacs
 #+OPTIONS: toc:nil
+#+OPTIONS: broken-links:t
 #+TITLE: Setting up macOS for software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 28.07.2021
+Modified: 27.11.2021
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
 This is a reminder for myself how to setup a new Mac or updating the OS, which might be useful for others. The repository includes some of my dot-files as a reference.
 
 * Table of Contents :TOC:
-- [[#before-starting][Before starting]]
+- [[#before-starting-it][Before starting it]]
 - [[#bootable-installer-for-macos-on-usb][Bootable installer for macOS on USB]]
 - [[#installing-macos-with-the-bootable-installer][Installing macOS with the bootable installer]]
 - [[#setup-macos][Setup macOS]]
   - [[#check-for-system-updates][Check for system updates]]
+  - [[#xcode][Xcode]]
   - [[#set-preferences-of-macos-and-standard-apps][Set preferences of macOS and standard apps]]
   - [[#set-the-default-shell][Set the default shell]]
   - [[#restore-backup][Restore backup]]
-  - [[#xcode][Xcode]]
   - [[#app-store][App Store]]
   - [[#xquartz][XQuartz]]
   - [[#homebrew][Homebrew]]
@@ -33,7 +34,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   - [[#additional-software][Additional software]]
   - [[#netcdf4underfortran-and-openmpi-development-packages][netcdf4\under{}fortran and openmpi development packages]]
 
-* Before starting
+* Before starting it
   1. You might want to use iCloud for your /Contacts/, /Calendars/, /Reminders/, /Notes/, and /Keychain/. If you had not switched it on, you should do this a couple of hours before installation because it takes some time until things get synchronised. Some logoff/login might also help. You can check all but /Keychain/ on [[https://www.icloud.com][icloud.com]]. You can switch it off again on the updated system after synchronisation finished, if not wanted.
 
   2. Backup all your files including Documents, Movies, Pictures. Check Desktop as well.
@@ -53,24 +54,33 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 * Bootable installer for macOS on USB
   From [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
-  1. Download a macOS installer such as macOS Catalina from the App Store. When the macOS installer opens, quit it without continuing installation.
+  1. Download a macOS installer such as macOS Monterey from the App Store. When the macOS installer opens, quit it without continuing installation.
 
-     The installer should have a size of about 8 GB. Based on your Mac, only a much smaller app might have been downloaded, which would later download the actual files during installation. This does not allow to create a bootable thumb drive. Then you have to get the full installer by using, for example, [[https://wccftech.com/how-to/how-to-download-macos-catalina-installer/][macOS Catalina Patcher]].
+     The installer should have a size of about 12 GB. Based on your Mac, only a much smaller app might have been downloaded, which would later download the actual files during installation. This does not allow to create a bootable thumb drive. Try to get the full installer for example from the Apple Developer site.
 
-  1. Format a USB flash drive of at least 12 GB storage as /Mac OS Extended/ with name InstallCatalina, for example.
+  1. Format a USB flash drive of at least 16 GB storage as /Mac OS Extended/ with name InstallMonterey, for example.
 
   1. In Terminal type:
 
      #+BEGIN_SRC bash
-       sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallCatalina
+       sudo /Applications/Install\ macOS\ Monterey.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallMonterey --nointeraction
      #+END_SRC
 
 
 * Installing macOS with the bootable installer
   Also from [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
-  1. Connect USB drive, restart while holding Option (alt) key.
+  1. Startup is different if you have a Mac with Apple silicon chips or Intel processors.
+     a) Intel processor
+        - Connect USB drive, restart while holding Option (alt) key until you see the bootable volumes.
 
-  1. Select /Install macOS/.
+        - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and press Return. 
+
+     a) Apple silicon
+        - Shut down.
+
+        - Turn on Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
+
+        - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and click Continue.
 
   1. Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
 
@@ -78,7 +88,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      Then quit /Disk Utility/.
 
-  1. Select /Install macOS/ and follow the prompts.
+  1. Select /Install macOS Monterey/ and follow the on-screen steps.
 
 
 * Setup macOS
@@ -86,6 +96,21 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 ** Check for system updates
    Check for updates of macOS in /System Preferences/ > /Software Update/.
+
+** Xcode
+   A full Xcode installation is not always needed. Most often, the Xcode Command Line Tools (CLT) are enough, for example for Homebrew. But some development software needs a full Xcode installation such as the FreePGI Fortran Compiler. So one can, for example, install the Xcode CLT only, and install the full Xcode only if another program demands it. Note that installing the full XCode takes considerable time.
+
+   Install XCode Command Line Tools (CLT) from the terminal:
+
+   #+BEGIN_SRC bash
+     xcode-select --install
+   #+END_SRC
+
+   This did not work for me sometimes, telling that it cannot reach the server. Downloading the installer package from the [[https://developer.apple.com/download/more/?=command%20line%20tools][Apple Developer website]] (you have to login with your Apple ID) worked but led to problems with installing Python later. Then I just install the full Xcode package.
+
+   The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools. Be sure to have completed this step before starting with [[#homebrew][Homebrew]].
+
+   While waiting for XCode or the Xcode CLT to install, you can download and install the other apps from [[#app-store][App Store]], [[#xquartz][XQuartz]] and some [[#freeware][Freeware]] except [[http://www.chachatelier.fr/latexit/][LaTeXiT]] and [[https://www.sourcetreeapp.com][SourceTree]]. You can also [[#set-preferences-of-macos-and-standard-apps][Set preferences of macOS and standard apps]].
 
 ** Set preferences of macOS and standard apps
    Set /System Preferences/ such as:
@@ -120,26 +145,13 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 ** Restore backup
    Transfer files from your backup media either directly or using a Time Machine backup.
 
-** Xcode
-   A full Xcode installation is not always needed. Most often, the Xcode Command Line Tools (CLT) are enough, for example for Homebrew. But some development software needs a full Xcode installation such as the FreePGI Fortran Compiler. So one can, for example, install the Xcode CLT only, and install the full Xcode only if another program demands it.
-
-   Install the Xcode CLT from the terminal:
-
-   #+BEGIN_SRC bash
-     xcode-select --install
-   #+END_SRC
-
-   This did not work for me recently, telling that it cannot reach the server. Downloading the installer package from the [[https://developer.apple.com/download/more/?=command%20line%20tools][Apple Developer website]] (you have to login with your Apple ID) worked but led to problems with installing Python later. So I installed the full Xcode package.
-
-   The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools. Be sure to have completed this step before starting with Homebrew.
-
 ** App Store
    Check your account in the App Store. There are bundled apps such as Keynote, Numbers, etc., which you should open once to get over the welcome screens and offered tutorials.
 
    It also shows you a list of previously installed apps on other systems. Install what you still want and open it once.
 
    My essential apps from the App Store are:\\
-   Keynote/Pages/Numbers, iMovie, Engauge Digitizer, The Unarchiver, WordService, HiddenMe.
+   Keynote/Pages/Numbers, The Unarchiver, WordService, HiddenMe, Slack, Microsoft Remote Desktop.
 
 ** XQuartz
    XQuartz is the X-window system running on macOS, needed for \ast{}nix GUI programs. Get it from [[http://xquartz.macosforge.org/][XQuartz]].
@@ -169,12 +181,17 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    #+BEGIN_SRC bash
      if [[ -d /opt/homebrew ]] ; then
+         # eval $(/opt/homebrew/bin/brew shellenv)
+         # or by hand to append rather than prepand path
          export HOMEBREW_PREFIX="/opt/homebrew";
          export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
          export HOMEBREW_REPOSITORY="/opt/homebrew";
-         export PATH="${PATH+$PATH:}/opt/homebrew/bin:/opt/homebrew/sbin";
-         export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
-         export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+         export PATH=${PATH}:/opt/homebrew/bin
+     else
+         export HOMEBREW_PREFIX="/usr/local";
+         export HOMEBREW_CELLAR="/usr/local/Cellar";
+         export HOMEBREW_REPOSITORY="/usr/local";
+         export PATH=${PATH}:/usr/local/bin
      fi
    #+END_SRC
  
@@ -188,7 +205,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
        brew install --cask adoptopenjdk
        brew install --cask panoply
-       brew install 
+       brew install cdo
      #+END_SRC
 
      /HDF5/ from Homebrew is not thread-safe so /cdo/ will need the -L flag if piping, i.e. more than one operator is given to /cdo/ in one call such as =cdo -timmean -selvar,Tair infile outfile=. I use in my =.bashrc=:
@@ -278,10 +295,10 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      brew install aspell
    #+END_SRC
 
-   Spacemacs could not access external disks on my system (Catalina, 10.15.7 and Big Sur, 11.5.1) system because it did not have the right permissions. I had to give /Full Disk Access/ to =/usr/bin/ruby= following [[https://emacs.stackexchange.com/questions/53026/how-to-restore-file-system-access-in-macos-catalina/53037#53037][this]]: Open /System Preferences/ -> /Security & Privacy/ -> /Privacy/, select /Full Disk Access/ in the left pane, then click + and add =/usr/bin/ruby= to resolve the issue. =/usr= is hidden by default on macOS but you can toggle visibility in /Finder/ by using =Shift+Command+Period=.
+   Spacemacs could not access external disks on my systems (Catalina 10.15.7, Big Sur 11.5.1, Monterey 12.0.1) because it did not have the right permissions. I had to give /Full Disk Access/ to =/usr/bin/ruby= following [[https://emacs.stackexchange.com/questions/53026/how-to-restore-file-system-access-in-macos-catalina/53037#53037][this]]: Open /System Preferences/ -> /Security & Privacy/ -> /Privacy/, select /Full Disk Access/ in the left pane, then click + and add =/usr/bin/ruby= to resolve the issue. =/usr= is hidden by default on macOS but you can toggle visibility in /Finder/ by using =Shift+Command+Period=, i.e. =Shift+Command+.=
 
 ** LaTeX
-   One can download from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I hope that Homebrew will handle the update between years, which is always a hassle otherwise; but I do not know yet if Homebrew will handle it. The full MacTex installation including all GUIs, Apps, and Programs is:
+   One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I hope that Homebrew will handle the update between years, which is always a hassle otherwise; but I do not know yet if Homebrew will handle it. The full MacTex installation including all GUIs, Apps, and Programs is:
 
    #+BEGIN_SRC bash
      brew install --cask mactex
@@ -302,13 +319,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          supertabular lineno helvetic textpos multirow subfigure appendix \
          lipsum dinbrief a0poster wallpaper collection-fontsrecommended \
          dvipng kastrup boondox newtx type1cm ucs dvipng a0poster floatflt \
-         enumitem lastpage hyphenat footmisc chemfig units ntheorem \
-         algorithms cleveref a4wide lettrine mdframed needspace preprint \
-         xifthen ifmtarg algorithmicx changepage sidecap sttools marginnote \
-         draftwatermark everypage fontinst fltpoint tabfigures mnsymbol \
-         mdsymbol collection-fontutils fontaxes was pdfcrop latexmk fncychap \
-         tabulary varwidth framed capt-of makecell xstring moreverb wrapfig \
-         adjustbox collectbox threeparttable capt-of \
+         enumitem lastpage hyphenat footmisc simplekv chemfig units \
+         ntheorem algorithms cleveref a4wide lettrine mdframed \
+         needspace preprint xifthen ifmtarg algorithmicx changepage \
+         sidecap sttools marginnote draftwatermark everypage fontinst \
+         fltpoint tabfigures mnsymbol mdsymbol collection-fontutils \
+         fontaxes was pdfcrop latexmk fncychap tabulary varwidth \
+         framed capt-of makecell xstring moreverb wrapfig \
+         adjustbox collectbox threeparttable capt-of pgf \
          ; do sudo tlmgr install ${i} ; done
    #+END_SRC
 
@@ -324,13 +342,17 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - [[https://rectangleapp.com][Rectangle]], moving windows with keystrokes,
 
+   - [[https://www.zotero.org][Zotero]], reference manager,
+
    - [[http://www.skype.com/en/][Skype]], video calls,
 
    - [[https://www.sourcetreeapp.com][SourceTree]], git GUI originally for bitbucket but works with other git repositories as well,
 
    - [[https://www.spotify.com/][Spotify]], streaming music,
 
-   - [[http://www.videolan.org/vlc/][VLC]], video player for all formats.
+   - [[http://www.videolan.org/vlc/][VLC]], video player for all formats,
+
+   - [[https://github.com/markummitchell/engauge-digitizer][Engauge Digitizer]], recover data points from graphs.
 
 ** Myriad Pro
    I like the Myriad Pro font and AGU journals currently use it. The Myriad Pro font comes with the Adobe Acrobat Reader.
@@ -362,7 +384,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 ** Python
 
-   macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. macOS Big Sur (11.5) comes with Python 3. But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/.
+   macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. Form macOS Big Sur (11.5), it comes with Python 3. But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/.
 
    Installation of Python versions can be a real mess at times, as noted by [[https://xkcd.com/1987/][XKCD]]:
 
@@ -394,9 +416,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      #+BEGIN_SRC bash
        pyenv install --list
-       pyenv install 3.9.6
+       pyenv install 3.9.9
        pyenv rehash
-       pyenv global 3.9.6
+       pyenv global 3.9.9
      #+END_SRC
 
      Remember that you always have to /rehash/ after you installed a new version.
@@ -420,7 +442,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            --enable-framework" \
            CFLAGS="-I$(brew --prefix xz)/include" LDFLAGS="-L$(brew --prefix xz)/lib" \
            PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig" \
-           pyenv install 3.9.6
+           pyenv install 3.9.9
        pyenv rehash
      #+END_SRC
 
@@ -432,11 +454,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        Set TK_SILENCE_DEPRECATION=1 to suppress this warning.
      #+END_SRC
 
-     So I install /tcl-tk/ from Homebrew first and then (re-)install Python giving the path of the Homebrew Tcl/TK library. Note that /tcl-tk/ is keg-only in Homebrew. =env= in the command above allows using the Homebrew version with Python while not interfering with the macOS provided Tcl/Tk installation.
+     So I install /tcl-tk/ from Homebrew first and then (re-)install Python giving the path of the Homebrew Tcl/Tk library. Note that /tcl-tk/ is keg-only in Homebrew. =env= in the command above allows using the Homebrew version with Python while not interfering with the macOS provided Tcl/Tk installation.
 
    - *pyenv-virtualenv*
 
-     You can also use virtual environments with /pyenv/:
+     You can use virtual environments with /pyenv/:
 
      #+BEGIN_SRC bash
        brew install pyenv-virtualenv
@@ -451,10 +473,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      Virtual environments can then be created as:
 
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.9.6 testproject
+       pyenv virtualenv 3.9.9 testproject
      #+END_SRC
 
-     The virtual environment /testproject/ can then be used just as any installed Python version with /pyenv/.
+     The virtual environment /testproject/ can then be used just as any installed Python version with /pyenv/. For example:
+     #+BEGIN_SRC bash
+       pyenv local testproject
+       pyenv rehash
+     #+END_SRC
 
    - *pyenv and anaconda*
 
@@ -463,9 +489,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      #+BEGIN_SRC bash
        pyenv install miniconda3-4.7.12
        pyenv rehash
-       pyenv shell miniconda3-4.7.12
-       conda create --name testproject
-       conda activate testproject
+       pyenv global miniconda3-4.7.12
+       pyenv virtualenv testproject
      #+END_SRC
 
      You can then install (conda and pip) packages in the testproject:
@@ -478,7 +503,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      #+BEGIN_SRC bash
        conda deactivate
-       pyenv shell --unset
+       pyenv global 3.9.9
      #+END_SRC
 
      If git tells /gettext not found/ after installing anaconda/miniconda, see [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
@@ -493,7 +518,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      You would have to source your =.bash_profile= again if you install with /pip/ or /conda/ just after installing /pyenv/.
 
-     There is currently a problem with Apple's Accelerate framework on Apple Silicon (M1) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library or the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and homebrew installs into =/usr/local=; this directory is searched automatically. You still need to use /proj/ version < 8 for /cartopy/, though, i.e. you need the =PKG_CONFIG_PATH= variable.
+     There is currently a problem with Apple's Accelerate framework on Apple Silicon (M1) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library or the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and homebrew installs into =/usr/local=; this directory is searched automatically.
  
      #+BEGIN_SRC bash
        # essential subset
@@ -503,7 +528,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            export GEOS_DIR="$(brew --prefix geos)"
            export GEOS_CONFIG="$(brew --prefix geos)/bin/geos-config"
        fi
-       pyenv virtualenv 3.9.6 pystd
+       pyenv virtualenv 3.9.9 pystd
        pyenv rehash
        pyenv global pystd
        pip install numpy
@@ -512,7 +537,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            pip install ${i} ; done
        # other standard packages
        for i in jupyter statsmodels scikit-learn schwimmbad \
-           tqdm xarray numexpr bottleneck wxpython sphinx sphinx_rtd_theme \
+           tqdm xarray numexpr bottleneck sphinx sphinx_rtd_theme \
            numpydoc pytest pytest-cov f90nml bs4 pykdtree cython pyshp six \
            openpyxl ; do \
            pip install ${i} ; done
@@ -520,16 +545,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        # shapely needs to be built from source to link to geos.
        # Uninstall it if already installed
        [[ -z $(pip freeze | grep shapely) ]] && pip uninstall -y shapely
-       if [[ "$(uname -m)" == "arm64" ]] ; then
-           # includes support for Shapely on macOS on Apple Silicon (M1)
-           git clone https://github.com/mcuntz/Shapely.git
-           cd Shapely
-           pip install .
-           cd ..
-           \rm -rf Shapely
-       else
-           # otherwise
-           pip install shapely --no-binary shapely
+       pip install shapely --no-binary shapely
+       if [[ "$(uname -m)" != "arm64" ]] ; then
            # install basemap directly from github
            # -> does not work on Apple Silicon (M1), neither with clang nor with gcc@11
            pip install https://github.com/matplotlib/basemap/archive/master.zip
@@ -538,9 +555,6 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        pip install GDAL==$(gdal-config --version) \
            --global-option=build_ext --global-option="-I${HOMEBREW_PREFIX}/include"
        # mpi4py will be installed after installing openmpi later
-       # last standard packages
-       brew install proj@7
-       PKG_CONFIG_PATH=${HOMEBREW_PREFIX}/opt/proj@7/lib/pkgconfig/ \
        pip install cartopy
      #+END_SRC
 
@@ -558,8 +572,6 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    - Microsoft Office,
 
    - [[https://www.antidote.info/en][Antidote]], spell and grammar checker for English and French,
-
-   - [[http://www.papersapp.com/mac/][Papers]], reference manager,
 
    - [[http://www.nag.co.uk/downloads/npdownloads.asp][NAG compiler]], very meticulous Fortran compiler,
 
@@ -594,7 +606,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    After having installed /openmpi/, one can also install /mpi4py/ in Python, for example:
 
    #+BEGIN_SRC bash
-     env MPICC=/usr/local/openmpi-4.0.4-gfortran/bin/mpicc pip install mpi4py
+     env MPICC=/usr/local/openmpi-4.1.2-gfortran/bin/mpicc pip install mpi4py
    #+END_SRC
 
 # ** cdo

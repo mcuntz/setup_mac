@@ -15,6 +15,11 @@ if [[ -d /opt/homebrew ]] ; then
     export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
     export HOMEBREW_REPOSITORY="/opt/homebrew";
     export PATH=${PATH}:/opt/homebrew/bin
+else
+    export HOMEBREW_PREFIX="/usr/local";
+    export HOMEBREW_CELLAR="/usr/local/Cellar";
+    export HOMEBREW_REPOSITORY="/usr/local";
+    export PATH=${PATH}:/usr/local/bin
 fi
 
 # use pyenv also in non-interactive scripts
@@ -79,7 +84,6 @@ export PATH=$(prepath ${PATH} /opt/homebrew/opt/netcdf/bin)
 export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
-export PATH=$(prepath ${PATH} ${HOME}/prog/github/ncvue/bin)
 if [[ -d ${HOME}/../shared/local ]] ; then
     # explor
     export PATH=$(prepath ${PATH} ${HOME}/../shared/local/bin)
@@ -121,8 +125,6 @@ export MANPATH=$(apppath ${MANPATH} /System/Library/Frameworks/JavaVM.framework/
 # if [[ -d /usr/local/lib/python2.7/site-packages ]] ; then export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python2.7/site-packages" ; fi
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/jams_python)
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/hesseflux)
-export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/ncvue)
-export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/partialwrap)
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/pyeee)
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/python/lib)
 # export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/jams/janalyse)
@@ -244,9 +246,8 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
         [[ ${osver} -eq ${i} && -f ${HOME}/.bashrc.10.${osdigit} ]] && source ~/.bashrc.10.${osdigit}
     done
     osdigit=$(( $osver - 15 ))
-    for ((i=20; i<=20; i++)) ; do
-        [[ ${osver} -eq ${i} && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ~/.bashrc.11.${osdigit}
-    done
+    [[ ${osver} -eq 20 && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ~/.bashrc.11.${osdigit}
+    [[ ${osver} -eq 21 && -f ${HOME}/.bashrc.12.0 ]] && source ~/.bashrc.12.0
 elif [[ "${ossystem}" == "CYGWIN" ]] ; then
     [[ -f ${HOME}/.bashrc.cygwin ]] && source ${HOME}/.bashrc.cygwin
 elif [[ "${ossystem}" == "LINUX" && "${domain}" == "ENA.MPG" ]] ; then
@@ -288,6 +289,7 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.6/bin)
     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.7/bin)
     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.8/bin)
+    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.9/bin)
     if [[ -d /opt/pgi ]] ; then
         export PGI=/opt/pgi
         export MANPATH=$(apppath ${MANPATH} ${PGI}/osx86-64/2019/man)
@@ -305,14 +307,15 @@ if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.1.node-lock.macbook
 fi
 
-# Special MacBoock Pro INRA 2016
+# Special MacBoock Pro 13" INRA 2016
 if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.2.full.mcinra
+    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.2.full.mcinra
+    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.0.full.mcinra
     export INTEL_LICENSE_FILE=${HOME}/bin/licences/ifort_licence_2019.lic.mcinra
     export HOMEBREW_NO_ANALYTICS=1
 fi
 
-# Special MacBoock Pro 16" INRA 2020
+# Special MacBoock Pro 16" INRAE 2020
 if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export BASH_SILENCE_DEPRECATION_WARNING=1
     export HOMEBREW_NO_ANALYTICS=1
