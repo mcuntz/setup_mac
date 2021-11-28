@@ -11,7 +11,7 @@ Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for
 This is a reminder for myself how to setup a new Mac or updating the OS, which might be useful for others. The repository includes some of my dot-files as a reference.
 
 * Table of Contents :TOC:
-- [[#before-starting-it][Before starting it]]
+- [[#before-starting][Before starting]]
 - [[#bootable-installer-for-macos-on-usb][Bootable installer for macOS on USB]]
 - [[#installing-macos-with-the-bootable-installer][Installing macOS with the bootable installer]]
 - [[#setup-macos][Setup macOS]]
@@ -34,7 +34,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   - [[#additional-software][Additional software]]
   - [[#netcdf4underfortran-and-openmpi-development-packages][netcdf4\under{}fortran and openmpi development packages]]
 
-* Before starting it
+* Before starting
   1. You might want to use iCloud for your /Contacts/, /Calendars/, /Reminders/, /Notes/, and /Keychain/. If you had not switched it on, you should do this a couple of hours before installation because it takes some time until things get synchronised. Some logoff/login might also help. You can check all but /Keychain/ on [[https://www.icloud.com][icloud.com]]. You can switch it off again on the updated system after synchronisation finished, if not wanted.
 
   2. Backup all your files including Documents, Movies, Pictures. Check Desktop as well.
