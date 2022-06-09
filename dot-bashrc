@@ -20,13 +20,16 @@ alias lltr='ls -altrF'
 alias ls='ls -F'
 #diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical 
 alias diff='diff -bBiwrs'
-alias trashall='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\* -o -name \#\*\# -o -name .xvpics -o -name WS_FTP.LOG -o -name Backup\*.wbk -o -name ftperror\* -o -name ftpout\* \) -print -exec rm -f {} \; '
-alias trash=trashall
+alias trash='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\* -o -name \#\*\# -o -name .xvpics -o -name WS_FTP.LOG -o -name Backup\*.wbk -o -name ftperror\* -o -name ftpout\* \) -print -exec rm -f {} \; '
+alias trashall=trash
 alias bc='bc -l'
 alias h='history 50'
 alias ilocate='locate -i'
 function c() {
     echo "${1}" | sed -e 's/[eE]+*/\*10\^/g' | bc -l
+}
+function fbackup() {
+    dd=$(date -r "${1}" +"%Y%m%d") ; cp "${1}" "${1%.*}.${dd}.${1##*.}"
 }
 
 ##########################################################################################################

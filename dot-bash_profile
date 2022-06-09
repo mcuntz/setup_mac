@@ -332,14 +332,10 @@ if [[ "${ossystem}" == "LINUX" ]] ; then
         export EDITOR="emacs -nw"
         export LANG=en_AU.UTF-8
         unset SSH_ASKPASS
-        export PATH=$(apppath ${PATH} /g/data/x45/intelpython/bin)
-        export PYTHONPATH=$(prepath ${PYTHONPATH} /g/data/x45/intelpython/lib/python3.7/site-packages)
-    fi
-    # Raijin
-    if [[ "${maschine}" == "RAIJIN" ]] ; then
-        export EDITOR="emacs -nw"
-        export LANG=en_AU.UTF-8
-        unset SSH_ASKPASS
+        # export PATH=$(apppath ${PATH} /g/data/x45/intelpython/bin)
+        # export PYTHONPATH=$(prepath ${PYTHONPATH} /g/data/x45/intelpython/lib/python3.7/site-packages)
+        export PATH=$(apppath ${PATH} /g/data/x45/python3.10.4/bin)
+        export PYTHONPATH=$(prepath ${PYTHONPATH} /g/data/x45/python3.10.4/lib/python3.10/site-packages)
     fi
     # Explor
     if [[ "${maschine}" == "VM-OQX" ]] ; then

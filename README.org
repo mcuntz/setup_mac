@@ -216,6 +216,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      Note that =cdo -L= instead of purely =cdo= must also be used in scripts for piping.
 
+     I install /Panoply/ with Homebrew for easy updating:
+
+     #+BEGIN_SRC bash
+       brew install --cask panoply
+     #+END_SRC
+
+     No matter how /panoply/ gets installed, it often fails on Apple Silicon (M1) asking to install Java 9. Installing the [[https://www.azul.com/downloads/?package=jdk][Azul Zulu JDK]] solved it for me, as for many other users.
+
    - *Install more practical software*
 
      Some more practical software such as /wget/ for retrieval of files from web servers, /imagemagick/ for image manipulation, /ffmpeg/ for movies, /htop/ for an extended top, /pandoc/ to convert between markup languages, /fd/ for a faster find, /ripgrep/ for grepping across a directory tree, the statistical computing environment /R/, the version control system /subversion/, and the command-line fuzzy finder /fzf/:
