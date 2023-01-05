@@ -4,7 +4,7 @@
 #+TITLE: Setting up macOS for software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 27.11.2021
+Modified: 06.01.2023
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
@@ -187,7 +187,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
          export HOMEBREW_REPOSITORY="/opt/homebrew";
          export PATH=${PATH}:/opt/homebrew/bin
-     else
+     elif [[ -e /usr/local/bin/brew ]] ; then
          export HOMEBREW_PREFIX="/usr/local";
          export HOMEBREW_CELLAR="/usr/local/Cellar";
          export HOMEBREW_REPOSITORY="/usr/local";
@@ -203,7 +203,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
            brew install ${i} ; done
        for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
-       brew install --cask adoptopenjdk
+       brew install --cask temurin
        brew install --cask panoply
        brew install cdo
      #+END_SRC
@@ -294,7 +294,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    #+BEGIN_SRC bash
      brew tap homebrew/cask-fonts
-     brew install --cask font-source-code-pro
+     brew install --cask homebrew/cask-fonts/font-source-code-pro
    #+END_SRC
 
    I immediately installed aspell for spell checking within Spacemacs.
@@ -335,7 +335,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          fontaxes was pdfcrop latexmk fncychap tabulary varwidth \
          framed capt-of makecell xstring moreverb wrapfig \
          adjustbox collectbox threeparttable capt-of pgf simplekv \
-         cmbright tcolorbox environ titling \
+         cmbright tcolorbox environ titling gensymb program breakurl \
+         ncctools vruler apacite \
          ; do sudo tlmgr install ${i} ; done
    #+END_SRC
 
@@ -381,7 +382,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      cd FontPro
      mkdir otf
      FONT=MyriadPro
-     cp "/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
+     cp "/Applications/Adobe Acrobat Reader.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
      ./scripts/makeall ${FONT}
      echo y | sudo ./scripts/install
      sudo updmap-sys --enable Map=${FONT}.map
@@ -520,7 +521,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    - *Essential Python packages*
 
      Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with /pip/ or /conda/. These are currently in my main environment:\\
-     numpy, scipy, matplotlib, cartopy, basemap, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, sphinx\under{}rtd\under{}theme, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, bs4, pykdtree, cython, pyshp, six, wheel
+     numpy, scipy, matplotlib, cartopy, basemap, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, bs4, pykdtree, cython, pyshp, six, wheel
 
      and mostly this subset in other virtual environments:\\
      numpy, scipy, matplotlib, ipython, pandas, netcdf4, xlrd, openpyxl, flake8, wheel
@@ -546,7 +547,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            pip install ${i} ; done
        # other standard packages
        for i in jupyter statsmodels scikit-learn schwimmbad \
-           tqdm xarray numexpr bottleneck sphinx sphinx_rtd_theme \
+           tqdm xarray numexpr bottleneck sphinx \
            numpydoc pytest pytest-cov f90nml bs4 pykdtree cython pyshp six \
            openpyxl ; do \
            pip install ${i} ; done
