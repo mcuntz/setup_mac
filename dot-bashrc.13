@@ -2,7 +2,6 @@
 # More practical stuff
 alias psaux='ps ux -U cuntz'
 # alias mailboxsize='find ~/Library/Mail -type d -name \*.mbox -print0 | xargs -0 du -k | sed "/mbox\//d" | sort -n'
-alias qgadi='ssh gadi /opt/pbs/default/bin/qstat -u moc801'
 
 ###############################################################################
 # Applications

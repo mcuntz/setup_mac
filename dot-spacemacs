@@ -30,8 +30,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(tern
-     javascript
+   '(javascript
      rust
      octave
      windows-scripts
@@ -49,6 +48,7 @@ values."
      html
      latex
      ess
+     julia
      ;;
      ;; helm
      ivy
@@ -284,7 +284,7 @@ values."
    dotspacemacs-folding-method 'evil
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
-   dotspacemacs-smartparens-strict-mode t
+   dotspacemacs-smartparens-strict-mode nil
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc…
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
@@ -321,17 +321,30 @@ before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (setq exec-path-from-shell-check-startup-files nil)
   (setq latex-build-command "LatexMk")
+  (setq dotspacemacs-enable-server t)
   )
 
 (defun dotspacemacs/user-config ()
-  "Configuration function for user code.
-This function is called at the very end of Spacemacs initialization after
-layers configuration.
-This is the place where most of your configurations should be done. Unless it is
-explicitly specified that a variable should be set before a package is loaded,
-you should place your code here."
+  "Configuration for user code:
+This function is called at the very end of Spacemacs startup, after layer
+configuration.
+Put your configuration code here, except for variables that should be set
+before packages are loaded."
   ;;
-  ;; key bindings
+  ;; exec path: https://www.emacswiki.org/emacs/ExecPath
+  (defun set-exec-path-from-shell-PATH ()
+    "Set up Emacs' `exec-path' and PATH environment variable to match
+that used by the user's shell."
+    (interactive)
+    (let ((path-from-shell (replace-regexp-in-string
+			                      "[ \t\n]*$" "" (shell-command-to-string
+					                                  "$SHELL --login -c 'echo $PATH'"
+						                                ))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator))))
+  (set-exec-path-from-shell-PATH)
+  ;;
+  ;; key bindings C- Ctrl, M- option, S- shift, s- command
   ;; (global-set-key [f1]       'advertised-undo)
   (global-set-key (kbd "<f2>")      'query-replace-regexp)
   (global-set-key (kbd "<f3>")      'comment-or-uncomment-region)
@@ -344,6 +357,10 @@ you should place your code here."
   (global-set-key (kbd "H-<down>")  'end-of-buffer)          ; Cmd-down
   (global-set-key (kbd "H-<left>")  'beginning-of-line)      ; Cmd-left
   (global-set-key (kbd "H-<right>") 'end-of-line)            ; Cmd-right
+  (global-set-key (kbd "s-<up>")    'beginning-of-buffer)    ; Cmd-up
+  (global-set-key (kbd "s-<down>")  'end-of-buffer)          ; Cmd-down
+  (global-set-key (kbd "s-<left>")  'beginning-of-line)      ; Cmd-left
+  (global-set-key (kbd "s-<right>") 'end-of-line)            ; Cmd-right
   ;; (define-key evil-emacs-state-map (kbd "C-]") 'forward-char)
   ;; (set-face-bold-p 'bold nil) ; no bold text - does not work
   ;;
@@ -356,7 +373,8 @@ you should place your code here."
   ;; (setq tab-always-indent t) ; if nil, tab opens helm suggestions
   ;;
   ;; f90
-  (setq f90-directive-comment-re "#")
+  ;; ;; Regexp of comment-like directive like "!HPF\\$", not to be indented (default "!hpf\\$").
+  ;; (setq f90-directive-comment-re "#")
   ;; Use f90-indent-line instead on f90-indent-region on a region of code
   ;; because they behave differently for continuation lines
   (add-hook 'f90-mode-hook 'f90-indent-lines)
@@ -372,7 +390,11 @@ you should place your code here."
       )
     (delete-trailing-whitespace)
     )
-  (setq f90-comment-region "! ")
+  ;; ;; String inserted by function M-x f90-comment-region at start of each line in region (default "!!!$").
+  ;; (setq f90-comment-region "! ")
+  ;; ;; Regexp determining the type of comment to be intended like code (default "!").
+  ;; (setq f90-indented-comment-re "!")
+  ;; Coding styles for special projects
   (defun f90-eddypro-style ()
     (interactive)
     (setq f90-do-indent 4)
@@ -461,10 +483,9 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- ;; '(custom-enabled-themes '(manoj-dark))
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
-   '(web-beautify toml-mode racer rust-mode org-category-capture alert log4e gntp livid-mode skewer-mode simple-httpd json-mode json-snatcher js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode flyspell-correct flycheck-rust pos-tip flycheck ctable ess coffee-mode cargo markdown-mode inf-ruby auctex pythonic define-word yapfify yaml-mode xterm-color ws-butler winum which-key wgrep web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smex slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs request rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode powershell popwin pip-requirements persp-mode pbcopy paradox osx-trash osx-dictionary org-present org-pomodoro org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode minitest markdown-toc macrostep lorem-ipsum live-py-mode linum-relative link-hint launchctl ivy-hydra indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make google-translate golden-ratio gnuplot gh-md flyspell-correct-ivy flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu ess-smart-equals ess-R-data-view eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav dumb-jump diminish cython-mode csv-mode counsel-projectile column-enforce-mode clean-aindent-mode chruby bundler auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk anaconda-mode aggressive-indent adaptive-wrap ace-window ace-link))
+   '(org-projectile julia-repl julia-mode flycheck-julia web-beautify toml-mode racer rust-mode org-category-capture alert log4e gntp livid-mode skewer-mode simple-httpd json-mode json-snatcher js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode flyspell-correct flycheck-rust pos-tip flycheck ctable ess coffee-mode cargo markdown-mode inf-ruby auctex pythonic define-word yapfify yaml-mode xterm-color ws-butler winum which-key wgrep web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smex slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restart-emacs request rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode powershell popwin pip-requirements persp-mode pbcopy paradox osx-trash osx-dictionary org-present org-pomodoro org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode minitest markdown-toc macrostep lorem-ipsum live-py-mode linum-relative link-hint launchctl ivy-hydra indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make google-translate golden-ratio gnuplot gh-md flyspell-correct-ivy flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu ess-smart-equals ess-R-data-view eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav dumb-jump diminish cython-mode csv-mode counsel-projectile column-enforce-mode clean-aindent-mode chruby bundler auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk anaconda-mode aggressive-indent adaptive-wrap ace-window ace-link))
  '(safe-local-variable-values '((require-trailing-newline . t)))
  '(tool-bar-mode nil))
 (custom-set-faces

@@ -15,7 +15,7 @@ if [[ -d /opt/homebrew ]] ; then
     export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
     export HOMEBREW_REPOSITORY="/opt/homebrew";
     export PATH=${PATH}:/opt/homebrew/bin
-else
+elif [[ -e /usr/local/bin/brew ]] ; then
     export HOMEBREW_PREFIX="/usr/local";
     export HOMEBREW_CELLAR="/usr/local/Cellar";
     export HOMEBREW_REPOSITORY="/usr/local";
@@ -25,9 +25,17 @@ fi
 # use pyenv also in non-interactive scripts
 if [[ -d ${HOME}/.pyenv ]] ; then
     export PYENV_ROOT="${HOME}/.pyenv"
+    if [[ -d ${PYENV_ROOT}/libexec ]] ; then  # local install from github
+        export PATH=${PYENV_ROOT}/libexec:${PATH}
+    fi
     export PATH=${PYENV_ROOT}/shims:${PATH}
     if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
-    if which pyenv-virtualenv-init > /dev/null ; then eval "$(pyenv virtualenv-init -)" ; fi
+    if command -v pyenv virtualenv-init 1>/dev/null 2>&1 ; then eval "$(pyenv virtualenv-init -)" ; fi
+fi
+
+# use julia also in non-interactive scripts
+if [[ -d ${HOME}/.julia/julia-1.8.3 ]] ; then
+    export PATH=${PATH}:${HOME}/.julia/julia-1.8.3/bin
 fi
 
 # If not running interactively, don't do anything more
@@ -79,33 +87,30 @@ apppath() {
 # anaconda might install netcdf, which is hence in ~/.pyenv/shims
 # but anaconda might not be the active python version and ncdump,
 # for example, might not work -> use version of homebrew
-export PATH=$(prepath ${PATH} /usr/local/opt/netcdf/bin)
-export PATH=$(prepath ${PATH} /opt/homebrew/opt/netcdf/bin)
+export PATH=$(prepath ${PATH} ${HOMEBREW_PREFIX}/opt/netcdf/bin)
 export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
-if [[ -d ${HOME}/../shared/local ]] ; then
-    # explor
-    export PATH=$(prepath ${PATH} ${HOME}/../shared/local/bin)
-    export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/../shared/local/lib)
-    export MANPATH=$(apppath ${MANPATH} ${HOME}/../shared/local/man)
-else
-    # other
-    export PATH=$(prepath ${PATH} ${HOME}/local/bin)
-    export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/local/lib)
-    export MANPATH=$(apppath ${MANPATH} ${HOME}/local/share/man)
-fi
-export MANPATH=$(apppath ${MANPATH} ${HOME}/local/man)
+# user version of /usr/local
+# if [[ -d ${HOME}/../shared/local ]] ; then  # explor
+#     homelocal=${HOME}/../shared/local
+# else # other
+#     homelocal=${HOME}/local
+# fi
+if [[ -d ${HOME}/local ]] ; then homelocal=${HOME}/local ; fi
+export PATH=$(prepath ${PATH} ${homelocal}/bin)
+export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${homelocal}/lib)
+export MANPATH=$(apppath ${MANPATH} ${homelocal}/share/man)
+export MANPATH=$(apppath ${MANPATH} ${homelocal}/man)
 # pip install --user
 export PATH=$(prepath ${PATH} ${HOME}/bin)
 # homebrew
-export PATH=$(apppath ${PATH} /usr/local/sbin)
-export PATH=$(apppath ${PATH} /opt/homebrew/sbin)
-export INFOPATH=$(prepath ${INFOPATH} /opt/homebrew/share/info)
+export PATH=$(apppath ${PATH} ${HOMEBREW_PREFIX}/sbin)
+export INFOPATH=$(prepath ${INFOPATH} ${HOMEBREW_PREFIX}/share/info)
 # mac
 export MANPATH=$(apppath ${MANPATH} /usr/share/man)
 export MANPATH=$(apppath ${MANPATH} /usr/local/share/man)
-export MANPATH=$(prepath ${MANPATH} /opt/homebrew/share/man)
+export MANPATH=$(prepath ${MANPATH} ${HOMEBREW_PREFIX}/share/man)
 
 # MANPATH after install_netcdf
 export MANPATH=$(apppath ${MANPATH} ${HOME}/bin/man)
@@ -124,7 +129,6 @@ export MANPATH=$(apppath ${MANPATH} /System/Library/Frameworks/JavaVM.framework/
 # PYTHONPATH
 # if [[ -d /usr/local/lib/python2.7/site-packages ]] ; then export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python2.7/site-packages" ; fi
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/jams_python)
-export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/hesseflux)
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/pyeee)
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/python/lib)
 # export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/jams/janalyse)
@@ -248,6 +252,7 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
     osdigit=$(( $osver - 15 ))
     [[ ${osver} -eq 20 && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ~/.bashrc.11.${osdigit}
     [[ ${osver} -eq 21 && -f ${HOME}/.bashrc.12.0 ]] && source ~/.bashrc.12.0
+    [[ ${osver} -eq 22 && -f ${HOME}/.bashrc.13 ]] && source ~/.bashrc.13
 elif [[ "${ossystem}" == "CYGWIN" ]] ; then
     [[ -f ${HOME}/.bashrc.cygwin ]] && source ${HOME}/.bashrc.cygwin
 elif [[ "${ossystem}" == "LINUX" && "${domain}" == "ENA.MPG" ]] ; then
@@ -290,6 +295,7 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.7/bin)
     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.8/bin)
     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.9/bin)
+    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.10/bin)
     if [[ -d /opt/pgi ]] ; then
         export PGI=/opt/pgi
         export MANPATH=$(apppath ${MANPATH} ${PGI}/osx86-64/2019/man)
@@ -316,6 +322,14 @@ if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
 fi
 
 # Special MacBoock Pro 16" INRAE 2020
+if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
+    export BASH_SILENCE_DEPRECATION_WARNING=1
+    export HOMEBREW_NO_ANALYTICS=1
+    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.0.full.mc16
+    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mc16
+fi
+
+# Special Mac Mini INRAE 2021
 if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export BASH_SILENCE_DEPRECATION_WARNING=1
     export HOMEBREW_NO_ANALYTICS=1

@@ -1,4 +1,5 @@
 # C-c C-e  for export within Emacs
+# C-c C-l  for editing hyperlinks
 #+OPTIONS: toc:nil
 #+OPTIONS: broken-links:t
 #+TITLE: Setting up macOS for software development
@@ -11,9 +12,13 @@ Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for
 This is a reminder for myself how to setup a new Mac or updating the OS, which might be useful for others. The repository includes some of my dot-files as a reference.
 
 * Table of Contents :TOC:
-- [[#before-starting][Before starting]]
-- [[#bootable-installer-for-macos-on-usb][Bootable installer for macOS on USB]]
-- [[#installing-macos-with-the-bootable-installer][Installing macOS with the bootable installer]]
+- [[#how-to-update-the-os][How to update the OS]]
+  - [[#fresh-install][Fresh install]]
+    - [[#before-starting][Before starting]]
+    - [[#make-a-bootable-installer-for-macos-on-usb][Make a bootable installer for macOS on USB]]
+    - [[#installing-macos-with-the-bootable-installer][Installing macOS with the bootable installer]]
+  - [[#update-via-software-update][Update via /Software Update/]]
+    - [[#before-starting-1][Before starting]]
 - [[#setup-macos][Setup macOS]]
   - [[#check-for-system-updates][Check for system updates]]
   - [[#xcode][Xcode]]
@@ -34,61 +39,82 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   - [[#additional-software][Additional software]]
   - [[#netcdf4underfortran-and-openmpi-development-packages][netcdf4\under{}fortran and openmpi development packages]]
 
-* Before starting
-  1. You might want to use iCloud for your /Contacts/, /Calendars/, /Reminders/, /Notes/, and /Keychain/. If you had not switched it on, you should do this a couple of hours before installation because it takes some time until things get synchronised. Some logoff/login might also help. You can check all but /Keychain/ on [[https://www.icloud.com][icloud.com]]. You can switch it off again on the updated system after synchronisation finished, if not wanted.
+* How to update the OS
+  There are basically two options:
+  1. Reformat the startup disk and install a fresh new system, or
 
-  2. Backup all your files including Documents, Movies, Pictures. Check Desktop as well.
+  2. Use /Software Update/ to update macOS on top of the existing OS.
 
-  3. Also store all your dot-files and dot-directories from the =${HOME}= directory such as =.bash_profile=, =.bashrc= and =.ssh=.
+  In both cases, a little bit of preparation helps.
 
-  4. You might want to write down your /Computer Name/ from /System Preferences/ > /Sharing/.
+** Fresh install
 
-  5. You might also like to write down your username, typing in the terminal:
+*** Before starting
+    1. You might want to use iCloud for your /Contacts/, /Calendars/, /Reminders/, /Notes/, and /Keychain/. If you had not switched it on, you should do this a couple of hours before installation because it takes some time until things get synchronised. Some logoff/login might also help. You can check all but /Keychain/ on [[https://www.icloud.com][icloud.com]]. You can switch it off again on the updated system after synchronisation finished, if not wanted.
 
-     #+BEGIN_SRC bash
-       whoami
-     #+END_SRC
+    1. Backup all your files including Documents, Movies, Pictures. Check the Desktop as well.
 
-  6. A list of your installed programs in /Applications/ might come in handy.
+    1. Also store all your dot-files and dot-directories from the =${HOME}= directory such as =.bash_profile=, =.bashrc= and =.ssh=.
 
+    1. You might want to write down your /Computer Name/ from /System Preferences/ > /Sharing/ or /System Preferences/ > /General/ > /Sharing/ > /Local hostname/.
 
-* Bootable installer for macOS on USB
-  From [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
-  1. Download a macOS installer such as macOS Monterey from the App Store. When the macOS installer opens, quit it without continuing installation.
+    1. You might also like to write down your username. Type in the terminal:
 
-     The installer should have a size of about 12 GB. Based on your Mac, only a much smaller app might have been downloaded, which would later download the actual files during installation. This does not allow to create a bootable thumb drive. Try to get the full installer for example from the Apple Developer site.
+       #+BEGIN_SRC bash
+         whoami
+       #+END_SRC
 
-  1. Format a USB flash drive of at least 16 GB storage as /Mac OS Extended/ with name InstallMonterey, for example.
+    1. A list of your installed programs in /Applications/ might come in handy.
 
-  1. In Terminal type:
+*** Make a bootable installer for macOS on USB
+    From [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
+    1. Download a macOS installer such as macOS Monterey from the App Store. When the macOS installer opens, quit it without continuing installation.
 
-     #+BEGIN_SRC bash
-       sudo /Applications/Install\ macOS\ Monterey.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallMonterey --nointeraction
-     #+END_SRC
+       The installer should have a size of about 12-16 GB. Based on your Mac, only a much smaller app might have been downloaded, which would later download the actual files during installation. This does not allow to create a bootable thumb drive. Try to get the full installer for example from the Apple Developer site.
 
+    1. Format a USB flash drive of at least 16 GB storage as /Mac OS Extended/ with name InstallMonterey, for example.
 
-* Installing macOS with the bootable installer
-  Also from [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
-  1. Startup is different if you have a Mac with Apple silicon chips or Intel processors.
-     a) Intel processor
-        - Connect USB drive, restart while holding Option (alt) key until you see the bootable volumes.
+    1. In Terminal type:
 
-        - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and press Return. 
+       #+BEGIN_SRC bash
+         sudo /Applications/Install\ macOS\ Monterey.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallMonterey --nointeraction
+       #+END_SRC
 
-     a) Apple silicon
-        - Shut down.
+*** Installing macOS with the bootable installer
+    Also from [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
+    1. Startup is different if you have a Mac with Apple silicon chips or Intel processors.
+       a) Intel processor
+          - Connect USB drive, restart while holding Option (alt) key until you see the bootable volumes.
 
-        - Turn on Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
+          - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and press Return. 
 
-        - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and click Continue.
+       a) Apple silicon
+          - Shut down.
 
-  1. Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
+          - Turn on Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
 
-  1. Select any other internal volumes in the sidebar, then click the delete volume (–) button in the toolbar to delete that volume. Disregard any internal volume named Macintosh HD or Macintosh HD – Data, as well as any volumes in the External and Disk Images sections of the sidebar.
+          - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and click Continue.
 
-     Then quit /Disk Utility/.
+    1. Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
 
-  1. Select /Install macOS Monterey/ and follow the on-screen steps.
+    1. Select any other internal volumes in the sidebar, then click the delete volume (–) button in the toolbar to delete that volume. Disregard any internal volume named Macintosh HD or Macintosh HD – Data, as well as any volumes in the External and Disk Images sections of the sidebar.
+
+       Then quit /Disk Utility/.
+
+    1. Select /Install macOS Monterey/ and follow the on-screen steps.
+
+** Update via /Software Update/
+
+*** Before starting
+    1. It is always recommended to make a backup of your system before an upgrade.
+
+    1. Update all your installed apps in \/Applications. The newest app versions will probably already be suitable for the new macOS version. It avoids the problem that you cannot open the old app version on the new macOS system anymore to do the simple update and then have to uninstall/install the app again. This might also need the licence key, etc.
+
+       For this, open each non-Apple application and /Check for Updates.../.
+
+       Use the /App Store.../ for all Apple programs.
+
+    1. The /Software Update/ takes care of all your accounts, passwords, etc. The step before takes care of all the installed applications.
 
 
 * Setup macOS
@@ -163,8 +189,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    #+END_SRC
 
-   This installs Homebrew into =/usr/local= on mac OS X Intel and into =/opt/homebrew= on macOS Apple Silicon (M1).
-   
+   This installs Homebrew into =/usr/local= on mac OS X Intel and into =/opt/homebrew= on macOS Apple Silicon (M1, M2, etc.).
+
    You might want to put into your =.bash_profile= for mac OS X Intel:
 
    #+BEGIN_SRC bash
@@ -194,17 +220,25 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          export PATH=${PATH}:/usr/local/bin
      fi
    #+END_SRC
- 
+
    - *GNU compiler and netCDF software*
 
-     The gcc suite includes /gfortran/. Install the netcdf-C version, which comes with /ncdump/, etc., install /nco/, /ncview/, and /Panoply/. One can also install /cdo/ with Homebrew, or use the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] because /cdo/ is quite a bit faster when compiled with the Intel compiler and not with the GNU compiler.
+     The gcc suite includes /gfortran/. Install the netcdf-C version, which comes with /ncdump/, etc., install /nco/, /ncview/, and /Panoply/. One can also install /cdo/ with Homebrew. /cdo/ is, however, quite a bit faster when compiled with the Intel compiler and not with the GNU compiler as in Homebrew.
 
      #+BEGIN_SRC bash
        for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
            brew install ${i} ; done
+     #+END_SRC
+     #+BEGIN_SRC bash
        for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
-       brew install --cask temurin
+     #+END_SRC
+     #+BEGIN_SRC bash
+       brew install --cask temurin  # Java, for panoply
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install --cask panoply
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install cdo
      #+END_SRC
 
@@ -216,14 +250,6 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      Note that =cdo -L= instead of purely =cdo= must also be used in scripts for piping.
 
-     I install /Panoply/ with Homebrew for easy updating:
-
-     #+BEGIN_SRC bash
-       brew install --cask panoply
-     #+END_SRC
-
-     No matter how /panoply/ gets installed, it often fails on Apple Silicon (M1) asking to install Java 9. Installing the [[https://www.azul.com/downloads/?package=jdk][Azul Zulu JDK]] solved it for me, as for many other users.
-
    - *Install more practical software*
 
      Some more practical software such as /wget/ for retrieval of files from web servers, /imagemagick/ for image manipulation, /ffmpeg/ for movies, /htop/ for an extended top, /pandoc/ to convert between markup languages, /fd/ for a faster find, /ripgrep/ for grepping across a directory tree, the statistical computing environment /R/, the version control system /subversion/, and the command-line fuzzy finder /fzf/:
@@ -232,7 +258,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config \
             pandoc doxygen tree git fd bat ripgrep r subversion ; do \
             brew install ${i} ; done
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install fzf
+     #+END_SRC
+     #+BEGIN_SRC bash
        ${HOMEBREW_PREFIX}/opt/fzf/install
      #+END_SRC
 
@@ -241,15 +271,19 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    #+BEGIN_SRC bash
      brew install bash
+   #+END_SRC
+   #+BEGIN_SRC bash
      # add the following line to /etc/shells
      # /usr/local/bin/bash
      # or
      # /opt/homebrew/bin/bash
      sudo nano /etc/shells
+   #+END_SRC
+   #+BEGIN_SRC bash
      chsh -s ${HOMEBREW_PREFIX}/bin/bash
    #+END_SRC
 
-   Note that your shell scripts will probably still use the Apple default bash shell because they often have the shebang line =#!/bin/bash=. The most portable way to write scripts is to use =#!/usr/bin/env bash= as your shebang. This will take the first /bash/ in your =$PATH=, which would now be =/usr/local/bin/bash= or =/opt/homebrew/bin/bash=.
+   Note that your shell scripts will probably still use the Apple default bash shell because they often have the shebang line =#!/bin/bash=. The most portable way to write shell scripts is to use =#!/usr/bin/env bash= as your shebang. This will take the first /bash/ in your =$PATH=, which would now be =/usr/local/bin/bash= or =/opt/homebrew/bin/bash=.
 
    You can now use /bash-completion/ with the new bash shell.
 
@@ -275,20 +309,40 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 ** Emacs
    I used to use [[http://aquamacs.org][Aquamacs]], but use [[https://www.spacemacs.org][Spacemacs]] now. The latter is very fast, but has a steep learning curve. At the moment I am not using the two most praised modes: helm and evil. I also needed quite some configuration in the =dotspacemacs/user-config= section of .spacemacs.
 
-   To install Spacemacs:
+   To install Spacemacs, install Emacs first:
 
    #+BEGIN_SRC bash
      brew install --cask emacs
    #+END_SRC
 
-   And if you changed from another Emacs:
+   If you have an older Spacemacs version, backup your .spacemacs, check for locally installed themes or other packages (Untracked files), and backup .emacs.d:
+
+   #+BEGIN_SRC bash
+     cd ${HOME}
+     if [[ -f .spacemacs ]] ; then mv .spacemacs .spacemacs.bak ; fi
+     if [[ -d .emacs.d ]] ; then
+         cd .emacs.d
+         git status
+         cd ..
+         mv .emacs.d .emacs.d.bak
+     fi
+   #+END_SRC
+
+   And if you changed from another Emacs, backup .emacs and .emacs.d:
 
    #+BEGIN_SRC bash
      cd ${HOME}
      if [[ -f .emacs ]] ; then mv .emacs .emacs.bak ; fi
      if [[ -d .emacs.d ]] ; then mv .emacs.d .emacs.d.bak ; fi
+   #+END_SRC
+
+   Then install the new Spacemacs (i.e. a new emacs.d):
+
+   #+BEGIN_SRC bash
      git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
    #+END_SRC
+
+   and copy any locally installed files from .emacs.d.bak to .emacs.d.
 
    I also installed the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]]:
 
@@ -297,13 +351,18 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      brew install --cask homebrew/cask-fonts/font-source-code-pro
    #+END_SRC
 
-   I immediately installed aspell for spell checking within Spacemacs.
+   And I immediately installed aspell for spell checking within Spacemacs.
 
    #+BEGIN_SRC bash
      brew install aspell
    #+END_SRC
 
-   Spacemacs could not access external disks on my systems (Catalina 10.15.7, Big Sur 11.5.1, Monterey 12.0.1) because it did not have the right permissions. I had to give /Full Disk Access/ to =/usr/bin/ruby= following [[https://emacs.stackexchange.com/questions/53026/how-to-restore-file-system-access-in-macos-catalina/53037#53037][this]]: Open /System Preferences/ -> /Security & Privacy/ -> /Privacy/, select /Full Disk Access/ in the left pane, then click + and add =/usr/bin/ruby= to resolve the issue. =/usr= is hidden by default on macOS but you can toggle visibility in /Finder/ by using =Shift+Command+Period=, i.e. =Shift+Command+.=
+   If you open the new Emacs for the first time, it will install and byte-compile more than 200 packages. This might take some time. But you will be asked at least one confirmation in-between.
+
+   The first opening will also produce a new .spacemacs. Compare it with the .spacemacs.bak and add your layers and user sections. The next opening of Emacs will probably compile another 100 packages or so.
+
+   Spacemacs could not access external disks on my systems (Catalina 10.15.7, Big Sur 11.5.1, Monterey 12.0.1) because it did not have the right permissions. I had to give /Full Disk Access/ to =/usr/bin/ruby=.
+   Before macOS 13 Ventura, I was following [[https://emacs.stackexchange.com/questions/53026/how-to-restore-file-system-access-in-macos-catalina/53037#53037][this]]: Open /System Preferences/ -> /Security & Privacy/ -> /Privacy/, select /Full Disk Access/ in the left pane. From macOS 13 Ventura, it is /System Preferences/ > /Privacy & Security/ > /Full Disk Access/. Then click + and add =/usr/bin/ruby= to resolve the issue. =/usr= is hidden by default on macOS but you can toggle visibility in /Finder/ by using =Shift+Command+Period=, i.e. =Shift+Command+.=
 
 ** LaTeX
    One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I hope that Homebrew will handle the update between years, which is always a hassle otherwise; but I do not know yet if Homebrew will handle it. The full MacTex installation including all GUIs, Apps, and Programs is:
@@ -520,8 +579,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - *Essential Python packages*
 
-     Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with /pip/ or /conda/. These are currently in my main environment:\\
-     numpy, scipy, matplotlib, cartopy, basemap, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, tqdm, xarray, numexpr, bottleneck, wxpython, sphinx, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, bs4, pykdtree, cython, pyshp, six, wheel
+     Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with /pip/ or /conda\/mamba/. These are currently in my main environment:\\
+     numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, xarray, wxpython, sphinx, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, pykdtree, cython, pyshp, six, wheel
 
      and mostly this subset in other virtual environments:\\
      numpy, scipy, matplotlib, ipython, pandas, netcdf4, xlrd, openpyxl, flake8, wheel
@@ -541,34 +600,35 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        pyenv virtualenv 3.9.9 pystd
        pyenv rehash
        pyenv global pystd
-       pip install numpy
+       python -m pip install numpy
        for i in wheel scipy matplotlib ipython pandas netcdf4 \
-           xlrd flake8 ; do \
-           pip install ${i} ; done
+           flake8 ; do \
+           python -m pip install ${i} ; done
        # other standard packages
        for i in jupyter statsmodels scikit-learn schwimmbad \
-           tqdm xarray numexpr bottleneck sphinx \
+           xarray sphinx \
            numpydoc pytest pytest-cov f90nml bs4 pykdtree cython pyshp six \
-           openpyxl ; do \
-           pip install ${i} ; done
-       CXXFLAGS="-I${HOMEBREW_PREFIX}/include" pip install wxpython
+           xlrd openpyxl ; do \
+           python -m pip install ${i} ; done
+       # some GUIs are written in wxpython
+       CXXFLAGS="-I${HOMEBREW_PREFIX}/include" python -m pip install wxpython
+       # shapely and gdal for cartopy
        # shapely needs to be built from source to link to geos.
        # Uninstall it if already installed
-       [[ -z $(pip freeze | grep shapely) ]] && pip uninstall -y shapely
-       pip install shapely --no-binary shapely
-       if [[ "$(uname -m)" != "arm64" ]] ; then
-           # install basemap directly from github
-           # -> does not work on Apple Silicon (M1), neither with clang nor with gcc@11
-           pip install https://github.com/matplotlib/basemap/archive/master.zip
-       fi
+       [[ -z $(python -m pip freeze | grep shapely) ]] && python -m pip uninstall -y shapely
+       python -m pip install shapely --no-binary shapely
        # gdal needs to know the installed gdal version
-       pip install GDAL==$(gdal-config --version) \
+       python -m pip install GDAL==$(gdal-config --version) \
            --global-option=build_ext --global-option="-I${HOMEBREW_PREFIX}/include"
+       python -m pip install cartopy
+       # basemap is back in development again :-)
+       python -m pip install basemap-data
+       python -m pip install basemap-data-hires
+       python -m pip install basemap
        # mpi4py will be installed after installing openmpi later
-       pip install cartopy
      #+END_SRC
 
-     Replace /pip/ with /conda/ if using conda environments. There is also a conda package for basemap.
+     Replace /python -m pip/ with /conda/ if using conda environments.
 
 ** locate
    Create locate database so that you can search files with the locate command:
@@ -576,6 +636,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    #+BEGIN_SRC bash
      sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
    #+END_SRC
+
+   This might already be running (Operation already in progress) if you upgraded via /System Update/.
 
 ** Payware
    Install Payware, which is for me:
@@ -585,7 +647,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - [[http://www.nag.co.uk/downloads/npdownloads.asp][NAG compiler]], very meticulous Fortran compiler,
 
-   - [[https://software.intel.com/en-us/parallel-studio-xe][Intel compiler]], C/C++/Fortran compiler producing very fast code,
+   - [[https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html][Intel oneAPI Base Toolkit]] and [[https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html][Intel oneAPI HPC Toolkit]], C/C++/Fortran compiler producing very fast code,
 
    - [[https://www.cyberghostvpn.com/][CyberGhost]], VPN client,
 
@@ -616,7 +678,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    After having installed /openmpi/, one can also install /mpi4py/ in Python, for example:
 
    #+BEGIN_SRC bash
-     env MPICC=/usr/local/openmpi-4.1.2-gfortran/bin/mpicc pip install mpi4py
+     env MPICC=/usr/local/openmpi-4.1.2-gfortran/bin/mpicc python -m pip install mpi4py
    #+END_SRC
 
 # ** cdo

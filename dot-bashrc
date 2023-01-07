@@ -18,7 +18,7 @@ alias lh='ls -ahlF'
 alias ltr='ls -atrF'
 alias lltr='ls -altrF'
 alias ls='ls -F'
-#diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical 
+#diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical
 alias diff='diff -bBiwrs'
 alias trash='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\* -o -name \#\*\# -o -name .xvpics -o -name WS_FTP.LOG -o -name Backup\*.wbk -o -name ftperror\* -o -name ftpout\* \) -print -exec rm -f {} \; '
 alias trashall=trash
