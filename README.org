@@ -5,7 +5,7 @@
 #+TITLE: Setting up macOS for software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 06.01.2023
+Modified: 07.01.2023
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
@@ -19,6 +19,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
     - [[#installing-macos-with-the-bootable-installer][Installing macOS with the bootable installer]]
   - [[#update-via-software-update][Update via /Software Update/]]
     - [[#before-starting-1][Before starting]]
+    - [[#installing-macos-via-software-update][Installing macOS via /Software Update/]]
 - [[#setup-macos][Setup macOS]]
   - [[#check-for-system-updates][Check for system updates]]
   - [[#xcode][Xcode]]
@@ -56,7 +57,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
     1. Also store all your dot-files and dot-directories from the =${HOME}= directory such as =.bash_profile=, =.bashrc= and =.ssh=.
 
-    1. You might want to write down your /Computer Name/ from /System Preferences/ > /Sharing/ or /System Preferences/ > /General/ > /Sharing/ > /Local hostname/.
+    1. You might want to write down your /Computer Name/ from /System Preferences/ > /Sharing/ (macOS <= 12) or /System Settings/ > /General/ > /Sharing/ > /Local hostname/ (macOS >= 13).
 
     1. You might also like to write down your username. Type in the terminal:
 
@@ -86,7 +87,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        a) Intel processor
           - Connect USB drive, restart while holding Option (alt) key until you see the bootable volumes.
 
-          - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and press Return. 
+          - Select the volume containing the bootable installer, i.e. /Install macOS Monterey/, and press Return.
 
        a) Apple silicon
           - Shut down.
@@ -108,52 +109,106 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 *** Before starting
     1. It is always recommended to make a backup of your system before an upgrade.
 
-    1. Update all your installed apps in \/Applications. The newest app versions will probably already be suitable for the new macOS version. It avoids the problem that you cannot open the old app version on the new macOS system anymore to do the simple update and then have to uninstall/install the app again. This might also need the licence key, etc.
+    1. Update all your installed apps in \/Applications. The newest app versions will probably already be suitable for the new macOS version. It avoids the problem that you cannot open the old app version on the new macOS system anymore to do the simple update and then have to uninstall/install the app again, which might also need the licence key, etc.
 
        For this, open each non-Apple application and /Check for Updates.../.
 
-       Use the /App Store.../ for all Apple programs.
+       Use the /App Store.../ for all Apple programs and apps downloaded from the App Store..
 
-    1. The /Software Update/ takes care of all your accounts, passwords, etc. The step before takes care of all the installed applications.
+    1. The /Software Update/ takes care of all your accounts, passwords, etc. The step before takes care of all the installed applications. But anything installed from the command line will (most probably) not work anymore. So I first uninstall the all things that will be installed in the steps below, which are Homebrew, \latex, Python/pyenv, and everything installed with install\under{}netcdf. I also Apple's bash shell as default (because the newer bash shell is removed together with Homebrew).
+
+       Set Apple's bash shell as default:
+
+       #+BEGIN_SRC bash
+         chsh -s /bin/bash
+       #+END_SRC
+
+       You have to open a new login terminal so that it takes effect.
+
+       Uninstall panoply:
+
+       #+BEGIN_SRC bash
+       #+END_SRC
+
+       Remove Homebrew:
+
+       #+BEGIN_SRC bash
+         brew uninstall panoply
+       #+END_SRC
+       #+BEGIN_SRC bash
+         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+       #+END_SRC
+       #+BEGIN_SRC bash
+         [[ -d /opt/homebrew ]] && rm -r /opt/homebrew
+         [[ -f ${HOME}/.fzf.bash ]] && rm ${HOME}/.fzf.bash
+         [[ -f ${HOME}/.fzf.zsh ]] && rm ${HOME}/.fzf.zsh
+       #+END_SRC
+
+       Remove \latex:
+
+       #+BEGIN_SRC bash
+         sudo rm -r /usr/local/texlive/
+       #+END_SRC
+       #+BEGIN_SRC bash
+         sudo rm -r /Library/TeX/
+       #+END_SRC
+
+       Remove pyenv's Python versions:
+
+       #+BEGIN_SRC bash
+         rm -r ${HOME}/.pyenv
+       #+END_SRC
+
+       Remove everything under =/usr/local=. This seems extreme but Apple has nothing installed under =/usr/local=, so it comes all from you or Homebrew. You might change into =/usr/local= and remove selected directories by hand.
+
+       #+BEGIN_SRC bash
+         rm -r /usr/local/*
+       #+END_SRC
+
+*** Installing macOS via /Software Update/
+
+    Go to /System Preferences/ > /Software Update/ (macOS <= 12) or to /System Settings/ > /General/ > /Software Update/ (macOS >= 13). Select to install the new macOS and follow the on-screen instructions.
 
 
 * Setup macOS
-  The steps are intented to be done (roughly) in order.
+  The steps are intent to be done (roughly) in order.
 
 ** Check for system updates
-   Check for updates of macOS in /System Preferences/ > /Software Update/.
+   Check for updates of macOS in /System Preferences/ > /Software Update/ (macOS <= 12) or /System Settings/ > /General/ > /Software Update/ (macOS >= 13).
 
 ** Xcode
-   A full Xcode installation is not always needed. Most often, the Xcode Command Line Tools (CLT) are enough, for example for Homebrew. But some development software needs a full Xcode installation such as the FreePGI Fortran Compiler. So one can, for example, install the Xcode CLT only, and install the full Xcode only if another program demands it. Note that installing the full XCode takes considerable time.
+   A full Xcode installation is not always needed. Most often, the Xcode Command Line Tools (CLT) are enough, for example for Homebrew. But some development software needs a full Xcode installation such as the FreePGI Fortran Compiler. So one can, for example, install the Xcode CLT only, and install the full Xcode only if another program demands it. Note that installing the full XCode takes considerable time (count rather half an hour or more).
 
-   Install XCode Command Line Tools (CLT) from the terminal:
+   The normal way to install the XCode Command Line Tools (CLT) from the terminal would be:
 
    #+BEGIN_SRC bash
      xcode-select --install
    #+END_SRC
 
-   This did not work for me sometimes, telling that it cannot reach the server. Downloading the installer package from the [[https://developer.apple.com/download/more/?=command%20line%20tools][Apple Developer website]] (you have to login with your Apple ID) worked but led to problems with installing Python later. Then I just install the full Xcode package.
+   But Homebrew will install it if it is not installed yet. So I let Homebrew do the job, because I had problems with the xcode-select command before (cannot reach server, etc.).
 
-   The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools. Be sure to have completed this step before starting with [[#homebrew][Homebrew]].
+   The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools. If you install Xcode, it is reasonable to complete the Xcode installation and the one-time opening before starting with [[#homebrew][Homebrew]]. Otherwise, it might install the command line tools CLT twice, but it costs only download bandwidth and time.
 
-   While waiting for XCode or the Xcode CLT to install, you can download and install the other apps from [[#app-store][App Store]], [[#xquartz][XQuartz]] and some [[#freeware][Freeware]] except [[http://www.chachatelier.fr/latexit/][LaTeXiT]] and [[https://www.sourcetreeapp.com][SourceTree]]. You can also [[#set-preferences-of-macos-and-standard-apps][Set preferences of macOS and standard apps]].
+   While waiting for XCode to install, you can download and install the other apps from [[#app-store][App Store]], [[#xquartz][XQuartz]] and some [[#freeware][Freeware]] except [[http://www.chachatelier.fr/latexit/][LaTeXiT]] and [[https://www.sourcetreeapp.com][SourceTree]]. You can also [[#set-preferences-of-macos-and-standard-apps][Set preferences of macOS and standard apps]].
 
 ** Set preferences of macOS and standard apps
-   Set /System Preferences/ such as:
-   - /Sharing/ > /Computer Name/,
+   Set /System Preferences/ (macOS <= 12) or /System Settings/ (macOS >= 13) such as:
+   Check for updates of macOS in /System Preferences/ > /Software Update/ (macOS <= 12) or /System Settings/ > /General/ > /Software Update/ (macOS >= 13) .
 
-   - unsetting  all tickboxes in /Mission Control/,
+   - Set computer name in /Sharing/ > /Computer Name/ or in /General/ > /Sharing/ > /Local hostname/
 
-   - set /Keyboard/ > /Modifier Keys.../ > /Caps Lock Key/ to /No Action/
+   - Unset all in /Mission Control/ or in /Desktop & Dock/ > /Mission Control/
 
-   Set preferences in standard macOS apps such as:
+   - Set /Keyboard/ > /Modifier Keys.../ > /Caps Lock Key/ to /No Action/ or set /Keyboard/ > /Keyboard Shortcuts/ > /Modifier Keys/ > /Caps Lock Key/ to /No Action/
+
+   Set preferences/settings in standard macOS apps such as:
    - Terminal
-     + set /Profiles/ > /Shell/ > /When the shell exists:/ to /Close if the shell exited cleanly/
+     + Set /Profiles/ > /Shell/ > /When the shell exists:/ to /Close if the shell exited cleanly/
 
-     + unset tickbox /Profiles/ > /Advanced/ > /Set locale environment variables on startup/
+     + Unset tickbox /Profiles/ > /Advanced/ > /Set locale environment variables on startup/
 
    - Finder
-     + set tickbox /Advanced/ > /Show all filename extensions/
+     + Set tickbox /Advanced/ > /Show all filename extensions/
 
 ** Set the default shell
    Apple is now using /zsh/ as its default shell. If you want to stay with /bash/, change it in the terminal:
@@ -168,16 +223,20 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      export BASH_SILENCE_DEPRECATION_WARNING=1
    #+END_SRC
 
+   My current =.bash_profile= is as dot-bash\under{}profile in this repository along with the two sub-config files =.bashrc= as dot-bashrc for general aliases and functions and =.bashrc.13= as dot-bashrc.13 for macOS 13 Ventura-specific aliases and functions.
+
 ** Restore backup
-   Transfer files from your backup media either directly or using a Time Machine backup.
+   If you did a fresh install, transfer files from your backup media either directly or using a Time Machine backup.
 
 ** App Store
-   Check your account in the App Store. There are bundled apps such as Keynote, Numbers, etc., which you should open once to get over the welcome screens and offered tutorials.
+   Even when you installed using /Software Update/, you should check for updates. Do not look only in /App Store.../ > /Updates/ but also on your account (on the bottom left) if there is an update. Xcode did not show up in /Updates/ for me but I had to update it from the account page.
+
+   If you did a fresh install, check your account in the App Store. There are bundled apps such as Keynote, Numbers, etc., which you should open once to get over the welcome screens and offered tutorials.
 
    It also shows you a list of previously installed apps on other systems. Install what you still want and open it once.
 
    My essential apps from the App Store are:\\
-   Keynote/Pages/Numbers, The Unarchiver, WordService, HiddenMe, Slack, Microsoft Remote Desktop.
+   Keynote/Pages/Numbers, The Unarchiver, WordService, HiddenMe, Microsoft Remote Desktop, Engauge Digitizer.
 
 ** XQuartz
    XQuartz is the X-window system running on macOS, needed for \ast{}nix GUI programs. Get it from [[http://xquartz.macosforge.org/][XQuartz]].
@@ -189,21 +248,21 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    #+END_SRC
 
-   This installs Homebrew into =/usr/local= on mac OS X Intel and into =/opt/homebrew= on macOS Apple Silicon (M1, M2, etc.).
+   This installs Homebrew into =/usr/local= on macOS Intel and into =/opt/homebrew= on macOS Apple Silicon (M1, M2, etc.).
 
-   You might want to put into your =.bash_profile= for mac OS X Intel:
+   You might want to put into your =.bash_profile= for macOS Intel:
 
    #+BEGIN_SRC bash
      [[ -x $(which brew) ]] && eval $(brew shellenv)
    #+END_SRC
 
-   and for macOS Apple Silicon (M1):
+   and for macOS Apple Silicon (Mx):
 
    #+BEGIN_SRC bash
      [[ -d /opt/homebrew ]] && eval $(/opt/homebrew/bin/brew shellenv)
    #+END_SRC
 
-   so that Homebrew can be found. This sets, for example, the environment variables =HOMEBREW_PREFIX=, =HOMEBREW_CELLAR=, and =HOMEBREW_REPOSITORY= and prepends the =$PATH= with Homebrew's bin directory. Sometimes I set this manually if I want to have Homebrew's bin directory at the end rather than at the beginning of the system =$PATH= such as:
+   so that Homebrew can be found. This sets, for example, the environment variables =HOMEBREW_PREFIX=, =HOMEBREW_CELLAR=, and =HOMEBREW_REPOSITORY= and prepends the =$PATH= with Homebrew's bin directory. I set this manually because I want to have Homebrew's bin directory at the end rather than at the beginning of the system =$PATH= such as:
 
    #+BEGIN_SRC bash
      if [[ -d /opt/homebrew ]] ; then
@@ -307,7 +366,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    After a system update such as from /System Preferences/ > /Software Update/, there might be a link =Relocated Items/= on your Desktop pointing to =/Users/Shared/Relocated Items=. This is a copy of the changed =/etc/shells=. As long as Apple does not modify =/etc/shells= during an update, the edited version stays untouched, though. One can safely delete the link on the Desktop and also the directory under =/Users/Shared=. It does not hurt to do a =cat /etc/shells= in the terminal before, checking that your edits are still there.
 
 ** Emacs
-   I used to use [[http://aquamacs.org][Aquamacs]], but use [[https://www.spacemacs.org][Spacemacs]] now. The latter is very fast, but has a steep learning curve. At the moment I am not using the two most praised modes: helm and evil. I also needed quite some configuration in the =dotspacemacs/user-config= section of .spacemacs.
+   I used to use [[http://aquamacs.org][Aquamacs]], but use [[https://www.spacemacs.org][Spacemacs]] now. The latter is very fast, but has a steep learning curve. At the moment I am not using the two most praised modes: helm and evil. I also needed quite some configuration in the =dotspacemacs/user-config= section of =.spacemacs.= My current .spacemacs is as dot-spacemacs in this repository.
 
    To install Spacemacs, install Emacs first:
 
@@ -587,7 +646,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      You would have to source your =.bash_profile= again if you install with /pip/ or /conda/ just after installing /pyenv/.
 
-     There is currently a problem with Apple's Accelerate framework on Apple Silicon (M1) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library or the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and homebrew installs into =/usr/local=; this directory is searched automatically.
+     There is currently a problem with Apple's Accelerate framework on Apple Silicon (Mx) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library or the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and homebrew installs into =/usr/local=; this directory is searched automatically.
  
      #+BEGIN_SRC bash
        # essential subset
@@ -657,11 +716,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    Install additional software from you institution or similar such as VPN clients, cloud services, etc. For INRAE this is: Kaspersky Antivirus, GlobalProtect VPN, StorageMadeEasy.
 
 ** netcdf4\under{}fortran and openmpi development packages
-   Use the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] to install netcdf4\under{}fortran and openmpi development packages for different Fortran compilers. The script is well documented and we just describe the general steps.
+   Use the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] to install netcdf-fortran, openmpi, and/or mpich development packages for different Fortran compilers. The script is well documented and we just describe the general steps.
 
-   - Look for the latest versions (numbers) of netcdf4\under{}fortran and openmpi (addresses are given at the beginning of the script install\under{}netcdf) and set them below /donetcdf4\under{}fortran/ and /doopenmpi/.
+   - Look for the latest versions (numbers) of [[https://downloads.unidata.ucar.edu/netcdf/][netcdf-fortran]], [[https://www.open-mpi.org][openmpi]], and/or [[http://www.mpich.org/downloads/][mpich]] (addresses are also given at the beginning of the script install\under{}netcdf) and set them below /donetcdf4\under{}fortran/, /doopenmpi/, and/or /dompich/.
 
-   - Set both /donetcdf4\under{}fortran/ and /doopenmpi/ to 1.
+   - Set /donetcdf4\under{}fortran/, /doopenmpi/, and/or /dompich/ to 1.
 
    - Check that ~prefix=/usr/local~.
 
@@ -678,18 +737,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    After having installed /openmpi/, one can also install /mpi4py/ in Python, for example:
 
    #+BEGIN_SRC bash
-     env MPICC=/usr/local/openmpi-4.1.2-gfortran/bin/mpicc python -m pip install mpi4py
+     env MPICC=/usr/local/openmpi-4.1.4-gfortran/bin/mpicc python -m pip install mpi4py
    #+END_SRC
 
-# ** cdo
-#    /HDF5/ from Homebrew is not thread-safe so /cdo/ will need the -L flag if piping.
-
-   #+BEGIN_SRC bash
-     alias cdo="cdo -L"
-   #+END_SRC
-
-   # Also Apple's /clang/ compiler is not yet OpenMP-enabled so that /cdo/ will not use OpenMP. /cdo/ is running also much faster when compiled with Intel.
-
-   # *ToDo*
-
-   # So I install cdo using the [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] script. One will need to add OpenMP to the CFLAGS: ~CFLAGS=-fopenmp~ (-fopenmp for gfortran and ifort, -openmp for nagfor and pgfortran, -qopenmp for others).
+   Here I use homebrew to install everything except the Fortran versions of netcdf, openmpi and mpich. This is very practical. However, homebrew upgrades also netcdf-c to newer versions if you install or update a package that depends on it. Then the netcdf-fortran package installed with install\under{}netcdf will not work anymore and you have to rerun the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]]. I still do it this way because re-installing netcdf-fortran with install\under{}netcdf is very fast.
