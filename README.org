@@ -5,7 +5,7 @@
 #+TITLE: Setting up macOS for software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 07.01.2023
+Modified: 01.02.2023
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
@@ -109,13 +109,13 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 *** Before starting
     1. It is always recommended to make a backup of your system before an upgrade.
 
-    1. Update all your installed apps in \/Applications. The newest app versions will probably already be suitable for the new macOS version. It avoids the problem that you cannot open the old app version on the new macOS system anymore to do the simple update and then have to uninstall/install the app again, which might also need the licence key, etc.
+    1. Update all your installed apps in /Applications/. The newest app versions will probably already be suitable for the new macOS version. It avoids the problem that you cannot open the old app version on the new macOS system anymore to do the simple update and then have to uninstall/install the app again, which might also need the licence key, etc.
 
        For this, open each non-Apple application and /Check for Updates.../.
 
        Use the /App Store.../ for all Apple programs and apps downloaded from the App Store..
 
-    1. The /Software Update/ takes care of all your accounts, passwords, etc. The step before takes care of all the installed applications. But anything installed from the command line will (most probably) not work anymore. So I first uninstall the all things that will be installed in the steps below, which are Homebrew, \latex, Python/pyenv, and everything installed with install\under{}netcdf. I also Apple's bash shell as default (because the newer bash shell is removed together with Homebrew).
+    1. The /Software Update/ takes care of all your accounts, passwords, etc. The step before takes care of all the installed applications. But anything installed from the command line will (most probably) not work anymore. So I first uninstall the all things that will be installed in the steps below, which are Homebrew, LaTeX, Python/pyenv, and everything installed with install\under{}netcdf. I also set back Apple's bash shell as default (because the newer bash shell is removed together with Homebrew).
 
        Set Apple's bash shell as default:
 
@@ -128,13 +128,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        Uninstall panoply:
 
        #+BEGIN_SRC bash
+         brew uninstall panoply
        #+END_SRC
 
        Remove Homebrew:
 
-       #+BEGIN_SRC bash
-         brew uninstall panoply
-       #+END_SRC
        #+BEGIN_SRC bash
          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
        #+END_SRC
@@ -144,7 +142,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          [[ -f ${HOME}/.fzf.zsh ]] && rm ${HOME}/.fzf.zsh
        #+END_SRC
 
-       Remove \latex:
+       Remove LaTeX:
 
        #+BEGIN_SRC bash
          sudo rm -r /usr/local/texlive/
@@ -185,7 +183,27 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      xcode-select --install
    #+END_SRC
 
-   But Homebrew will install it if it is not installed yet. So I let Homebrew do the job, because I had problems with the xcode-select command before (cannot reach server, etc.).
+   There is an glitch if you installed with /Software Update/ and had a full XCode installation: the XCode Command Line Tools do not get updated so that gfortran, for example, will clash with XCode's clang compiler. So I first uninstalled CLT and reinstalled them again:
+
+   #+BEGIN_SRC bash
+     sudo rm -rf /Library/Developer/CommandLineTools
+     sudo xcode-select --install
+   #+END_SRC
+
+   This still pointed to the compiler within the XCode app:
+
+   #+BEGIN_SRC bash
+     xcode-select --print-path
+     # /Applications/Xcode.app/Contents/Developer/
+   #+END_SRC
+
+   This can be [[https://stackoverflow.com/questions/72428802/c-lang-llvm-option-parsing-unknown-command-line-argument-when-running-gfort][fixed]] by pointing to clang within the CLT:
+
+   #+BEGIN_SRC bash
+     sudo xcode-select -switch /Library/Developer/CommandLineTools
+   #+END_SRC
+
+   If you did a frech install, you might let Homebrew do the job, i.e. it will install the XCode Connad Line Tools if they are missing.
 
    The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools. If you install Xcode, it is reasonable to complete the Xcode installation and the one-time opening before starting with [[#homebrew][Homebrew]]. Otherwise, it might install the command line tools CLT twice, but it costs only download bandwidth and time.
 
@@ -282,7 +300,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - *GNU compiler and netCDF software*
 
-     The gcc suite includes /gfortran/. Install the netcdf-C version, which comes with /ncdump/, etc., install /nco/, /ncview/, and /Panoply/. One can also install /cdo/ with Homebrew. /cdo/ is, however, quite a bit faster when compiled with the Intel compiler and not with the GNU compiler as in Homebrew.
+     The gcc suite includes /gfortran/. Install the netcdf-C version, which comes with /ncdump/, etc., install /nco/, /ncview/, and /Panoply/.
+     Homebrew had netcdf-C, netcdf-C++, and netcdf-Fortran bundled in /netcdf/ before. They are individual packages now. /netcdf/ installs the netcdf-C package only now. See install\under{}netcdf below for Fortran support.
+      One can also install /cdo/ with Homebrew. /cdo/ is, however, quite a bit faster when compiled with the Intel compiler and not with the GNU compiler as in Homebrew.
 
      #+BEGIN_SRC bash
        for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
@@ -410,10 +430,10 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      brew install --cask homebrew/cask-fonts/font-source-code-pro
    #+END_SRC
 
-   And I immediately installed aspell for spell checking within Spacemacs.
+   And I immediately installed aspell for spell checking within Spacemacs, and the GNU version of tar (new requirement since Emacs 28.2).
 
    #+BEGIN_SRC bash
-     brew install aspell
+     brew install aspell gnu-tar
    #+END_SRC
 
    If you open the new Emacs for the first time, it will install and byte-compile more than 200 packages. This might take some time. But you will be asked at least one confirmation in-between.
@@ -512,50 +532,52 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 ** Python
 
-   macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. Form macOS Big Sur (11.5), it comes with Python 3. But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/.
+   macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. From macOS Big Sur (11.5) onwards, macOS comes with Python 3 (from macOS 13 Ventura, is is actually part of the XCode command line tools). But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/: you can install different Python versions, very easily use different virtual environments in different directories (projects), etc.
 
    Installation of Python versions can be a real mess at times, as noted by [[https://xkcd.com/1987/][XKCD]]:
 
    #+ATTR_HTML: :alt Python path on my system :align center :width 300 :height 300
    [[https://imgs.xkcd.com/comics/python_environment.png]]
 
-   So I am using /pyenv/ and /pyenv-virtualenv/ now. See the great article [[https://medium.com/faun/pyenv-multi-version-python-development-on-mac-578736fb91aa][pyenv: Multi-version Python development on Mac]] by Dirk Avery.
+   /pyenv/ and /pyenv-virtualenv/ makes that very easy: see the great article [[https://medium.com/faun/pyenv-multi-version-python-development-on-mac-578736fb91aa][pyenv: Multi-version Python development on Mac]] by Dirk Avery.
 
    To install pyenv with Homebrew:
 
    #+BEGIN_SRC bash
      brew install openssl readline sqlite3 xz zlib
      brew install pyenv
+     brew install pyenv-virtualenv
    #+END_SRC
 
-   You have to set the following in your =.bash_profile= so that the shell always finds the currently chosen Python version as first entry.
+   You have to set the following in your =.bash_profile= so that the shell always finds the currently chosen Python version as the first entry.
 
    #+BEGIN_SRC bash
      export PYENV_ROOT="${HOME}/.pyenv"
      export PATH=${PYENV_ROOT}/shims:${PATH}
      if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
+     if command -v pyenv virtualenv-init 1>/dev/null 2>&1 ; then eval "$(pyenv virtualenv-init -)" ; fi
    #+END_SRC
 
-   Note that the =$PATH= environment must be prepended with =${PYENV_ROOT}/shims= and not =${PYENV_ROOT}/bin= as given in the user guide. Also, this has to be after the addition of Homebrew to the system =$PATH= so that the pyenv installation can be found first.
+   Note that the =$PATH= environment must be prepended with =${PYENV_ROOT}/shims= and not =${PYENV_ROOT}/bin= as given in the (older) user guide. Also, this has to be done /after/ the addition of Homebrew to the system =$PATH= so that the pyenv Python installation can be found first; otherwise Homebrew's Python will be found first.
 
-   - *pyenv 101*
+   - *pyenv and pyenv-virtualenv 101*
 
      After starting a new shell, for example by doing =exec ${SHELL}=, you can start installing and using different Python versions:
 
      #+BEGIN_SRC bash
        pyenv install --list
-       pyenv install 3.9.9
+       pyenv install 3.10.9
        pyenv rehash
-       pyenv global 3.9.9
+       pyenv global 3.10.9
      #+END_SRC
 
-     Remember that you always have to /rehash/ after you installed a new version.
+     Remember that you always have to /rehash/ after you installed a new version or new virtual environment.
 
      Try to rehash first if a problem occurs with /pyenv/. For example, some new Homebrew packages might upgrade /pyenv/ as well. Then you get an error such as
 
      #+BEGIN_SRC bash
        /Users/cuntz/.pyenv/shims/python: line 21:
-       /usr/local/Cellar/pyenv/1.2.19/libexec/pyenv:
+       /usr/local/Cellar/pyenv/2.3.12/libexec/pyenv:
        No such file or directory
      #+END_SRC
 
@@ -565,52 +587,34 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      #+BEGIN_SRC bash
        brew install tcl-tk
-       env PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I${HOMEBREW_PREFIX}/opt/tcl-tk/include' \
+     #+END_SRC
+     #+BEGIN_SRC bash
+       env PYTHON_CONFIGURE_OPTS=" \
+           --with-tcltk-includes='-I${HOMEBREW_PREFIX}/opt/tcl-tk/include' \
            --with-tcltk-libs='-L${HOMEBREW_PREFIX}/opt/tcl-tk/lib -ltcl8.6 -ltk8.6' \
-           --enable-framework" \
-           CFLAGS="-I$(brew --prefix xz)/include" LDFLAGS="-L$(brew --prefix xz)/lib" \
+           --enable-optimizations --enable-framework=${HOME}/Library/Frameworks" \
+           CFLAGS="-I$(brew --prefix xz)/include" \
+           LDFLAGS="-L$(brew --prefix xz)/lib" \
            PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig" \
-           pyenv install 3.9.9
+           pyenv install 3.10.9
+     #+END_SRC
+     #+BEGIN_SRC bash
        pyenv rehash
      #+END_SRC
 
-     Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). It is possible that a Python version installed with /pyenv/ clashes with Apple's Tcl/Tk library if one wants to use the /tkinter/ module. This gives in the best case a deprecation warning like:
+     This uses the newer Tcl/Tk version from Homebrew for /tkinter/, turns on profile guided optimization and link time optimization for Python being about 10% faster, and enables a framework build. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.10.9= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 (Ventura). Each installation of packages, creation of virtual environments, etc. will need sudo then. This is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
+
+     Virtual environments are created as:
 
      #+BEGIN_SRC bash
-       DEPRECATION WARNING: The system version of Tk is deprecated and
-       may be removed in a future release. Please don't rely on it.
-       Set TK_SILENCE_DEPRECATION=1 to suppress this warning.
+       pyenv virtualenv 3.10.9 test
+       pyenv rehash
      #+END_SRC
 
-     So I install /tcl-tk/ from Homebrew first and then (re-)install Python giving the path of the Homebrew Tcl/Tk library. Note that /tcl-tk/ is keg-only in Homebrew. =env= in the command above allows using the Homebrew version with Python while not interfering with the macOS provided Tcl/Tk installation.
-
-   - *pyenv-virtualenv*
-
-     You can use virtual environments with /pyenv/:
-
-     #+BEGIN_SRC bash
-       brew install pyenv-virtualenv
-     #+END_SRC
-
-     You have to put the following in your =.bash_profile=:
-
-     #+BEGIN_SRC bash
-       if which pyenv-virtualenv-init > /dev/null ; then eval "$(pyenv virtualenv-init -)"; fi
-     #+END_SRC
-
-     Virtual environments can then be created as:
-
-     #+BEGIN_SRC bash
-       pyenv virtualenv 3.9.9 testproject
-     #+END_SRC
-
-     The virtual environment /testproject/ can then be used just as any installed Python version with /pyenv/. For example:
+     The virtual environment /test/ can then be used just as any installed Python version with /pyenv/. For example:
      #+BEGIN_SRC bash
        pyenv local testproject
-       pyenv rehash
      #+END_SRC
-
-   - *pyenv and anaconda*
 
      /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
 
@@ -618,36 +622,29 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        pyenv install miniconda3-4.7.12
        pyenv rehash
        pyenv global miniconda3-4.7.12
-       pyenv virtualenv testproject
+       pyenv virtualenv test
      #+END_SRC
 
-     You can then install (conda and pip) packages in the testproject:
+     You can then install (conda and pip) packages in the test nproject, etc.:
 
      #+BEGIN_SRC bash
        conda install numpy scipy matplotlib
-     #+END_SRC
-
-     To return to the default Python version:
-
-     #+BEGIN_SRC bash
-       conda deactivate
-       pyenv global 3.9.9
      #+END_SRC
 
      If git tells /gettext not found/ after installing anaconda/miniconda, see [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
    - *Essential Python packages*
 
-     Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with /pip/ or /conda\/mamba/. These are currently in my main environment:\\
-     numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, xarray, wxpython, sphinx, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, pykdtree, cython, pyshp, six, wheel
+     Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with /pip/ or /conda/mamba/. These are currently in my main environment:\\
+     numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, cftime, netcdf4, udunits, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, xarray, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, pykdtree, cython, pyshp, six, wheel
 
      and mostly this subset in other virtual environments:\\
-     numpy, scipy, matplotlib, ipython, pandas, netcdf4, xlrd, openpyxl, flake8, wheel
+     numpy, scipy, matplotlib, pandas, netcdf4, xarray, ipython, flake8, wheel
 
      You would have to source your =.bash_profile= again if you install with /pip/ or /conda/ just after installing /pyenv/.
 
-     There is currently a problem with Apple's Accelerate framework on Apple Silicon (Mx) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library or the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and homebrew installs into =/usr/local=; this directory is searched automatically.
- 
+     There is currently a problem with Apple's Accelerate framework on Apple Silicon (M1/2) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library and the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and Homebrew installs into =/usr/local=; this directory is searched automatically.
+
      #+BEGIN_SRC bash
        # essential subset
        if [[ "$(uname -m)" == "arm64" ]] ; then
@@ -656,21 +653,20 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            export GEOS_DIR="$(brew --prefix geos)"
            export GEOS_CONFIG="$(brew --prefix geos)/bin/geos-config"
        fi
-       pyenv virtualenv 3.9.9 pystd
+       pyenv virtualenv 3.10.9 pystd
        pyenv rehash
        pyenv global pystd
+       pyenv rehash
+       # test if install works
        python -m pip install numpy
        for i in wheel scipy matplotlib ipython pandas netcdf4 \
-           flake8 ; do \
+           xarray ipython flake8 ; do \
            python -m pip install ${i} ; done
        # other standard packages
        for i in jupyter statsmodels scikit-learn schwimmbad \
-           xarray sphinx \
-           numpydoc pytest pytest-cov f90nml bs4 pykdtree cython pyshp six \
+           numpydoc pytest pytest-cov f90nml pykdtree cython pyshp six \
            xlrd openpyxl ; do \
            python -m pip install ${i} ; done
-       # some GUIs are written in wxpython
-       CXXFLAGS="-I${HOMEBREW_PREFIX}/include" python -m pip install wxpython
        # shapely and gdal for cartopy
        # shapely needs to be built from source to link to geos.
        # Uninstall it if already installed
@@ -685,9 +681,11 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        python -m pip install basemap-data-hires
        python -m pip install basemap
        # mpi4py will be installed after installing openmpi later
+       # if you use GUIs written in wxpython
+       CXXFLAGS="-I${HOMEBREW_PREFIX}/include" python -m pip install wxpython
      #+END_SRC
 
-     Replace /python -m pip/ with /conda/ if using conda environments.
+     Replace /python -m pip/ with /conda/ if using conda environments or install mamba first and the use /mamba/ instead of /pip.
 
 ** locate
    Create locate database so that you can search files with the locate command:
@@ -716,7 +714,15 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    Install additional software from you institution or similar such as VPN clients, cloud services, etc. For INRAE this is: Kaspersky Antivirus, GlobalProtect VPN, StorageMadeEasy.
 
 ** netcdf4\under{}fortran and openmpi development packages
-   Use the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] to install netcdf-fortran, openmpi, and/or mpich development packages for different Fortran compilers. The script is well documented and we just describe the general steps.
+   You can install [[https://downloads.unidata.ucar.edu/netcdf/][netcdf-fortran]] for the gfortran compiler.
+
+   #+BEGIN_SRC bash
+     brew install netcdf-fortran
+   #+END_SRC
+
+   This will automatically update netcdf-fortran for gfortran if a newer version of netcdf-C and/or netcdf-fortran becomes available.
+
+   However, if you use other Fortran compilers as well, you might want to use the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] to install it and not flood your namespace with different versions of =netcdf.mod=, etc. The script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] installs netcdf-fortran, openmpi, and/or mpich development packages for different Fortran compilers. The script is well documented and we just describe the general steps.
 
    - Look for the latest versions (numbers) of [[https://downloads.unidata.ucar.edu/netcdf/][netcdf-fortran]], [[https://www.open-mpi.org][openmpi]], and/or [[http://www.mpich.org/downloads/][mpich]] (addresses are also given at the beginning of the script install\under{}netcdf) and set them below /donetcdf4\under{}fortran/, /doopenmpi/, and/or /dompich/.
 
@@ -734,10 +740,12 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - For PGI, you also have to set the ~pgipath~.
 
+   - Run he script on the command line and give your sudo password if you install into ~prefix=/usr/local~.
+
    After having installed /openmpi/, one can also install /mpi4py/ in Python, for example:
 
    #+BEGIN_SRC bash
      env MPICC=/usr/local/openmpi-4.1.4-gfortran/bin/mpicc python -m pip install mpi4py
    #+END_SRC
 
-   Here I use homebrew to install everything except the Fortran versions of netcdf, openmpi and mpich. This is very practical. However, homebrew upgrades also netcdf-c to newer versions if you install or update a package that depends on it. Then the netcdf-fortran package installed with install\under{}netcdf will not work anymore and you have to rerun the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]]. I still do it this way because re-installing netcdf-fortran with install\under{}netcdf is very fast.
+   However, homebrew upgrades also netcdf-C to newer versions if you install or update a package that depends on it. Then the netcdf-fortran package installed with install\under{}netcdf will not work anymore (it will link to the old, uninstalled version) and you have to rerun the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]]. I still do it this way to minimize conflicts between different Fortran compilers and re-installing netcdf-fortran with install\under{}netcdf is very fast.
