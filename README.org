@@ -2,7 +2,7 @@
 # C-c C-l  for editing hyperlinks
 #+OPTIONS: toc:nil
 #+OPTIONS: broken-links:t
-#+TITLE: Setting up macOS for software development
+#+TITLE: Setting up macOS for scientific computing and software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
 Modified: 01.02.2023
@@ -476,6 +476,12 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          cmbright tcolorbox environ titling gensymb program breakurl \
          ncctools vruler apacite \
          ; do sudo tlmgr install ${i} ; done
+   #+END_SRC
+
+   I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
+
+   #+BEGIN_SRC bash
+     brew install latexml
    #+END_SRC
 
 ** Freeware
