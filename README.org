@@ -443,6 +443,19 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    Spacemacs could not access external disks on my systems (Catalina 10.15.7, Big Sur 11.5.1, Monterey 12.0.1) because it did not have the right permissions. I had to give /Full Disk Access/ to =/usr/bin/ruby=.
    Before macOS 13 Ventura, I was following [[https://emacs.stackexchange.com/questions/53026/how-to-restore-file-system-access-in-macos-catalina/53037#53037][this]]: Open /System Preferences/ -> /Security & Privacy/ -> /Privacy/, select /Full Disk Access/ in the left pane. From macOS 13 Ventura, it is /System Preferences/ > /Privacy & Security/ > /Full Disk Access/. Then click + and add =/usr/bin/ruby= to resolve the issue. =/usr= is hidden by default on macOS but you can toggle visibility in /Finder/ by using =Shift+Command+Period=, i.e. =Shift+Command+.=
 
+   There is an [[https://emacs.stackexchange.com/questions/74289/emacs-28-2-error-in-macos-ventura-image-type-invalid-image-type-svg][issue]] with the way Emacs 28.2 initializes its image support on macOS 13 Ventura, which leads to that I cannot use dired mode anymore. I had to install the current development version of Emacs, which is fortunately quite easy:
+
+   #+BEGIN_SRC bash
+     brew uninstall emacs
+   #+END_SRC
+
+   #+BEGIN_SRC bash
+     brew tap homebrew/cask-versions
+     brew install emacs-nightly
+   #+END_SRC
+
+   The next opening of Emacs compiled another 200+ packages and worked like a charm afterwards.
+
 ** LaTeX
    One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I hope that Homebrew will handle the update between years, which is always a hassle otherwise; but I do not know yet if Homebrew will handle it. The full MacTex installation including all GUIs, Apps, and Programs is:
 

@@ -68,7 +68,8 @@ This function should only modify configuration layer settings."
      spell-checking
      syntax-checking
      ;; version-control
-     treemacs)
+     ;; treemacs
+     )
 
 
    ;; List of additional packages that will be installed without being wrapped
@@ -277,7 +278,8 @@ It should only modify the values of Spacemacs settings."
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
-   ;; The leader key
+
+   ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
 
    ;; The key used for Emacs commands `M-x' (after pressing on the leader key).
@@ -328,6 +330,7 @@ It should only modify the values of Spacemacs settings."
    ;; literally to avoid performance issues. Opening a file literally means that
    ;; no major mode or minor modes are active. (default is 1)
    dotspacemacs-large-file-size 10
+
    ;; Location where to auto-save files. Possible values are `original' to
    ;; auto-save the file in-place, `cache' to auto-save the file to another
    ;; file stored in the cache directory and `nil' to disable auto-saving.
@@ -386,6 +389,7 @@ It should only modify the values of Spacemacs settings."
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
    dotspacemacs-active-transparency 100
+
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's inactive or deselected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
@@ -461,7 +465,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
-   dotspacemacs-enable-server nil
+   dotspacemacs-enable-server t
 
    ;; Set the emacs server socket location.
    ;; If nil, uses whatever the Emacs default is, otherwise a directory path
@@ -567,9 +571,11 @@ It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (setq exec-path-from-shell-check-startup-files nil)
   (setq latex-build-command "LatexMk")
-  (setq dotspacemacs-enable-server t)
+  ;; (setq dotspacemacs-enable-server t)
+  ;; initial frame size
+  (add-to-list 'default-frame-alist '(width  . 90))
+  (add-to-list 'default-frame-alist '(height . 45))
   )
-
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
@@ -577,7 +583,6 @@ This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
 dump."
 )
-
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -625,6 +630,7 @@ that used by the user's shell."
   (setq make-backup-files t)
   (setq backup-by-copying-when-linked t) ; preserves links when saving
   (set-scroll-bar-mode 'right)
+  (setq menu-bar-right-scroll-bar t)
   ;; (setq tab-always-indent t) ; if nil, tab opens helm suggestions
 
   ;; f90
@@ -727,29 +733,43 @@ that used by the user's shell."
   ;; keyboard macros
   (fset 'comment-on-line-above
         [?\C-k ?\C-p ?\C-e return ?\C-y tab ?\C-n ?\C-e])
+
+  ;; ;; Dired
+  ;; ;; use middle mouse to access file in dired-mode
+  ;; (add-hook 'dired-mode-hook 'my-dired-mode-hook)
+  ;; (defun my-dired-mode-hook ()
+  ;;   (local-set-key [mouse-2] 'dired-mouse-select))
+  ;; (defun dired-mouse-select (event)
+  ;;   (interactive "e")
+  ;;   (mouse-set-point event)
+  ;;   (dired-find-file))
+  ;; ;; show symbolic links (-F)
+  ;; (setq dired-listing-switches "-alF")
+  ;; (setq list-directory-brief-switches "-ClF")
+  ;; (setq list-directory-verbose-switches "-lF")
   )
 
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
  '(blink-cursor-mode nil)
  '(column-number-mode t)
  '(custom-enabled-themes '(manoj-dark))
- '(custom-safe-themes
-   '("cd305434a9a9a71788554f92f8d935f0f573826cbf707a45b1e8ef315beb846a" "d557e66cf50ffd3b8f98fe0782ab4dd3bbaa41ffe84080957cbf9ba05e562f3d" "b38e0fe4053f32810c0e4a41646d90c22483a9f939179776ea5758467c9ec839" "d2aab54c604182531495a02870d807a8e09ceccc14229605359ca6bbdb3b23e7" default))
  '(evil-want-Y-yank-to-eol nil)
  '(safe-local-variable-values '((require-trailing-newline . t)))
- '(tool-bar-mode nil)
- )
+ '(tool-bar-mode nil))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight normal :height 150 :width normal)))))
+)
