@@ -487,7 +487,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          framed capt-of makecell xstring moreverb wrapfig \
          adjustbox collectbox threeparttable capt-of pgf simplekv \
          cmbright tcolorbox environ titling gensymb program breakurl \
-         ncctools vruler apacite \
+         ncctools vruler apacite biblatex biber blindtext pgfgantt \
+         biblatex-chicago \
          ; do sudo tlmgr install ${i} ; done
    #+END_SRC
 
