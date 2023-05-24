@@ -723,7 +723,7 @@ that used by the user's shell."
 
   ;; flycheck
   (setq flycheck-checker-error-threshold 800)
-  ;; (setq-default flycheck-disabled-checkers '(python-mypy))
+  (setq-default flycheck-disabled-checkers '(python-mypy))
 
   ;; rst
   (eval-after-load "rst"

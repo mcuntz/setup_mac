@@ -1,6 +1,6 @@
 ###############################################################################
 # Practical stuff
-alias lpstat='lpstat -s'
+# alias lpstat='lpstat -s'
 alias more='more -u'
 alias zip='zip -r'
 alias rm='rm -i'
@@ -12,22 +12,23 @@ function iff() { find . -iname \*$1\* -print ; }
 alias g='grep -Ein'
 alias t='tail -250'
 alias xx='chmod 755'
+alias ls='ls -F'
 alias ll='ls -alF'
-alias la='ls -alF'
 alias lh='ls -ahlF'
 alias ltr='ls -atrF'
 alias lltr='ls -altrF'
-alias ls='ls -F'
-#diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical
+# diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical
 alias diff='diff -bBiwrs'
 alias trash='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\* -o -name \#\*\# -o -name .xvpics -o -name WS_FTP.LOG -o -name Backup\*.wbk -o -name ftperror\* -o -name ftpout\* \) -print -exec rm -f {} \; '
-alias trashall=trash
+# alias trashall=trash
 alias bc='bc -l'
 alias h='history 50'
 alias ilocate='locate -i'
+# calculator
 function c() {
     echo "${1}" | sed -e 's/[eE]+*/\*10\^/g' | bc -l
 }
+# file backup with last modification date
 function fbackup() {
     dd=$(date -r "${1}" +"%Y%m%d") ; cp "${1}" "${1%.*}.${dd}.${1##*.}"
 }
@@ -39,31 +40,36 @@ alias qgadi="ssh gadi 'source /etc/bashrc ; qstat -u moc801'"
 alias qexplor="ssh explor 'source /etc/bashrc ; squeue -u zzy20'"
 
 ###############################################################################
-# TeX
-alias dvips='dvips -j0 -Ppdf -Pdownload35 -G0 -t a4 -D 1200 -Z -mode ljfzzz'
-alias dvipdf='dvipdfmx'
-alias xdvi='xdvi -hush'
-alias dvi='xdvi -hush'
-# function techit() { IN=${1%.*}; latex ${IN}; latex ${IN}; echo ' '; echo 'BIBLIO'; echo ' '; bibtex ${IN}; latex ${IN}; latex ${IN}; latex ${IN}; \dvips -Ppdf -o ${IN}.ps ${IN} ; }
+# LaTeX
 function techit() {
     IN=${1%.*}
-    printf "\nLaTeX 1\n\n"
+    BIB=bibtex
+    if [[ $# -gt 1 ]] ; then BIB=biber ; fi
+    printf "\n\nLaTeX 1 (2x)\n\n"
     pdflatex ${IN}
     pdflatex ${IN}
-    printf "\nBIBLIO\n\n"
-    bibtex ${IN};
-    printf "\nLaTeX 2\n\n"
+    printf "\n\nBibTeX\n\n"
+    ${BIB} ${IN};
+    printf "\n\nLaTeX 2 (2x)\n\n"
     pdflatex ${IN}
     pdflatex ${IN}
     latex_count=5
     while grep -Es 'Rerun (LaTeX|to get cross-references right)' ${IN}.log && [ ${latex_count} -gt 0 ] ; do
-	pdflatex ${IN}
-	((latex_count--))
+        if [[ latex_count == 5 ]] ; then printf "\n\nLaTeX 3 (max 5x)\n\n" ; fi
+	      pdflatex ${IN}
+	      ((latex_count--))
     done
 }
-function cleartech() { IN=${1%.*}; \rm ${IN}.{abs,aux,bbl,blg,brf,dvi,fff,idx,ilg,ind,lof,log,lot,nav,out,snm,spl,tex.flc,tex~,toc,ttt,thm} ; }
-# function pcleartech() { IN=${1%.*}; cleartech ${IN} ; \rm ${IN}.{ps,pdf} ; }
-alias cleantech=cleartech
-# alias pcleantech=pcleartech
+function btechit() {
+    techit ${1} "biber"
+}
+# function cleartechit() { IN=${1%.*} ; \rm ${IN}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,lof,log,lot,nav,out,run.xml,snm,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
+function cleartechit() { \rm ${1%.*}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,lof,log,lot,nav,out,run.xml,snm,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
+alias clearbtechit=cleartechit
+
+# alias dvips='dvips -j0 -Ppdf -Pdownload35 -G0 -t a4 -D 1200 -Z -mode ljfzzz'
+# alias dvipdf='dvipdfmx'
+# alias xdvi='xdvi -hush'
+# alias dvi='xdvi -hush'
 # function techdiss() { latex diss; latex diss; bibtex kap01; bibtex kap02; bibtex kap03; bibtex kap04; bibtex sum; latex diss; latex diss; latex diss; \dvips -Ppdf -o diss.ps diss ; }
-# function cleardiss() { cleartech diss; cleartech deck; cleartech title; cleartech abstract; cleartech toc; cleartech kap01; cleartech kap02; cleartech kap03; cleartech kap04; cleartech sum; cleartech lof; cleartech lot; cleartech merci ; }
+# function cleartechdiss() { cleartechit diss; cleartechit deck; cleartechit title; cleartechit abstract; cleartechit toc; cleartechit kap01; cleartechit kap02; cleartechit kap03; cleartechit kap04; cleartechit sum; cleartechit lof; cleartechit lot; cleartechit merci ; }

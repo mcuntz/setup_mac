@@ -457,7 +457,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    The next opening of Emacs compiled another 200+ packages and worked like a charm afterwards.
 
 ** LaTeX
-   One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I hope that Homebrew will handle the update between years, which is always a hassle otherwise; but I do not know yet if Homebrew will handle it. The full MacTex installation including all GUIs, Apps, and Programs is:
+   One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I let Homebrew handle the update between years (=brew upgrade --cask basictex=), which is always a hassle otherwise. The full MacTex installation including all GUIs, Apps, and Programs is:
 
    #+BEGIN_SRC bash
      brew install --cask mactex
@@ -488,7 +488,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          adjustbox collectbox threeparttable capt-of pgf simplekv \
          cmbright tcolorbox environ titling gensymb program breakurl \
          ncctools vruler apacite biblatex biber blindtext pgfgantt \
-         biblatex-chicago \
+         biblatex-chicago biblatex-apa fontawesome5 cormorantgaramond \
          ; do sudo tlmgr install ${i} ; done
    #+END_SRC
 
