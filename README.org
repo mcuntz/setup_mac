@@ -495,7 +495,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    #+BEGIN_SRC bash
      sudo tlmgr update --self ; \
-     for i in \
+     sudo tlmgr install \
          wasysym german titlesec wasy elsarticle \
          supertabular lineno helvetic textpos multirow subfigure appendix \
          lipsum dinbrief a0poster wallpaper collection-fontsrecommended \
@@ -511,8 +511,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          cmbright tcolorbox environ titling gensymb program breakurl \
          ncctools vruler apacite biblatex biber blindtext pgfgantt \
          biblatex-chicago biblatex-apa fontawesome5 cormorantgaramond \
-         sectsty pdfcol soul \
-         ; do sudo tlmgr install ${i} ; done
+         sectsty pdfcol soul
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
