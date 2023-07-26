@@ -31,7 +31,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   - [[#homebrew][Homebrew]]
   - [[#set-your-default-shell-2][Set your default shell #2]]
   - [[#emacs][Emacs]]
-    - [[#notes][Notes]]
+    - [[#notes-for-spacemacs][Notes for Spacemacs]]
   - [[#latex][LaTeX]]
   - [[#freeware][Freeware]]
   - [[#myriad-pro][Myriad Pro]]
@@ -434,17 +434,17 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      brew install --cask homebrew/cask-fonts/font-source-code-pro
    #+END_SRC
 
-   And I immediately installed aspell for spell checking within Spacemacs, and the GNU version of tar (new requirement since Emacs 28.2).
+   And I immediately installed aspell for spell checking within Spacemacs.
 
    #+BEGIN_SRC bash
-     brew install aspell gnu-tar
+     brew install aspell
    #+END_SRC
 
    If you open the new Emacs for the first time, it will install and byte-compile more than 200 packages. This might take some time. But you will be asked at least one confirmation in-between.
 
    The first opening will also produce a new .spacemacs. Compare it with the .spacemacs.bak and add your layers and user sections. The next opening of Emacs will probably compile another 100 packages or so.
 
-*** Notes
+*** Notes for Spacemacs
 
    Spacemacs could not access external disks on my systems (Catalina 10.15.7, Big Sur 11.5.1, Monterey 12.0.1) because it did not have the right permissions. I had to give /Full Disk Access/ to =/usr/bin/ruby=.
    Before macOS 13 Ventura, I was following [[https://emacs.stackexchange.com/questions/53026/how-to-restore-file-system-access-in-macos-catalina/53037#53037][this]]: Open /System Preferences/ -> /Security & Privacy/ -> /Privacy/, select /Full Disk Access/ in the left pane. From macOS 13 Ventura, it is /System Preferences/ > /Privacy & Security/ > /Full Disk Access/. Then click + and add =/usr/bin/ruby= to resolve the issue. =/usr= is hidden by default on macOS but you can toggle visibility in /Finder/ by using =Shift+Command+Period=, i.e. =Shift+Command+.=
@@ -455,9 +455,9 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      rm -r ~/.emacs.d/elpa/28.2/develop/org-9.6.7
    #+END_SRC
 
-   and start Emacs again.
+   and start Emacs again. It will re-install the org-layer, which should work.
 
-   If there is an error on startup telling =An error occurred while installing vim-powerline (error: (wrong-type-argument package-desc nil))=, the vim-mode needs the tar utility from gnu. Install with Homebrew:
+   If there is an error on startup telling =An error occurred while installing vim-powerline (error: (wrong-type-argument package-desc nil))=, the vim-mode installed needs the GNU version of the tar utility. Install it with Homebrew:
 
    #+BEGIN_SRC bash
      brew install gnu-tar
@@ -465,7 +465,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    and start Emacs again.
 
-   There is an [[https://emacs.stackexchange.com/questions/74289/emacs-28-2-error-in-macos-ventura-image-type-invalid-image-type-svg][issue]] with the way Emacs 28.2 initializes its image support on macOS 13 Ventura, which leads to that I cannot use dired mode anymore. I had to install the current development version of Emacs, which is fortunately quite easy:
+   There is an [[https://emacs.stackexchange.com/questions/74289/emacs-28-2-error-in-macos-ventura-image-type-invalid-image-type-svg][issue]] with the way Emacs 28.2 initializes its image support on macOS 13 Ventura, which leads to that I could not use dired-mode anymore. I had to install the current development version of Emacs, which is fortunately quite easy:
 
    #+BEGIN_SRC bash
      brew uninstall emacs
