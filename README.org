@@ -304,25 +304,25 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - *GNU compiler and netCDF software*
 
-     The gcc suite includes /gfortran/. Install the netcdf-C version, which comes with /ncdump/, etc., install /nco/, /ncview/, and /Panoply/.
-     Homebrew had netcdf-C, netcdf-C++, and netcdf-Fortran bundled in /netcdf/ before. They are individual packages now. /netcdf/ installs the netcdf-C package only now. See install\under{}netcdf below for Fortran support.
-      One can also install /cdo/ with Homebrew. /cdo/ is, however, quite a bit faster when compiled with the Intel compiler and not with the GNU compiler as in Homebrew.
+     The gcc suite includes /gfortran/. /cmake/ is the build system of various software packages.
+     Install /nco/, /ncview/, and /Panoply/ to work and visualise netCDF files. This installs the netcdf-C version, which comes with /ncdump/, etc. Homebrew had netcdf-C, netcdf-C++, and netcdf-Fortran bundled in /netcdf/ before. They are individual packages now. /netcdf/ installs the netcdf-C package only. See install\under{}netcdf below for Fortran support.
+      One can also install /cdo/ with Homebrew. /cdo/ is quite a bit faster when compiled with the Intel compiler and not with the GNU compiler as in Homebrew. However, this is quite an elaborate process, which I do not cover here.
 
      #+BEGIN_SRC bash
-       for i in ghostscript gcc netcdf cmake udunits proj jasper gsl ; do \
-           brew install ${i} ; done
+       brew install gcc
+       brew install cmake
      #+END_SRC
      #+BEGIN_SRC bash
-       for i in antlr@2 geos gdal nco ncview ; do brew install ${i} ; done
+       for i in geos gdal nco ncview ; do brew install ${i} ; done
+     #+END_SRC
+     #+BEGIN_SRC bash
+       brew install cdo
      #+END_SRC
      #+BEGIN_SRC bash
        brew install --cask temurin  # Java, for panoply
      #+END_SRC
      #+BEGIN_SRC bash
        brew install --cask panoply
-     #+END_SRC
-     #+BEGIN_SRC bash
-       brew install cdo
      #+END_SRC
 
      /HDF5/ from Homebrew is not thread-safe so /cdo/ will need the -L flag if piping, i.e. more than one operator is given to /cdo/ in one call such as =cdo -timmean -selvar,Tair infile outfile=. I use in my =.bashrc=:
@@ -335,18 +335,47 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
    - *Install more practical software*
 
-     Some more practical software such as /wget/ for retrieval of files from web servers, /imagemagick/ for image manipulation, /ffmpeg/ for movies, /htop/ for an extended top, /pandoc/ to convert between markup languages, /fd/ for a faster find, /ripgrep/ for grepping across a directory tree, the statistical computing environment /R/, the version control system /subversion/, and the command-line fuzzy finder /fzf/:
+     Some more practical software such as, /fd/ for a faster find, /ripgrep/ for grepping across a directory tree, the statistical computing environment /R/, the version control system /subversion/, and the command-line fuzzy finder /fzf/, and the tldr implementation /tealdeer/ for :
 
      #+BEGIN_SRC bash
-       for i in wget imagemagick ffmpeg enscript htop graphviz pkg-config \
-            pandoc doxygen tree git fd bat ripgrep r subversion ; do \
-            brew install ${i} ; done
-     #+END_SRC
-     #+BEGIN_SRC bash
-       brew install fzf
+       brew install htop        # dynamic real-time information of running processes
+       brew install tree        # visualise folder tree structure
+       brew install fd          # faster find
+       brew install bat         # cat with syntax highlighting
+       brew install ripgrep     # grep across directory tree
+       brew install fzf         # command-line fuzzy finder
+
+       brew install wget        # retrieve files from web servers
+       brew install tealdeer    # simples help pages for command-line tools
+
+       brew install ghostscript # postscript and pdf language interpreter
+       brew install enscript    # convert text files to postscript files
+       brew install imagemagick # image manipulations
+       brew install ffmpeg      # for movies
+       brew install pandoc      # convert between markup languages
+
+       brew install pkg-config  # reveal details of installed libraries
+       brew install graphviz, doxygen # documentation for programming languages
+       brew install subversion  # version control system
+       brew install git         # version control system
+
+       brew install r           # statistical computing environment
      #+END_SRC
      #+BEGIN_SRC bash
        ${HOMEBREW_PREFIX}/opt/fzf/install
+       tldr --update
+     #+END_SRC
+
+     I also set =${HOME$/.tealdeer= as my configuration directory for /tealdeer/ in =.bash_profile=,
+
+     #+BEGIN_SRC bash
+       export TEALDEER_CONFIG_DIR=${HOME}/.tealdeer
+     #+END_SRC
+
+     and get a standard config file =${HOME}/.tealdeer/config.toml= that I edit to tailor to my taste:
+
+     #+BEGIN_SRC bash
+       tldr --seed-config
      #+END_SRC
 
 ** Set your default shell #2
@@ -511,7 +540,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          cmbright tcolorbox environ titling gensymb program breakurl \
          ncctools vruler apacite biblatex biber blindtext pgfgantt \
          biblatex-chicago biblatex-apa fontawesome5 cormorantgaramond \
-         sectsty pdfcol soul
+         sectsty pdfcol soul anyfontsize doublestroke
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
