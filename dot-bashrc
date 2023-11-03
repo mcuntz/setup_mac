@@ -37,6 +37,7 @@ function fbackup() {
 # Telnet and FTP
 alias ftp='ftp -i'
 alias qgadi="ssh gadi 'source /etc/bashrc ; qstat -u moc801'"
+alias qcatgadi="ssh gadi 'source /etc/bashrc ; qcat'"
 alias qexplor="ssh explor 'source /etc/bashrc ; squeue -u zzy20'"
 
 ###############################################################################

@@ -84,13 +84,13 @@ apppath() {
 }
 
 # PATH
-# anaconda might install netcdf, which is hence in ~/.pyenv/shims
+# anaconda might install netcdf, which is hence in ${HOME}/.pyenv/shims
 # but anaconda might not be the active python version and ncdump,
 # for example, might not work -> use version of homebrew
 export PATH=$(prepath ${PATH} ${HOMEBREW_PREFIX}/opt/netcdf/bin)
 export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
-export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
+# export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
 # user version of /usr/local
 # if [[ -d ${HOME}/../shared/local ]] ; then  # explor
 #     homelocal=${HOME}/../shared/local
@@ -128,13 +128,31 @@ export MANPATH=$(apppath ${MANPATH} /System/Library/Frameworks/JavaVM.framework/
 
 # PYTHONPATH
 # if [[ -d /usr/local/lib/python2.7/site-packages ]] ; then export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python2.7/site-packages" ; fi
-export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/jams_python)
-export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/pyeee)
+# export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/jams_python)
+# export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/pyeee)
 export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/python/lib)
 # export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/jams/janalyse)
 
 # IDL/GDL
 export IDL_STARTUP=${HOME}/bin/idlstartup.pro
+
+# # TAU
+# # export PATH="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/:/Applications/TAU/tau/apple/bin:$PATH"
+# export PATH=$(prepath ${PATH} /Applications/TAU/tau/apple/bin)
+
+# RUBY
+# Install
+#     brew install openssl chruby ruby-install xz
+#     export CONFIGURE_ARGS=""
+#     for ext in openssl readline libyaml zlib; do
+#         CONFIGURE_ARGS="${CONFIGURE_ARGS} --with-$ext-dir=$(brew --prefix $ext)"
+#     done
+#     ruby-install ruby
+if [[ -f ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/chruby.sh ]] ; then
+    source ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/chruby.sh
+    source ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/auto.sh
+    chruby ruby-3.2.2
+fi
 
 #
 # Prompt, etc.
@@ -173,11 +191,11 @@ if [[ "${DISPLAY=}" == "" ]] ; then
 fi
 
 # Aliases
-[[ -f ${HOME}/.bashrc ]] && source ~/.bashrc
+[[ -f ${HOME}/.bashrc ]] && source ${HOME}/.bashrc
 
 # command line fuzzy finder
-if [[ -f ~/.fzf.bash ]] ; then
-    source ~/.fzf.bash
+if [[ -f ${HOME}/.fzf.bash ]] ; then
+    source ${HOME}/.fzf.bash
     export FZF_DEFAULT_COMMAND=fd
 fi
 
@@ -195,6 +213,9 @@ fi
 [[ -f ${HOME}/prog/jams/bash/jams_bash_complete ]] && source ${HOME}/prog/jams/bash/jams_bash_complete
 [[ -f ${HOME}/prog/jams/utils/jams_utils_complete ]] && source ${HOME}/prog/jams/utils/jams_utils_complete
 # [[ -f ${HOME}/prog/jams/utils/cdoCompletions.bash ]] && source ${HOME}/prog/jams/utils/cdoCompletions.bash
+
+# tldr path
+if [[ -d ${HOME}/.tealdeer ]] ; then export TEALDEER_CONFIG_DIR=${HOME}/.tealdeer ; fi
 
 # --------------------------------------------------------------------
 # Interactive session - machine-specific  settings
@@ -247,12 +268,12 @@ fi
 if [[ "${ossystem}" == "DARWIN" ]] ; then
     osdigit=$(( $osver - 4 ))
     for ((i=9; i<=19; i++)) ; do
-        [[ ${osver} -eq ${i} && -f ${HOME}/.bashrc.10.${osdigit} ]] && source ~/.bashrc.10.${osdigit}
+        [[ ${osver} -eq ${i} && -f ${HOME}/.bashrc.10.${osdigit} ]] && source ${HOME}/.bashrc.10.${osdigit}
     done
     osdigit=$(( $osver - 15 ))
-    [[ ${osver} -eq 20 && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ~/.bashrc.11.${osdigit}
-    [[ ${osver} -eq 21 && -f ${HOME}/.bashrc.12.0 ]] && source ~/.bashrc.12.0
-    [[ ${osver} -eq 22 && -f ${HOME}/.bashrc.13 ]] && source ~/.bashrc.13
+    [[ ${osver} -eq 20 && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ${HOME}/.bashrc.11.${osdigit}
+    [[ ${osver} -eq 21 && -f ${HOME}/.bashrc.12.0 ]] && source ${HOME}/.bashrc.12.0
+    [[ ${osver} -eq 22 && -f ${HOME}/.bashrc.13 ]] && source ${HOME}/.bashrc.13
 elif [[ "${ossystem}" == "CYGWIN" ]] ; then
     [[ -f ${HOME}/.bashrc.cygwin ]] && source ${HOME}/.bashrc.cygwin
 elif [[ "${ossystem}" == "LINUX" && "${domain}" == "ENA.MPG" ]] ; then
