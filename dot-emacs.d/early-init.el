@@ -23,6 +23,12 @@
  menu-bar-mode nil
  )
 
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we easily halve startup times with fonts that are
+;; larger than the system default.
+;; https://github.com/CSRaghunandan/.emacs.d/blob/master/early-init.el
+(setq frame-inhibit-implied-resize t)
+
 ;; Loads theme, avoids the white screen flash on startup.
 ;; https://github.com/SystemCrafters/crafted-emacs
 (load-theme 'manoj-dark t)

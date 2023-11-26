@@ -12,6 +12,4 @@
      (define-key org-mode-map (kbd "<M-right>") 'right-word)
      (define-key org-mode-map (kbd "<M-left>") 'left-word)
      (define-key org-mode-map (kbd "<M-S-right>") nil)
-     (define-key org-mode-map (kbd "<M-S-left>") nil)
-     )
-  )
+     (define-key org-mode-map (kbd "<M-S-left>") nil)))

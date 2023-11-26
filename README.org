@@ -439,7 +439,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      brew install aspell
    #+END_SRC
 
-   If you open the new Emacs for the first time, it will install and byte-compile some packages. This might take some time while the emacs seems to be stalled as a black window.
+   If you open the new Emacs for the first time, it will install and byte-compile some packages. This might take some time while Emacs seems to be stalled as a black window.
 
 ** LaTeX
    One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I let Homebrew handle the update between years (=brew upgrade --cask basictex=), which is always a hassle otherwise:

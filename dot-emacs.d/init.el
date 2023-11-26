@@ -29,6 +29,8 @@
 ;; Note, it is important to set this here and not in "early-init.el", otherwise,
 ;; it won't work with Chemacs2-based installations.
 (setq user-emacs-directory (file-name-concat user-emacs-directory "you"))
+;; Set also package-user-dir to the new user directory
+(setq package-user-dir user-emacs-directory)
 
 ;; exec path
 ;; https://www.emacswiki.org/emacs/ExecPath
@@ -47,7 +49,7 @@
   )
 (set-exec-path-from-shell-PATH)
 
-;; setup straight.el
+;; Setup straight.el
 ;; https://github.com/radian-software/straight.el#getting-started
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -77,7 +79,8 @@
 (delete-selection-mode 1) ; if 0, typed text is just inserted regardless of any selection
 (setq auto-save-default t
       make-backup-files t
-      backup-by-copying-when-linked t) ; preserves links when saving
+      backup-by-copying-when-linked t  ; preserves links when saving
+      vc-make-backup-files t)          ; also backup files under version control
 (setq set-scroll-bar-mode 'right
       menu-bar-right-scroll-bar t)
 ;; (setq tab-always-indent t) ; if nil, tab opens helm suggestions
@@ -126,6 +129,7 @@
 (load "me-rst")
 (load "me-latex")
 (load "me-git")
+(load "me-parenthesis")
 
 ;; start Emacs daemon
 (load "server")

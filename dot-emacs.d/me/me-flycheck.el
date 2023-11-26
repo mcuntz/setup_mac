@@ -5,8 +5,7 @@
 (use-package flycheck
   :custom
   (flycheck-checker-error-threshold 800)
-  (flycheck-disabled-checkers '(python-mypy))
-  )
+  (flycheck-disabled-checkers '(python-mypy)))
 (global-flycheck-mode)
 
 ;; (setq flycheck-checker-error-threshold 800)

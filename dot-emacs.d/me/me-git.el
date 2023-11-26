@@ -10,5 +10,4 @@
          ("Q" . mu-magit-kill-buffers)
          (:map dired-mode-map
                ("l" . magit-dired-log)))
-  :bind* (("C-c m s" . magit-status))
-  )
+  :bind* (("C-c m s" . magit-status)))
