@@ -14,13 +14,22 @@ if [[ -d /opt/homebrew ]] ; then
     export HOMEBREW_PREFIX="/opt/homebrew";
     export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
     export HOMEBREW_REPOSITORY="/opt/homebrew";
-    export PATH=${PATH}:/opt/homebrew/bin
 elif [[ -e /usr/local/bin/brew ]] ; then
     export HOMEBREW_PREFIX="/usr/local";
     export HOMEBREW_CELLAR="/usr/local/Cellar";
     export HOMEBREW_REPOSITORY="/usr/local";
-    export PATH=${PATH}:/usr/local/bin
 fi
+if [[ "${HOMEBREW_PREFIX:-nil}" != "nil" ]] ; then
+    export PATH=${HOMEBREW_PREFIX}/bin:${HOMEBREW_PREFIX}/sbin:${PATH}
+    export MANPATH="${HOMEBREW_PREFIX}/share/man${MANPATH+:$MANPATH}:"
+    export INFOPATH="${HOMEBREW_PREFIX}/share/info:${INFOPATH:-}"
+fi
+
+# make sure /usr/local/bin is at the beginning of PATH
+if [[ -n $(echo ${PATH} | grep "/usr/local/bin") ]] ; then
+    export PATH=$(echo ${PATH} | sed 's|^/usr/local/bin:||' | sed 's|:/usr/local/bin$||' | sed 's|:/usr/local/bin:|:|')
+fi
+export PATH=/usr/local/bin:${PATH}
 
 # use pyenv also in non-interactive scripts
 if [[ -d ${HOME}/.pyenv ]] ; then
@@ -200,13 +209,9 @@ if [[ -f ${HOME}/.fzf.bash ]] ; then
 fi
 
 # bash completion
-if [[ -f "/usr/local/etc/profile.d/bash_completion.sh" ]] ; then
-    export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-    source "/usr/local/etc/profile.d/bash_completion.sh"
-fi
-if [[ -f "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] ; then
-    export BASH_COMPLETION_COMPAT_DIR="/opt/homebrew/etc/bash_completion.d"
-    source "/opt/homebrew/etc/profile.d/bash_completion.sh"
+if [[ -f "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]] ; then
+    export BASH_COMPLETION_COMPAT_DIR="${HOMEBREW_PREFIX}/etc/bash_completion.d"
+    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
 fi
 [[ -f ${HOME}/bin/binCompletions.bash ]] && source ${HOME}/bin/binCompletions.bash
 [[ -f ${HOME}/prog/github/ido/ido_bash_complete ]] && source ${HOME}/prog/github/ido/ido_bash_complete
