@@ -2,6 +2,12 @@
 
 ;; key bindings
 
+;; (when (is-mac-p)
+;;   (setq mac-command-modifier 'meta
+;;         mac-option-modifier 'super
+;;         mac-control-modifier 'control
+;;         ns-function-modifier 'hyper))
+
 ;; key bindings C- Ctrl, M- option, S- shift, s- command
 ;; (global-set-key [f1]       'advertised-undo)
 (global-set-key (kbd "<f2>")      'query-replace-regexp)
@@ -20,3 +26,4 @@
 (global-set-key (kbd "s-<left>")  'beginning-of-line)      ; Cmd-left
 (global-set-key (kbd "H-<right>") 'end-of-line)            ; Cmd-right
 (global-set-key (kbd "s-<right>") 'end-of-line)            ; Cmd-right
+(global-set-key (kbd "M-#")       'dictionary-lookup-definition)

@@ -5,7 +5,7 @@
 #+TITLE: Setting up macOS for scientific computing and software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 01.02.2023
+Modified: 07.01.2024
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
@@ -45,6 +45,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 ** Fresh install
 
+If you're using a Mac with an Intel processor and the Apple T2 Security Chip, make sure that Startup Security Utility is set to allow booting from external or removable media. Follow the instructions on [[https://support.apple.com/en-au/102522][support.apple.com]]. You can find the list of models with the T2 Security chip at https://support.apple.com/en-au/103265 or under /System Information / > /Hardware/ > /Controller/.
+
 *** Before starting
     1. You might want to use iCloud for your /Contacts/, /Calendars/, /Reminders/, /Notes/, and /Keychain/. If you had not switched it on, you should do this a couple of hours before installation because it takes some time until things get synchronised. Some logoff/login might also help. You can check all but /Keychain/ on [[https://www.icloud.com][icloud.com]]. You can switch it off again on the updated system after synchronisation finished, if not wanted.
 
@@ -63,44 +65,52 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
     1. A list of your installed programs in /Applications/ might come in handy.
 
 *** Make a bootable installer for macOS on USB
-    From [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
+    From [[https://support.apple.com/en-us/101578][support.apple.com]]:
 
-    1. Download a macOS installer such as macOS Ventura from the App Store. When the macOS installer opens, quit it without continuing installation.
+    1. Download a macOS installer such as macOS Sonoma from the App Store. When the macOS installer opens, quit it without continuing installation.
 
        The installer should have a size of about 12-16 GB. Based on your Mac, only a much smaller app might have been downloaded, which would later download the actual files during installation. This does not allow to create a bootable thumb drive. Try to get the full installer for example from the Apple Developer site.
 
-    1. Format a USB flash drive of at least 16 GB storage as /Mac OS Extended/ with name InstallVentura, for example.
+    1. Format a USB flash drive of at least 16 GB storage as /Mac OS Extended/ with name InstallSonoma, for example.
 
     1. In Terminal type:
 
        #+BEGIN_SRC bash
-         sudo /Applications/Install\ macOS\ Ventura.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallVentura --nointeraction
+	 sudo /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallSonoma --nointeraction
        #+END_SRC
 
 *** Installing macOS with the bootable installer
-    Also from [[https://support.apple.com/en-us/HT201372][support.apple.com]]:
+    Basically follow [[https://support.apple.com/en-us/101578][support.apple.com]] because the steps are slightly different between Intel and Apple Silicon chips.
 
     1. Startup is different if you have a Mac with Apple silicon chips or Intel processors.
 
-       a) Intel processor
-          - Connect USB drive, restart while holding Option (alt) key until you see the bootable volumes.
+       a) Intel processor (check the notes at the beginning of the section about Apple's T2 Security Chip)
+          - Shut down.
 
-          - Select the volume containing the bootable installer, i.e. /Install macOS Ventura/, and press Return.
+	  - Plug the bootable installer into a Mac that is connected to the internet.
+
+	  - Turn on your Mac, then immediately press and hold the Option (Alt) key. Release the Option key when you see a dark screen showing your bootable volumes.
+
+	  - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, and press Return.
+
+	  - Choose your language, if prompted.
+
+	  - Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
+
+          - Select any other internal volumes in the sidebar, then click the delete volume (–) button in the toolbar to delete that volume. Disregard any internal volume named Macintosh HD or Macintosh HD – Data, as well as any volumes in the External and Disk Images sections of the sidebar.
+
+          - Then quit /Disk Utility/.
+
+          - Select /Install macOS Sonoma/, click Continue and follow the on-screen steps.
 
        a) Apple silicon
           - Shut down.
 
-          - Turn on Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
+          - Plug the bootable installer into a Mac that is connected to the internet.
 
-          - Select the volume containing the bootable installer, i.e. /Install macOS Ventura/, and click Continue.
+	  - Turn on the Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
 
-    1. Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
-
-    1. Select any other internal volumes in the sidebar, then click the delete volume (–) button in the toolbar to delete that volume. Disregard any internal volume named Macintosh HD or Macintosh HD – Data, as well as any volumes in the External and Disk Images sections of the sidebar.
-
-       Then quit /Disk Utility/.
-
-    1. Select /Install macOS Ventura/ and follow the on-screen steps.
+	  - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, then click Continue.
 
 ** Update via /Software Update/
 
@@ -135,10 +145,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
        #+END_SRC
        #+BEGIN_SRC bash
-         [[ -d /opt/homebrew ]] && rm -r /opt/homebrew
          [[ -f ${HOME}/.fzf.bash ]] && rm ${HOME}/.fzf.bash
          [[ -f ${HOME}/.fzf.zsh ]] && rm ${HOME}/.fzf.zsh
        #+END_SRC
+       #+BEGIN_SRC bash
+         [[ -d /opt/homebrew ]] && rm -r /opt/homebrew
+       #+END_SRC
+
+       The last command might need =sudo= before =rm=.
 
        Remove LaTeX:
 
@@ -155,7 +169,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          rm -r ${HOME}/.pyenv
        #+END_SRC
 
-       Remove everything under =/usr/local=. This seems extreme but Apple has nothing installed under =/usr/local=, so it comes all from you or Homebrew. You might change into =/usr/local= and remove selected directories by hand.
+       Remove everything under =/usr/local=. This seems extreme but Apple has nothing installed under =/usr/local=, so it comes all from you or Homebrew. You might change into =/usr/local= and remove selected directories by hand. For example, our virus scanner at work installs its uninstall-script in =/usr/local=.
 
        #+BEGIN_SRC bash
          rm -r /usr/local/*
@@ -181,12 +195,15 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      xcode-select --install
    #+END_SRC
 
-   There is an glitch if you installed with /Software Update/ and had a full XCode installation: the XCode Command Line Tools do not get updated so that gfortran, for example, will clash with XCode's clang compiler. So I first uninstalled CLT and reinstalled them again:
+   There was a glitch (in macOS 13 Ventura) if you installed with /Software Update/ and had a full XCode installation: the XCode Command Line Tools did not get updated so that gfortran, for example, clashes with XCode's clang compiler. So I first uninstalled CLT and reinstalled them again:
 
    #+BEGIN_SRC bash
      sudo rm -rf /Library/Developer/CommandLineTools
      sudo xcode-select --install
    #+END_SRC
+
+   On macOS 14 Sonoma, this prints /xcode-select: note: install requested for command line developer tools/
+and you have to open /Software Update/ again to install the command line tools.
 
    This still pointed to the compiler within the XCode app:
 
@@ -201,7 +218,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
      sudo xcode-select -switch /Library/Developer/CommandLineTools
    #+END_SRC
 
-   If you did a frech install, you might let Homebrew do the job, i.e. it will install the XCode Connad Line Tools if they are missing.
+   If you did a fresh install, you might let Homebrew do the job, i.e. it will install the XCode Command Line Tools if they are missing.
 
    The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools. If you install Xcode, it is reasonable to complete the Xcode installation and the one-time opening before starting with [[#homebrew][Homebrew]]. Otherwise, it might install the command line tools CLT twice, but it costs only download bandwidth and time.
 
@@ -304,6 +321,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      #+BEGIN_SRC bash
        brew install gcc
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install cmake
      #+END_SRC
      #+BEGIN_SRC bash
@@ -333,30 +352,65 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
      #+BEGIN_SRC bash
        brew install htop        # dynamic real-time information of running processes
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install tree        # visualise folder tree structure
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install fd          # faster find
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install bat         # cat with syntax highlighting
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install ripgrep     # grep across directory tree
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install fzf         # command-line fuzzy finder
-
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install wget        # retrieve files from web servers
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install tealdeer    # simples help pages for command-line tools
-
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install ghostscript # postscript and pdf language interpreter
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install enscript    # convert text files to postscript files
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install imagemagick # image manipulations
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install ffmpeg      # for movies
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install pandoc      # convert between markup languages
-
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install pkg-config  # reveal details of installed libraries
-       brew install graphviz, doxygen # documentation for programming languages
+     #+END_SRC
+     #+BEGIN_SRC bash
+       brew install graphviz    # for doxygen
+     #+END_SRC
+     #+BEGIN_SRC bash
+       brew install doxygen     # documentation for programming languages
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install subversion  # version control system
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install git         # version control system
-
+     #+END_SRC
+     #+BEGIN_SRC bash
        brew install r           # statistical computing environment
      #+END_SRC
      #+BEGIN_SRC bash
        ${HOMEBREW_PREFIX}/opt/fzf/install
+     #+END_SRC
+     #+BEGIN_SRC bash
        tldr --update
      #+END_SRC
 
@@ -413,7 +467,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    After a system update such as from /System Preferences/ > /Software Update/, there might be a link =Relocated Items/= on your Desktop pointing to =/Users/Shared/Relocated Items=. This is a copy of the changed =/etc/shells=. As long as Apple does not modify =/etc/shells= during an update, the edited version stays untouched, though. One can safely delete the link on the Desktop and also the directory under =/Users/Shared=. It does not hurt to do a =cat /etc/shells= in the terminal before, checking that your edits are still there.
 
 ** Emacs
-   I used to use [[http://aquamacs.org][Aquamacs]], then used [[https://www.spacemacs.org][Spacemacs]], and then tried a few other setups ([[https://github.com/doomemacs/doomemacs][doom]], [[https://github.com/angrybacon/dotemacs][dotemacs]], [[https://codeberg.org/kngwyu/boremacs][boremacs]], [[https://github.com/abougouffa/minemacs][minemacs]], etc.). Now I am using my own setup by copy/paste different bits from the examples before. My current setup is in =dot-emacs.d= in this repository.
+   I used to use [[http://aquamacs.org][Aquamacs]], then used [[https://www.spacemacs.org][Spacemacs]], and then tried a few other setups ([[https://github.com/doomemacs/doomemacs][doom]], [[https://github.com/angrybacon/dotemacs][dotemacs]], [[https://codeberg.org/kngwyu/boremacs][boremacs]], [[https://github.com/abougouffa/minemacs][minemacs]], etc.). Now I am using my own setup by copy/paste different bits from the other setups. My current setup is in =dot-emacs.d= in this repository.
 
    I install Emacs with Homebrew:
 
@@ -436,6 +490,8 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
    #+BEGIN_SRC bash
      brew tap homebrew/cask-fonts
      brew install --cask homebrew/cask-fonts/font-source-code-pro
+   #+END_SRC
+   #+BEGIN_SRC bash
      brew install aspell
    #+END_SRC
 
@@ -532,7 +588,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 ** Python
 
-   macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. From macOS Big Sur (11.5) onwards, macOS comes with Python 3 (from macOS 13 Ventura, is is actually part of the XCode command line tools). But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/: you can install different Python versions, very easily use different virtual environments in different directories (projects), etc.
+   macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. From macOS Big Sur (11.5) onwards, macOS comes with Python 3 (from macOS 13 Ventura, is is actually part of the XCode command line tools). But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/: you can install different Python versions, use very easily different virtual environments in different directories (projects), etc.
 
    Installation of Python versions can be a real mess at times, as noted by [[https://xkcd.com/1987/][XKCD]]:
 
@@ -596,24 +652,24 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
            CFLAGS="-I$(brew --prefix xz)/include" \
            LDFLAGS="-L$(brew --prefix xz)/lib" \
            PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig" \
-           pyenv install 3.10.9
+           pyenv install 3.12.1
      #+END_SRC
      #+BEGIN_SRC bash
        pyenv rehash
      #+END_SRC
 
-     This uses the newer Tcl/Tk version from Homebrew for /tkinter/, turns on profile guided optimization and link time optimization for Python being about 10% faster, and enables a framework build. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.10.9= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 (Ventura). Each installation of packages, creation of virtual environments, etc. will need sudo then. This is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
+     This uses the newer Tcl/Tk version from Homebrew for /tkinter/, turns on profile guided optimization and link time optimization for Python being about 10% faster, and enables a framework build. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.12.1= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then. This is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
 
      Virtual environments are created as:
 
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.10.9 test
+       pyenv virtualenv 3.12.1 pytest
        pyenv rehash
      #+END_SRC
 
-     The virtual environment /test/ can then be used just as any installed Python version with /pyenv/. For example:
+     The virtual environment /pytest/ can then be used just as any installed Python version with /pyenv/. For example:
      #+BEGIN_SRC bash
-       pyenv local testproject
+       pyenv local pytest
      #+END_SRC
 
      /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
@@ -622,10 +678,10 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        pyenv install miniconda3-4.7.12
        pyenv rehash
        pyenv global miniconda3-4.7.12
-       pyenv virtualenv test
+       pyenv virtualenv pytest
      #+END_SRC
 
-     You can then install (conda and pip) packages in the test nproject, etc.:
+     You can then install (conda and pip) packages in the test project, etc.:
 
      #+BEGIN_SRC bash
        conda install numpy scipy matplotlib
@@ -685,7 +741,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        CXXFLAGS="-I${HOMEBREW_PREFIX}/include" python -m pip install wxpython
      #+END_SRC
 
-     Replace /python -m pip/ with /conda/ if using conda environments or install mamba first and the use /mamba/ instead of /pip.
+     Replace /python -m pip/ with /conda/, or better /mamba/ after installing it, if using conda environments instead of /pip.
 
 ** locate
    Create locate database so that you can search files with the locate command:

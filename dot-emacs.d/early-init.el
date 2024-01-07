@@ -66,14 +66,14 @@
  ;; debug-on-error t
  )
 
-;; Better titlebar on MacOS
-;; https://github.com/abougouffa/minemacs
-;; (defconst os/linux (eq system-type 'gnu/linux) "Non-nil on GNU/Linux systems.")
-;; (defconst os/bsd (and (memq system-type '(berkeley-unix gnu/kfreebsd)) t) "Non-nil on BSD systems.")
-;; (defconst os/win (and (memq system-type '(cygwin windows-nt ms-dos)) t) "Non-nil on Windows systems.")
-(defconst os/mac (eq system-type 'darwin) "Non-nil on MacOS systems.")
-(when (and os/mac (featurep 'ns))
-  (push '(ns-transparent-titlebar . t) default-frame-alist))
+;; ;; Better titlebar on MacOS
+;; ;; https://github.com/abougouffa/minemacs
+;; ;; (defconst os/linux (eq system-type 'gnu/linux) "Non-nil on GNU/Linux systems.")
+;; ;; (defconst os/bsd (and (memq system-type '(berkeley-unix gnu/kfreebsd)) t) "Non-nil on BSD systems.")
+;; ;; (defconst os/win (and (memq system-type '(cygwin windows-nt ms-dos)) t) "Non-nil on Windows systems.")
+;; (defconst os/mac (eq system-type 'darwin) "Non-nil on MacOS systems.")
+;; (when (and os/mac (featurep 'ns))
+;;   (push '(ns-transparent-titlebar . t) default-frame-alist))
 
 ;; add directory to load path
 ;; (push (file-name-concat user-emacs-directory "me") load-path)

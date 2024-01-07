@@ -31,6 +31,8 @@
 (setq user-emacs-directory (file-name-concat user-emacs-directory "you"))
 ;; Set also package-user-dir to the new user directory
 (setq package-user-dir user-emacs-directory)
+;; Set a common cache directory
+(setq user-cache-directory (file-name-concat user-emacs-directory "cache"))
 
 ;; exec path
 ;; https://www.emacswiki.org/emacs/ExecPath
@@ -75,6 +77,23 @@
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
 
+;; Check OS
+;; https://github.com/mwfogleman/.emacs.d/
+(defun is-mac-p
+    ()
+  (eq system-type 'darwin))
+
+(defun is-linux-p
+    ()
+  (eq system-type 'gnu/linux))
+
+(defun is-windows-p
+    ()
+  (or
+   (eq system-type 'ms-dos)
+   (eq system-type 'windows-nt)
+   (eq system-type 'cygwin)))
+
 ;; Miscellaneous settings
 (delete-selection-mode 1) ; if 0, typed text is just inserted regardless of any selection
 (setq auto-save-default t
@@ -116,10 +135,12 @@
 (add-to-list 'image-types 'svg)
 
 ;; Modes and mode-specific settings
+(load "me-osx")
 (load "me-keybindings")
 ;; keyboard macros
 (fset 'comment-on-line-above
       [?\C-k ?\C-p ?\C-e return ?\C-y tab ?\C-n ?\C-e])
+(load "me-undo")
 (load "me-ivy")
 (load "me-flycheck")
 (load "me-flyspell")
@@ -130,6 +151,8 @@
 (load "me-latex")
 (load "me-git")
 (load "me-parenthesis")
+(load "me-kill")
+(load "me-tests")
 
 ;; start Emacs daemon
 (load "server")

@@ -4,8 +4,8 @@
 
 # set paths at Eve@UFZ and Gadi/Raijin@NCI-Australia even when non-interactive
 [[ -f /etc/bashrc ]] && source /etc/bashrc
-# set paths at MPI Hamburg even when non-interactive
-[[ -e /client/etc/profile.zmaw ]] && source /client/etc/profile.zmaw
+# # set paths at MPI Hamburg even when non-interactive
+# [[ -e /client/etc/profile.zmaw ]] && source /client/etc/profile.zmaw
 
 # set homebrew also in non-interactive scripts
 if [[ -d /opt/homebrew ]] ; then
@@ -277,8 +277,8 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
     done
     osdigit=$(( $osver - 15 ))
     [[ ${osver} -eq 20 && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ${HOME}/.bashrc.11.${osdigit}
-    [[ ${osver} -eq 21 && -f ${HOME}/.bashrc.12.0 ]] && source ${HOME}/.bashrc.12.0
-    [[ ${osver} -eq 22 && -f ${HOME}/.bashrc.13 ]] && source ${HOME}/.bashrc.13
+    osdigit=$(( $osver - 9 ))
+    [[ ${osver} -gt 20 && -f ${HOME}/.bashrc.${osdigit} ]] && source ${HOME}/.bashrc.${osdigit}
 elif [[ "${ossystem}" == "CYGWIN" ]] ; then
     [[ -f ${HOME}/.bashrc.cygwin ]] && source ${HOME}/.bashrc.cygwin
 elif [[ "${ossystem}" == "LINUX" && "${domain}" == "ENA.MPG" ]] ; then
@@ -317,11 +317,9 @@ if [[ "${ossystem}" == "DARWIN" ]] ; then
     [[ -d /Applications/itt/idl ]] && export IDL_DIR=/Applications/itt/idl
     [[ -d /Applications/exelis/idl ]] && export IDL_DIR=/Applications/exelis/idl
     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/2.7/bin)
-    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.6/bin)
-    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.7/bin)
-    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.8/bin)
-    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.9/bin)
-    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.10/bin)
+    for ((i=6; i<=10; i++)) ; do
+	export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.${i}/bin)
+    done
     if [[ -d /opt/pgi ]] ; then
         export PGI=/opt/pgi
         export MANPATH=$(apppath ${MANPATH} ${PGI}/osx86-64/2019/man)
@@ -359,7 +357,7 @@ fi
 if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export BASH_SILENCE_DEPRECATION_WARNING=1
     export HOMEBREW_NO_ANALYTICS=1
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.0.full.mc16
+    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mcmini
 fi
 
 #
