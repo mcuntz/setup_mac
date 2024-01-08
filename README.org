@@ -138,6 +138,9 @@ If you're using a Mac with an Intel processor and the Apple T2 Security Chip, ma
        #+BEGIN_SRC bash
          brew uninstall panoply
        #+END_SRC
+       #+BEGIN_SRC bash
+         brew uninstall emacs
+       #+END_SRC
 
        Remove Homebrew:
 
@@ -145,14 +148,12 @@ If you're using a Mac with an Intel processor and the Apple T2 Security Chip, ma
          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
        #+END_SRC
        #+BEGIN_SRC bash
-         [[ -f ${HOME}/.fzf.bash ]] && rm ${HOME}/.fzf.bash
-         [[ -f ${HOME}/.fzf.zsh ]] && rm ${HOME}/.fzf.zsh
+         [[ -f ${HOME}/.fzf.bash ]] && rm -f ${HOME}/.fzf.bash
+         [[ -f ${HOME}/.fzf.zsh ]] && rm -f ${HOME}/.fzf.zsh
        #+END_SRC
        #+BEGIN_SRC bash
-         [[ -d /opt/homebrew ]] && rm -r /opt/homebrew
+         [[ -d /opt/homebrew ]] && sudo rm -r /opt/homebrew
        #+END_SRC
-
-       The last command might need =sudo= before =rm=.
 
        Remove LaTeX:
 
@@ -348,7 +349,7 @@ and you have to open /Software Update/ again to install the command line tools.
 
    - *Install more practical software*
 
-     Some more practical software such as, /fd/ for a faster find, /ripgrep/ for grepping across a directory tree, the statistical computing environment /R/, the version control system /subversion/, and the command-line fuzzy finder /fzf/, and the tldr implementation /tealdeer/ for :
+     Some more practical software such as, /fd/ for a faster find, /ripgrep/ for grepping across a directory tree, the statistical computing environment /R/, the version control system /subversion/, and the command-line fuzzy finder /fzf/, and the tldr implementation /tealdeer/ for more concise help pages:
 
      #+BEGIN_SRC bash
        brew install htop        # dynamic real-time information of running processes
@@ -407,6 +408,9 @@ and you have to open /Software Update/ again to install the command line tools.
      #+BEGIN_SRC bash
        brew install r           # statistical computing environment
      #+END_SRC
+
+     And some installations of the helpers:
+
      #+BEGIN_SRC bash
        ${HOMEBREW_PREFIX}/opt/fzf/install
      #+END_SRC
@@ -622,9 +626,9 @@ and you have to open /Software Update/ again to install the command line tools.
 
      #+BEGIN_SRC bash
        pyenv install --list
-       pyenv install 3.10.9
+       pyenv install 3.12.1
        pyenv rehash
-       pyenv global 3.10.9
+       pyenv global 3.12.1
      #+END_SRC
 
      Remember that you always have to /rehash/ after you installed a new version or new virtual environment.
@@ -704,33 +708,34 @@ and you have to open /Software Update/ again to install the command line tools.
      #+BEGIN_SRC bash
        # essential subset
        if [[ "$(uname -m)" == "arm64" ]] ; then
-           export OPENBLAS="$(brew --prefix openblas)"
-           export HDF5_DIR="$(brew --prefix hdf5)"
-           export GEOS_DIR="$(brew --prefix geos)"
-           export GEOS_CONFIG="$(brew --prefix geos)/bin/geos-config"
+	   export OPENBLAS="$(brew --prefix openblas)"
+	   export HDF5_DIR="$(brew --prefix hdf5)"
+	   export GEOS_DIR="$(brew --prefix geos)"
+	   export GEOS_CONFIG="$(brew --prefix geos)/bin/geos-config"
        fi
-       pyenv virtualenv 3.10.9 pystd
+       pyenv virtualenv 3.12.1 pystd
        pyenv rehash
        pyenv global pystd
        pyenv rehash
        # test if install works
        python -m pip install numpy
        for i in wheel scipy matplotlib ipython pandas netcdf4 \
-           xarray ipython flake8 ; do \
-           python -m pip install ${i} ; done
+	   xarray ipython flake8 ; do \
+	   python -m pip install ${i} ; done
        # other standard packages
        for i in jupyter statsmodels scikit-learn schwimmbad \
-           numpydoc pytest pytest-cov f90nml pykdtree cython pyshp six \
-           xlrd openpyxl ; do \
-           python -m pip install ${i} ; done
+	   numpydoc pytest pytest-cov f90nml pykdtree cython pyshp six \
+	   xlrd openpyxl ; do \
+	   python -m pip install ${i} ; done
        # shapely and gdal for cartopy
        # shapely needs to be built from source to link to geos.
        # Uninstall it if already installed
-       [[ -z $(python -m pip freeze | grep shapely) ]] && python -m pip uninstall -y shapely
+       [[ -z $(python -m pip freeze | grep shapely) ]] && \
+	   python -m pip uninstall -y shapely
        python -m pip install shapely --no-binary shapely
        # gdal needs to know the installed gdal version
        python -m pip install GDAL==$(gdal-config --version) \
-           --global-option=build_ext --global-option="-I${HOMEBREW_PREFIX}/include"
+	   --global-option=build_ext --global-option="-I${HOMEBREW_PREFIX}/include"
        python -m pip install cartopy
        # basemap is back in development again :-)
        python -m pip install basemap-data
@@ -750,7 +755,7 @@ and you have to open /Software Update/ again to install the command line tools.
      sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
    #+END_SRC
 
-   This might already be running (Operation already in progress) if you upgraded via /System Update/.
+   This might already be running (/Operation already in progress/ or /Load failed: 5: Input//output error/) if you upgraded via /System Update/.
 
 ** Payware
    Install Payware, which is for me:
