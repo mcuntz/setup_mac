@@ -77,7 +77,7 @@ If you're using a Mac with an Intel processor and the Apple T2 Security Chip, ma
     1. In Terminal type:
 
        #+BEGIN_SRC bash
-	 sudo /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallSonoma --nointeraction
+         sudo /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallSonoma --nointeraction
        #+END_SRC
 
 *** Installing macOS with the bootable installer
@@ -88,15 +88,15 @@ If you're using a Mac with an Intel processor and the Apple T2 Security Chip, ma
        a) Intel processor (check the notes at the beginning of the section about Apple's T2 Security Chip)
           - Shut down.
 
-	  - Plug the bootable installer into a Mac that is connected to the internet.
+          - Plug the bootable installer into a Mac that is connected to the internet.
 
-	  - Turn on your Mac, then immediately press and hold the Option (Alt) key. Release the Option key when you see a dark screen showing your bootable volumes.
+          - Turn on your Mac, then immediately press and hold the Option (Alt) key. Release the Option key when you see a dark screen showing your bootable volumes.
 
-	  - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, and press Return.
+          - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, and press Return.
 
-	  - Choose your language, if prompted.
+          - Choose your language, if prompted.
 
-	  - Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
+          - Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
 
           - Select any other internal volumes in the sidebar, then click the delete volume (–) button in the toolbar to delete that volume. Disregard any internal volume named Macintosh HD or Macintosh HD – Data, as well as any volumes in the External and Disk Images sections of the sidebar.
 
@@ -109,9 +109,9 @@ If you're using a Mac with an Intel processor and the Apple T2 Security Chip, ma
 
           - Plug the bootable installer into a Mac that is connected to the internet.
 
-	  - Turn on the Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
+          - Turn on the Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
 
-	  - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, then click Continue.
+          - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, then click Continue.
 
 ** Update via /Software Update/
 
@@ -533,7 +533,9 @@ and you have to open /Software Update/ again to install the command line tools.
          ncctools vruler apacite biblatex biber blindtext pgfgantt \
          biblatex-chicago biblatex-apa fontawesome5 cormorantgaramond \
          sectsty pdfcol soul anyfontsize doublestroke doublestroke \
-         arydshln
+         arydshln subfiles mwe easytable gradientframe pbox floatrow \
+         fontinst fltpoint tabfigures mnsymbol mdsymbol \
+         collection-fontutils easy csquotes nomencl
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
@@ -712,34 +714,48 @@ and you have to open /Software Update/ again to install the command line tools.
      #+BEGIN_SRC bash
        # essential subset
        if [[ "$(uname -m)" == "arm64" ]] ; then
-	   export OPENBLAS="$(brew --prefix openblas)"
-	   export HDF5_DIR="$(brew --prefix hdf5)"
-	   export GEOS_DIR="$(brew --prefix geos)"
-	   export GEOS_CONFIG="$(brew --prefix geos)/bin/geos-config"
+           export OPENBLAS="$(brew --prefix openblas)"
+           export HDF5_DIR="$(brew --prefix hdf5)"
+           export GEOS_DIR="$(brew --prefix geos)"
+           export GEOS_CONFIG="$(brew --prefix geos)/bin/geos-config"
        fi
+     #+END_SRC
+     #+BEGIN_SRC bash
        pyenv virtualenv 3.12.1 pystd
        pyenv rehash
        pyenv global pystd
        pyenv rehash
+     #+END_SRC
+     #+BEGIN_SRC bash
        # test if install works
        python -m pip install numpy
+     #+END_SRC
+     #+BEGIN_SRC bash
        for i in wheel scipy matplotlib ipython pandas netcdf4 \
-	   xarray ipython flake8 ; do \
-	   python -m pip install ${i} ; done
+           xarray ipython flake8 ; do \
+           python -m pip install ${i} ; done
+     #+END_SRC
+     #+BEGIN_SRC bash
        # other standard packages
        for i in jupyter statsmodels scikit-learn schwimmbad \
-	   numpydoc pytest pytest-cov f90nml pykdtree cython pyshp six \
-	   xlrd openpyxl ; do \
-	   python -m pip install ${i} ; done
+           numpydoc pytest pytest-cov f90nml pykdtree cython pyshp six \
+           xlrd openpyxl ; do \
+           python -m pip install ${i} ; done
+     #+END_SRC
+     #+BEGIN_SRC bash
        # shapely and gdal for cartopy
        # shapely needs to be built from source to link to geos.
        # Uninstall it if already installed
        [[ -z $(python -m pip freeze | grep shapely) ]] && \
-	   python -m pip uninstall -y shapely
+           python -m pip uninstall -y shapely
        python -m pip install shapely --no-binary shapely
+     #+END_SRC
+     #+BEGIN_SRC bash
        # gdal needs to know the installed gdal version
        python -m pip install GDAL==$(gdal-config --version) \
-	   --global-option=build_ext --global-option="-I${HOMEBREW_PREFIX}/include"
+           --global-option=build_ext --global-option="-I${HOMEBREW_PREFIX}/include"
+     #+END_SRC
+     #+BEGIN_SRC bash
        python -m pip install cartopy
        # basemap is back in development again :-)
        # but does not work with Python 3.12 yet :-(
@@ -747,6 +763,8 @@ and you have to open /Software Update/ again to install the command line tools.
        # python -m pip install basemap-data-hires
        # python -m pip install basemap
        # if you use GUIs written in wxpython
+     #+END_SRC
+     #+BEGIN_SRC bash
        CXXFLAGS="-I${HOMEBREW_PREFIX}/include" python -m pip install wxpython
        # mpi4py will be installed after installing openmpi later
      #+END_SRC
