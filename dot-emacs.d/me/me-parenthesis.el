@@ -10,6 +10,10 @@
 ;;   ;; load default config
 ;;   (require 'smartparens-config))
 
+(defun is-mac-p
+    ()
+  (eq system-type 'darwin))
+
 ;; smartparens: for movement, editing and inserting parenthesis
 ;; https://github.com/Fuco1/smartparens
 (use-package smartparens
@@ -37,7 +41,7 @@
   (def-pairs ((paren . "(")
               (bracket . "[")
               (brace . "{")
-              (single-quote . "'")
+              ;; (single-quote . "'")
               (double-quote . "\"")
               (back-quote . "`")))
 
@@ -155,7 +159,8 @@
 
   (bind-key* "C-w" #'sp-strict-kill-line-or-region smartparens-mode-map))
 ;; enable smartparens globally
-(smartparens-global-mode)
+(when (is-mac-p)
+  (smartparens-global-mode))
 
 ;; smartparens
 ;; C-k -> will now kill the sexp at point

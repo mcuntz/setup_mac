@@ -2,7 +2,12 @@
 
 ;; org
 
-(straight-use-package 'toc-org)
+(defun is-mac-p
+    ()
+  (eq system-type 'darwin))
+
+(when (is-mac-p)
+  (straight-use-package 'toc-org))
 
 (eval-after-load "org"
   '(progn

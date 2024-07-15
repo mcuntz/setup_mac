@@ -2,6 +2,10 @@
 
 ;; python
 
+;; (require 'python)
+;; (setq python-shell-interpreter "ipython")
+;; (setq python-shell-completion-native-disabled-interpreters '("ipython"))
+
 (use-package pyenv-mode
   :init
   (add-to-list 'exec-path "~/.pyenv/shims")

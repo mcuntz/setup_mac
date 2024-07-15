@@ -9,6 +9,10 @@
 ;;          ("H-Z" . undo-tree-redo))
 ;;   :config (global-undo-tree-mode))
 
+(defun is-mac-p
+    ()
+  (eq system-type 'darwin))
+
 (use-package undo-tree
   :defer t
   :init
@@ -30,8 +34,9 @@ Perhaps you don't have required permissions, or it's not a directory.
 See variable `undo-tree-history-directory-alist'." dir))
                       (make-directory dir t))
                     dir))))
-  (global-undo-tree-mode)
   :bind (("s-z" . undo-tree-undo)
          ("H-z" . undo-tree-undo)
 	 ("s-Z" . undo-tree-redo)
          ("H-Z" . undo-tree-redo)))
+(when (is-mac-p)
+  (global-undo-tree-mode))

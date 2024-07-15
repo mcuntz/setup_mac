@@ -11,7 +11,7 @@
 ;; the potential edits made during startup.
 (add-hook
  'emacs-startup-hook
- (defun +mineamcs--restore-file-name-handler-alist-h ()
+ (defun +restore-file-name-handler-alist-h ()
    (setq file-name-handler-alist
          (delete-dups
           (append file-name-handler-alist
@@ -51,32 +51,6 @@
   )
 (set-exec-path-from-shell-PATH)
 
-;; Setup straight.el
-;; https://github.com/radian-software/straight.el#getting-started
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-;; Effectively replace use-package with straight-use-package
-;; https://github.com/raxod502/straight.el/blob/develop/README.md#integration-with-use-package
-(straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
-;; so package-list-packages includes use-packages
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-
 ;; Check OS
 ;; https://github.com/mwfogleman/.emacs.d/
 (defun is-mac-p
@@ -93,6 +67,33 @@
    (eq system-type 'ms-dos)
    (eq system-type 'windows-nt)
    (eq system-type 'cygwin)))
+
+;; Setup straight.el
+;; https://github.com/radian-software/straight.el#getting-started
+(when (is-mac-p)
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+	(bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+  ;; Effectively replace use-package with straight-use-package
+  ;; https://github.com/raxod502/straight.el/blob/develop/README.md#integration-with-use-package
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
+  ;; so package-list-packages includes use-packages
+  (require 'package)
+  (add-to-list 'package-archives
+               '("melpa" . "https://melpa.org/packages/")))
 
 ;; Miscellaneous settings
 (delete-selection-mode 1) ; if 0, typed text is just inserted regardless of any selection
@@ -126,10 +127,15 @@
 ;; Frame
 (add-to-list 'default-frame-alist '(width  . 90))
 (add-to-list 'default-frame-alist '(height . 45))
-(set-face-attribute 'default nil
-                    :family "Source Code Pro"
-                    :height 150
-                    :weight 'normal)
+(when (is-mac-p)
+ (set-face-attribute 'default nil
+                     :family "Source Code Pro"
+                     :height 150
+                     :weight 'normal))
+(when (is-linux-p)
+ (set-face-attribute 'default nil
+                     :height 150
+                     :weight 'normal))
 
 ;; prevent (old < 28?) error on startup
 (add-to-list 'image-types 'svg)
@@ -140,6 +146,7 @@
 ;; keyboard macros
 (fset 'comment-on-line-above
       [?\C-k ?\C-p ?\C-e return ?\C-y tab ?\C-n ?\C-e])
+(load "me-hydra")
 (load "me-undo")
 (load "me-ivy")
 (load "me-flycheck")
@@ -147,12 +154,18 @@
 (load "me-org")
 (load "me-f90")
 (load "me-python")
+(load "me-r")
 (load "me-rst")
 (load "me-latex")
 (load "me-git")
 (load "me-parenthesis")
+(load "me-fold")
 (load "me-kill")
+(load "me-yaml")
 (load "me-tests")
+
+;; modes
+;; (progn (add-to-list 'auto-mode-alist '("\\.ya?ml" . yaml-ts-mode)))
 
 ;; start Emacs daemon
 (load "server")

@@ -27,3 +27,5 @@
 (global-set-key (kbd "H-<right>") 'end-of-line)            ; Cmd-right
 (global-set-key (kbd "s-<right>") 'end-of-line)            ; Cmd-right
 (global-set-key (kbd "M-#")       'dictionary-lookup-definition)
+(global-set-key (kbd "C-c <right>") 'next-window-any-frame)
+(global-set-key (kbd "C-c <left>") 'previous-window-any-frame)
