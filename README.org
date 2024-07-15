@@ -5,7 +5,7 @@
 #+TITLE: Setting up macOS for scientific computing and software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 09.01.2024
+Modified: 03.05.2024
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
@@ -535,7 +535,7 @@ and you have to open /Software Update/ again to install the command line tools.
          sectsty pdfcol soul anyfontsize doublestroke doublestroke \
          arydshln subfiles mwe easytable gradientframe pbox floatrow \
          fontinst fltpoint tabfigures mnsymbol mdsymbol \
-         collection-fontutils easy csquotes nomencl
+         collection-fontutils easy csquotes nomencl regexpatch
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
