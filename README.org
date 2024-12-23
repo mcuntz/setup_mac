@@ -535,7 +535,10 @@ and you have to open /Software Update/ again to install the command line tools.
          sectsty pdfcol soul anyfontsize doublestroke doublestroke \
          arydshln subfiles mwe easytable gradientframe pbox floatrow \
          fontinst fltpoint tabfigures mnsymbol mdsymbol \
-         collection-fontutils easy csquotes nomencl regexpatch
+         collection-fontutils easy csquotes nomencl regexpatch \
+         comment stmaryrd doi acronym minitoc placeins tikzfill \
+         listingsutf8 mhchem bigfoot changes etoolbox truncate \
+         xkeyval todonotes ulem xcolor siunitx glossaries glossaries-extra
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
@@ -632,9 +635,9 @@ and you have to open /Software Update/ again to install the command line tools.
 
      #+BEGIN_SRC bash
        pyenv install --list
-       pyenv install 3.12.1
+       pyenv install 3.12.8
        pyenv rehash
-       pyenv global 3.12.1
+       pyenv global 3.12.8
      #+END_SRC
 
      Remember that you always have to /rehash/ after you installed a new version or new virtual environment.
@@ -651,29 +654,49 @@ and you have to open /Software Update/ again to install the command line tools.
 
      Note that I actually install Python versions currently as follows:
 
+     # env PYTHON_CONFIGURE_OPTS=" \
+     #     --with-tcltk-includes='-I${HOMEBREW_PREFIX}/opt/tcl-tk@8/include' \
+     #     --with-tcltk-libs='-L${HOMEBREW_PREFIX}/opt/tcl-tk@8/lib -ltcl8.6 -ltk8.6' \
+     #     --enable-optimizations --enable-framework=${HOME}/Library/Frameworks" \
+     #     CFLAGS="-I$(brew --prefix xz)/include" \
+     #     LDFLAGS="-L$(brew --prefix xz)/lib" \
+     #     PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig" \
+     #     pyenv install 3.12.8
+
      #+BEGIN_SRC bash
-       brew install tcl-tk
+       brew install tcl-tk@8
      #+END_SRC
      #+BEGIN_SRC bash
-       env PYTHON_CONFIGURE_OPTS=" \
-           --with-tcltk-includes='-I${HOMEBREW_PREFIX}/opt/tcl-tk/include' \
-           --with-tcltk-libs='-L${HOMEBREW_PREFIX}/opt/tcl-tk/lib -ltcl8.6 -ltk8.6' \
-           --enable-optimizations --enable-framework=${HOME}/Library/Frameworks" \
-           CFLAGS="-I$(brew --prefix xz)/include" \
-           LDFLAGS="-L$(brew --prefix xz)/lib" \
-           PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig" \
-           pyenv install 3.12.1
+       env LDFLAGS=" \
+           -L$(brew --prefix openssl@1.1)/lib \
+           -L$(brew --prefix readline)/lib \
+           -L$(brew --prefix sqlite3)/lib \
+           -L$(brew --prefix xz)/lib \
+           -L$(brew --prefix zlib)/lib \
+           -L$(brew --prefix tcl-tk@8)/lib" \
+           CPPFLAGS=" \
+           -I$(brew --prefix openssl@1.1)/include \
+           -I$(brew --prefix readline)/include \
+           -I$(brew --prefix sqlite3)/include \
+           -I$(brew --prefix xz)/include \
+           -I$(brew --prefix zlib)/include \
+           -I$(brew --prefix tcl-tk@8)/include" \
+           PKG_CONFIG_PATH="$(brew --prefix openssl@1.1)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk@8)/lib/pkgconfig" \
+        PYTHON_CONFIGURE_OPTS=" \
+        --enable-optimizations \
+        --enable-framework=${HOME}/Library/Frameworks" \
+        pyenv install 3.12.8
      #+END_SRC
      #+BEGIN_SRC bash
        pyenv rehash
      #+END_SRC
 
-     This uses the newer Tcl/Tk version from Homebrew for /tkinter/, turns on profile guided optimization and link time optimization for Python being about 10% faster, and enables a framework build. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.12.1= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then. This is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
+     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but no v9.0), enables a framework build, and turns on profile guided optimization as well as link time optimization for Python, being about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.12.8= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then. This is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
 
-     Virtual environments are created as:
+     Virtual environments are then created as:
 
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.12.1 pytest
+       pyenv virtualenv 3.12.8 pytest
        pyenv rehash
      #+END_SRC
 
@@ -721,7 +744,7 @@ and you have to open /Software Update/ again to install the command line tools.
        fi
      #+END_SRC
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.12.1 pystd
+       pyenv virtualenv 3.12.8 pystd
        pyenv rehash
        pyenv global pystd
        pyenv rehash
@@ -731,7 +754,7 @@ and you have to open /Software Update/ again to install the command line tools.
        python -m pip install numpy
      #+END_SRC
      #+BEGIN_SRC bash
-       for i in wheel scipy matplotlib ipython pandas netcdf4 \
+       for i in wheel scipy matplotlib ipython pandas cftime netcdf4 \
            xarray ipython flake8 ; do \
            python -m pip install ${i} ; done
      #+END_SRC
@@ -740,6 +763,11 @@ and you have to open /Software Update/ again to install the command line tools.
        for i in jupyter statsmodels scikit-learn schwimmbad \
            numpydoc pytest pytest-cov f90nml pykdtree cython pyshp six \
            xlrd openpyxl ; do \
+           python -m pip install ${i} ; done
+     #+END_SRC
+     #+BEGIN_SRC bash
+       # other developping packages
+       for i in sphinx sphinx_book_theme  ; do \
            python -m pip install ${i} ; done
      #+END_SRC
      #+BEGIN_SRC bash
@@ -752,8 +780,9 @@ and you have to open /Software Update/ again to install the command line tools.
      #+END_SRC
      #+BEGIN_SRC bash
        # gdal needs to know the installed gdal version
-       python -m pip install GDAL==$(gdal-config --version) \
-           --global-option=build_ext --global-option="-I${HOMEBREW_PREFIX}/include"
+       # and install numpy-based raster support
+       # test: python3 -c 'from osgeo import gdal_array'
+       pip install --no-cache --force-reinstall gdal[numpy]=="$(gdal-config --version).*"
      #+END_SRC
      #+BEGIN_SRC bash
        python -m pip install cartopy
