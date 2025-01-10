@@ -162,6 +162,9 @@
 (load "me-fold")
 (load "me-kill")
 (load "me-yaml")
+(load "me-unfill")
+(load "me-html")
+(load "me-quarto")
 (load "me-tests")
 
 ;; modes

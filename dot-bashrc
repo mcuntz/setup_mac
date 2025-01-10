@@ -39,6 +39,9 @@ alias ftp='ftp -i'
 alias qgadi="ssh gadi 'source /etc/bashrc ; qstat -u moc801'"
 alias qcatgadi="ssh gadi 'source /etc/bashrc ; qcat'"
 alias qexplor="ssh explor 'source /etc/bashrc ; squeue -u zzy20'"
+alias qcurta="ssh curta 'source /etc/bashrc ; squeue -u mcuntz'"
+alias qiam="ssh iam 'source /etc/bashrc ; module load slurm ; squeue -u mcuntz'"
+alias qbiocomp=qiam
 
 ###############################################################################
 # LaTeX
@@ -65,7 +68,7 @@ function btechit() {
     techit ${1} "biber"
 }
 # function cleartechit() { IN=${1%.*} ; \rm ${IN}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,lof,log,lot,nav,out,run.xml,snm,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
-function cleartechit() { \rm ${1%.*}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,lof,log,lot,nav,out,run.xml,snm,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
+function cleartechit() { \rm ${1%.*}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,loc,lof,log,lot,maf,mtc,mtc?,nav,out,run.xml,snm,soc,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
 alias clearbtechit=cleartechit
 
 # alias dvips='dvips -j0 -Ppdf -Pdownload35 -G0 -t a4 -D 1200 -Z -mode ljfzzz'

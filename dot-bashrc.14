@@ -17,6 +17,7 @@ alias cdf='cd "$(posd)"'
 # alias pico='nano -w'
 # alias gv='LC_ALL=C gv -swap -watch'
 alias pdf='open -a Preview.app'
+alias o='open'
 if [[ -d /Applications/exelis ]] ; then
     alias idl="IDL_DIR=/Applications/exelis/idl DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:/Applications/exelis/idl/bin/bin.darwin.x86_64 /Applications/exelis/idl/bin/bin.darwin.x86_64/idl"
     alias idlhelp='open -a /Applications/exelis/IDLHelp82.app'

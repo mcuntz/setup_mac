@@ -13,12 +13,14 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 * Table of Contents :TOC:
 - [[#how-to-update-the-os][How to update the OS]]
+  - [[#fresh-install][Fresh install]]
   - [[#update-via-software-update][Update via /Software Update/]]
 - [[#setup-macos][Setup macOS]]
   - [[#check-for-system-updates][Check for system updates]]
   - [[#xcode][Xcode]]
   - [[#set-preferences-of-macos-and-standard-apps][Set preferences of macOS and standard apps]]
   - [[#set-the-default-shell][Set the default shell]]
+  - [[#restore-backup][Restore backup]]
   - [[#app-store][App Store]]
   - [[#xquartz][XQuartz]]
   - [[#homebrew][Homebrew]]
@@ -38,22 +40,91 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
   There are basically two options:
   1. Reformat the startup disk and install a fresh new system, or
 
-  1. Use /Software Update/ to update macOS on top of the existing OS.
+  2. Use /Software Update/ to update macOS on top of the existing OS.
 
-  In both cases, a little bit of preparation helps. I do not use the first option anymore. It is covered in earlier versions of this document such as in README14.org.
+  In both cases, a little bit of preparation helps.
+
+** Fresh install
+
+If you're using a Mac with an Intel processor and the Apple T2 Security Chip, make sure that Startup Security Utility is set to allow booting from external or removable media. Follow the instructions on [[https://support.apple.com/en-au/102522][support.apple.com]]. You can find the list of models with the T2 Security chip at https://support.apple.com/en-au/103265 or under /System Information / > /Hardware/ > /Controller/.
+
+*** Before starting
+    1. You might want to use iCloud for your /Contacts/, /Calendars/, /Reminders/, /Notes/, and /Keychain/. If you had not switched it on, you should do this a couple of hours before installation because it takes some time until things get synchronised. Some logoff/login might also help. You can check all but /Keychain/ on [[https://www.icloud.com][icloud.com]]. You can switch it off again on the updated system after synchronisation finished, if not wanted.
+
+    1. Backup all your files including Documents, Movies, Pictures. Check the Desktop as well.
+
+    1. Also store all your dot-files and dot-directories from the =${HOME}= directory such as =.bash_profile=, =.bashrc= and =.ssh=.
+
+    1. You might want to write down your /Computer Name/ from /System Preferences/ > /Sharing/ (macOS <= 12) or /System Settings/ > /General/ > /Sharing/ > /Local hostname/ (macOS >= 13).
+
+    1. You might also like to write down your username. Type in the terminal:
+
+       #+BEGIN_SRC bash
+         whoami
+       #+END_SRC
+
+    1. A list of your installed programs in /Applications/ might come in handy.
+
+*** Make a bootable installer for macOS on USB
+    From [[https://support.apple.com/en-us/101578][support.apple.com]]:
+
+    1. Download a macOS installer such as macOS Sonoma from the App Store. When the macOS installer opens, quit it without continuing installation.
+
+       The installer should have a size of about 12-16 GB. Based on your Mac, only a much smaller app might have been downloaded, which would later download the actual files during installation. This does not allow to create a bootable thumb drive. Try to get the full installer for example from the Apple Developer site.
+
+    1. Format a USB flash drive of at least 16 GB storage as /Mac OS Extended/ with name InstallSonoma, for example.
+
+    1. In Terminal type:
+
+       #+BEGIN_SRC bash
+         sudo /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/createinstallmedia --volume /Volumes/InstallSonoma --nointeraction
+       #+END_SRC
+
+*** Installing macOS with the bootable installer
+    Basically follow [[https://support.apple.com/en-us/101578][support.apple.com]] because the steps are slightly different between Intel and Apple Silicon chips.
+
+    1. Startup is different if you have a Mac with Apple silicon chips or Intel processors.
+
+       a) Intel processor (check the notes at the beginning of the section about Apple's T2 Security Chip)
+          - Shut down.
+
+          - Plug the bootable installer into a Mac that is connected to the internet.
+
+          - Turn on your Mac, then immediately press and hold the Option (Alt) key. Release the Option key when you see a dark screen showing your bootable volumes.
+
+          - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, and press Return.
+
+          - Choose your language, if prompted.
+
+          - Select /Disk Utility/. Choose the /Internal/ disk, e.g. /Macintosh HD/. /Erase/ it using the /Format/ APFS. Use the button /Erase Volume Group/ instead of /Erase/ if available; otherwise use /Erase/.
+
+          - Select any other internal volumes in the sidebar, then click the delete volume (–) button in the toolbar to delete that volume. Disregard any internal volume named Macintosh HD or Macintosh HD – Data, as well as any volumes in the External and Disk Images sections of the sidebar.
+
+          - Then quit /Disk Utility/.
+
+          - Select /Install macOS Sonoma/, click Continue and follow the on-screen steps.
+
+       a) Apple silicon
+          - Shut down.
+
+          - Plug the bootable installer into a Mac that is connected to the internet.
+
+          - Turn on the Mac and continue to hold the power button until you see the startup options window, which shows your bootable volumes.
+
+          - Select the volume containing the bootable installer, i.e. /Install macOS Sonoma/, then click Continue.
 
 ** Update via /Software Update/
 
 *** Before starting
     1. It is always recommended to make a backup of your system before an upgrade.
 
-    1. Update all your installed apps in /Applications/. The newest versions of the applications will probably already be suitable for the new macOS version. It avoids the problem that you cannot open anymore the old version of the application on the new macOS just to do the update. You'd then have to uninstall/install the application again, which might need the licence key, etc.
+    1. Update all your installed apps in /Applications/. The newest app versions will probably already be suitable for the new macOS version. It avoids the problem that you cannot open the old app version on the new macOS system anymore to do the simple update and then have to uninstall/install the app again, which might also need the licence key, etc.
 
        For this, open each non-Apple application and /Check for Updates.../.
 
        Use the /App Store.../ for all Apple programs and apps downloaded from the App Store..
 
-    1. The /Software Update/ takes care of all your accounts, passwords, etc. The step before takes care of all the installed applications. But anything installed from the command line will (most probably) not work anymore. So I first uninstall all the things that will be installed in the steps below, which are Homebrew (including the installed casks), LaTeX, Python/pyenv, and everything installed with install\under{}netcdf. I also first set back Apple's bash shell as default because the newer bash shell used until now is removed together with Homebrew and you run into trouble if it is still set as your default shell afterwards.
+    1. The /Software Update/ takes care of all your accounts, passwords, etc. The step before takes care of all the installed applications. But anything installed from the command line will (most probably) not work anymore. So I first uninstall the all things that will be installed in the steps below, which are Homebrew (including the installed casks), LaTeX, Python/pyenv, and everything installed with install\under{}netcdf. I also set back Apple's bash shell as default (because the newer bash shell is removed together with Homebrew).
 
        Set Apple's bash shell as default:
 
@@ -61,17 +132,15 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          chsh -s /bin/bash
        #+END_SRC
 
-       You have to open a new login terminal that it takes effect.
+       You have to open a new login terminal so that it takes effect.
 
-       Check the casks installed with Homebrew.
+       Check the casks installed with Homebrew:
 
        #+BEGIN_SRC bash
          brew list
        #+END_SRC
 
-        Best to note them somewhere.
-
-	Uninstall all casks (you might have to type your password several times for this, e.g. to remove LaTeX):
+       Uninstall all casks (you might have to type your password several times for this, e.g. to remove LaTeX):
 
        #+BEGIN_SRC bash
          # emacs temurin panoply quarto motrix
@@ -111,7 +180,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
        Remove everything under =/usr/local=. This seems extreme but Apple has nothing installed under =/usr/local=, so it comes all from you or Homebrew. You might change into =/usr/local= and remove selected directories by hand. For example, our virus scanner at work installs its uninstall-script in =/usr/local=.
 
        #+BEGIN_SRC bash
-         rm -rf /usr/local/*
+         rm -r /usr/local/*
        #+END_SRC
 
 *** Installing macOS via /Software Update/
@@ -157,7 +226,7 @@ and you have to open /Software Update/ again to install the command line tools.
      sudo xcode-select -switch /Library/Developer/CommandLineTools
    #+END_SRC
 
-   You might let Homebrew do the job, i.e. it will install the XCode Command Line Tools if they are missing.
+   If you did a fresh install, you might let Homebrew do the job, i.e. it will install the XCode Command Line Tools if they are missing.
 
    The full Xcode can be installed from the App Store. You have to open it once and confirm the Usage Agreement in order to use the bundled tools. If you install Xcode, it is reasonable to complete the Xcode installation and the one-time opening before starting with [[#homebrew][Homebrew]]. Otherwise, it might install the command line tools CLT twice, but it costs only download bandwidth and time.
 
@@ -195,10 +264,20 @@ and you have to open /Software Update/ again to install the command line tools.
      export BASH_SILENCE_DEPRECATION_WARNING=1
    #+END_SRC
 
-   My current =.bash_profile= is as dot-bash\under{}profile in this repository along with the two sub-config files =.bashrc= as dot-bashrc for general aliases and functions and =.bashrc.15= as dot-bashrc.15 for macOS 15 Sequoia-specific aliases and functions.
+   My current =.bash_profile= is as dot-bash\under{}profile in this repository along with the two sub-config files =.bashrc= as dot-bashrc for general aliases and functions and =.bashrc.13= as dot-bashrc.13 for macOS 13 Ventura-specific aliases and functions.
+
+** Restore backup
+   If you did a fresh install, transfer files from your backup media either directly or using a Time Machine backup.
 
 ** App Store
    Even when you installed using /Software Update/, you should check for updates. Do not look only in /App Store.../ > /Updates/ but also on your account (on the bottom left) if there is an update. Xcode did not show up in /Updates/ for me but I had to update it from the account page.
+
+   If you did a fresh install, check your account in the App Store. There are bundled apps such as Keynote, Numbers, etc., which you should open once to get over the welcome screens and offered tutorials.
+
+   It also shows you a list of previously installed apps on other systems. Install what you still want and open it once.
+
+   My essential apps from the App Store are:\\
+   Keynote/Pages/Numbers, The Unarchiver, WordService, HiddenMe, Microsoft Remote Desktop, Engauge Digitizer.
 
 ** XQuartz
    XQuartz is the X-window system running on macOS, needed for \ast{}nix GUI programs. Get it from [[http://xquartz.macosforge.org/][XQuartz]].
@@ -286,7 +365,7 @@ and you have to open /Software Update/ again to install the command line tools.
 
    - *GNU compiler and netCDF software*
 
-     The gcc suite includes /gfortran/. /make/ is the build system of various software packages.
+     The gcc suite includes /gfortran/. /cmake/ is the build system of various software packages.
      Install /nco/, /ncview/, and /Panoply/ to work with and visualise netCDF files. This installs the netcdf-C version, which comes with /ncdump/, etc. Homebrew had netcdf-C, netcdf-C++, and netcdf-Fortran bundled in /netcdf/ before. They are individual packages now. /netcdf/ installs the netcdf-C package only. See install\under{}netcdf below for Fortran support.
 
      #+BEGIN_SRC bash
@@ -296,7 +375,6 @@ and you have to open /Software Update/ again to install the command line tools.
        brew install cmake
      #+END_SRC
      #+BEGIN_SRC bash
-       # this takes considerable time
        for i in geos gdal nco ncview ; do brew install ${i} ; done
      #+END_SRC
      #+BEGIN_SRC bash
@@ -385,7 +463,7 @@ and you have to open /Software Update/ again to install the command line tools.
        tldr --update
      #+END_SRC
 
-     I also set =${HOME}/.tealdeer= as my configuration directory for /tealdeer/ in =.bash_profile=,
+     I also set =${HOME$/.tealdeer= as my configuration directory for /tealdeer/ in =.bash_profile=,
 
      #+BEGIN_SRC bash
        export TEALDEER_CONFIG_DIR=${HOME}/.tealdeer
@@ -419,7 +497,8 @@ and you have to open /Software Update/ again to install the command line tools.
    I use the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] that is also used in Spacemacs and install aspell for spell checking:
 
    #+BEGIN_SRC bash
-     brew install --cask font-source-code-pro
+     brew tap homebrew/cask-fonts
+     brew install --cask homebrew/cask-fonts/font-source-code-pro
    #+END_SRC
    #+BEGIN_SRC bash
      brew install aspell
@@ -428,13 +507,13 @@ and you have to open /Software Update/ again to install the command line tools.
    If you open the new Emacs for the first time, it will install and byte-compile some packages. This might take some time.
 
 ** LaTeX
-   One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I let Homebrew handle the update between years (=brew upgrade --cask basictex=), which is always a hassle otherwise.
+   One can download LaTeX from [[https://tug.org/mactex/][MacTeX]] or use a Homebrew cask. I have chosen Homebrew's cask this time because I use the BasicTeX installation and I let Homebrew handle the update between years (=brew upgrade --cask basictex=), which is always a hassle otherwise:
 
    #+BEGIN_SRC bash
      brew install --cask basictex
    #+END_SRC
 
-   If you chose BasicTeX, then install immediately a few LaTeX packages, which I encountered during different projects:
+   If you chose BasicTeX, then I install a few LaTeX packages, which I encountered during different projects:
 
    #+BEGIN_SRC bash
      sudo tlmgr update --self ; \
@@ -483,7 +562,7 @@ and you have to open /Software Update/ again to install the command line tools.
 
    - [[https://www.zotero.org][Zotero]], reference manager,
 
-   - [[http://www.skype.com/en/][Skype]], video calls, I still use it,
+   - [[http://www.skype.com/en/][Skype]], video calls,
 
    - [[https://www.sourcetreeapp.com][SourceTree]], git GUI originally for bitbucket but works with other git repositories as well,
 
@@ -523,7 +602,7 @@ and you have to open /Software Update/ again to install the command line tools.
 
 ** Python
 
-   macOS Catalina (10.15) still came with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. From macOS Big Sur (11.5) onwards, macOS comes with Python 3 (from macOS 13 Ventura, is is actually part of the XCode command line tools). But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/: you can install different Python versions, use different virtual environments in different directories (projects) very easily, etc.
+   macOS Catalina (10.15) still comes with Python version 2.7.16 as its default version. Official support for Python 2 has ended Januar 2020. So you want to install Python 3. From macOS Big Sur (11.5) onwards, macOS comes with Python 3 (from macOS 13 Ventura, is is actually part of the XCode command line tools). But I still recommend to install Python with /pyenv/ and /pyenv-virtualenv/: you can install different Python versions, use very easily different virtual environments in different directories (projects), etc.
 
    Installation of Python versions can be a real mess at times, as noted by [[https://xkcd.com/1987/][XKCD]]:
 
@@ -576,6 +655,15 @@ and you have to open /Software Update/ again to install the command line tools.
 
      Note that I actually install Python versions currently as follows:
 
+     # env PYTHON_CONFIGURE_OPTS=" \
+     #     --with-tcltk-includes='-I${HOMEBREW_PREFIX}/opt/tcl-tk@8/include' \
+     #     --with-tcltk-libs='-L${HOMEBREW_PREFIX}/opt/tcl-tk@8/lib -ltcl8.6 -ltk8.6' \
+     #     --enable-optimizations --enable-framework=${HOME}/Library/Frameworks" \
+     #     CFLAGS="-I$(brew --prefix xz)/include" \
+     #     LDFLAGS="-L$(brew --prefix xz)/lib" \
+     #     PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig" \
+     #     pyenv install 3.12.8
+
      #+BEGIN_SRC bash
        brew install tcl-tk@8
      #+END_SRC
@@ -604,46 +692,48 @@ and you have to open /Software Update/ again to install the command line tools.
        pyenv rehash
      #+END_SRC
 
-     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0), enables a framework build, and turns on profile guided optimization as well as link time optimization for Python, being about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.12.8= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then, which is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
+     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but no v9.0), enables a framework build, and turns on profile guided optimization as well as link time optimization for Python, being about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.12.8= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then. This is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
 
      Virtual environments are then created as:
 
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.12.8 mypy
+       pyenv virtualenv 3.12.8 pytest
        pyenv rehash
      #+END_SRC
 
-     The virtual environment /mypy/ can then be used just as any installed Python version with /pyenv/. For example:
+     The virtual environment /pytest/ can then be used just as any installed Python version with /pyenv/. For example:
      #+BEGIN_SRC bash
-       pyenv local mypy
+       pyenv local pytest
      #+END_SRC
 
-     /pyenv/ provides also /anaconda/, /miniconda/, /miniforge/, etc. with which you can use conda environments:
+     /pyenv/ provides also /anaconda/ and /miniconda/, with which you can use conda environments:
 
      #+BEGIN_SRC bash
-       pyenv install miniforge3-latest
+       pyenv install miniconda3-4.7.12
        pyenv rehash
-       pyenv global miniforge3-latest
-       pyenv virtualenv mypy
+       pyenv global miniconda3-4.7.12
+       pyenv virtualenv pytest
      #+END_SRC
 
-     You can then install (conda, mamba, and pip) packages in the project:
+     You can then install (conda and pip) packages in the test project, etc.:
 
      #+BEGIN_SRC bash
-       conda install numpy scipy matplotlib-base
+       conda install numpy scipy matplotlib
      #+END_SRC
 
      If git tells /gettext not found/ after installing anaconda/miniconda, see [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
    - *Essential Python packages*
 
-     Anaconda comes with hundreds of packages. I tend to use a Python version with pyenv or miniforge and install my essential packages with /pip/ or /conda/mamba/. These are currently in my main environment:\\
-     numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, cftime, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, xarray, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, pykdtree, cython, pyshp, six, wheel, sphinx, sphinx_book_theme
+     Anaconda comes with hundreds of packages. I tend to use either an official Python version or miniconda and install my essential packages with /pip/ or /conda/mamba/. These are currently in my main environment:\\
+     numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, cftime, netcdf4, udunits, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, xarray, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, pykdtree, cython, pyshp, six, wheel
 
      and mostly this subset in other virtual environments:\\
      numpy, scipy, matplotlib, pandas, netcdf4, xarray, ipython, flake8, wheel
 
-     There is/was a problem with Apple's Accelerate framework on Apple Silicon (M1/2) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library and the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and Homebrew installs into =/usr/local=; this directory is searched automatically. Here I install my standard python virtual environment (pystd):
+     You would have to source your =.bash_profile= again if you install with /pip/ or /conda/ just after installing /pyenv/.
+
+     There is currently a problem with Apple's Accelerate framework on Apple Silicon (M1/2) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library and the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and Homebrew installs into =/usr/local=; this directory is searched automatically.
 
      #+BEGIN_SRC bash
        # essential subset
@@ -702,8 +792,14 @@ and you have to open /Software Update/ again to install the command line tools.
        # python -m pip install basemap-data
        # python -m pip install basemap-data-hires
        # python -m pip install basemap
+       # if you use GUIs written in wxpython
+     #+END_SRC
+     #+BEGIN_SRC bash
+       CXXFLAGS="-I${HOMEBREW_PREFIX}/include" python -m pip install wxpython
        # mpi4py will be installed after installing openmpi later
      #+END_SRC
+
+     Replace /python -m pip/ with /conda/, or better /mamba/ after installing it, if using conda environments instead of /pip.
 
 ** locate
    Create locate database so that you can search files with the locate command:
@@ -712,7 +808,7 @@ and you have to open /Software Update/ again to install the command line tools.
      sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
    #+END_SRC
 
-   This might already be running (/Operation already in progress/ or /Load failed: 5: Input//output error/).
+   This might already be running (/Operation already in progress/ or /Load failed: 5: Input//output error/) if you upgraded via /System Update/.
 
 ** Payware
    Install Payware, which is for me:
@@ -725,6 +821,8 @@ and you have to open /Software Update/ again to install the command line tools.
    - [[https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html][Intel oneAPI Base Toolkit]] and [[https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html][Intel oneAPI HPC Toolkit]], C/C++/Fortran compiler producing very fast code,
 
    - [[https://www.cyberghostvpn.com/][CyberGhost]], VPN client,
+
+   - [[https://www.harrisgeospatial.com/Software-Technology/IDL][IDL]], interactive data language.
 
 ** Additional software
    Install additional software from you institution or similar such as VPN clients, cloud services, etc. For INRAE this is: WithSecure Antivirus, GlobalProtect VPN, StorageMadeEasy.
@@ -740,7 +838,7 @@ and you have to open /Software Update/ again to install the command line tools.
 
    However, if you use other Fortran compilers as well, you might want to use the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] to install it and not flood your namespace with different versions of =netcdf.mod=, etc. The script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] installs netcdf-fortran, openmpi, and/or mpich development packages for different Fortran compilers. The script is well documented and we just describe the general steps.
 
-   - Look for the latest versions (numbers) of [[https://downloads.unidata.ucar.edu/netcdf/][netcdf-fortran]], [[https://www.open-mpi.org][openmpi]], and/or [[http://www.mpich.org/downloads/][mpich]] (addresses are also given at the beginning of the script) and set them below /donetcdf4\under{}fortran/, /doopenmpi/, and/or /dompich/.
+   - Look for the latest versions (numbers) of [[https://downloads.unidata.ucar.edu/netcdf/][netcdf-fortran]], [[https://www.open-mpi.org][openmpi]], and/or [[http://www.mpich.org/downloads/][mpich]] (addresses are also given at the beginning of the script install\under{}netcdf) and set them below /donetcdf4\under{}fortran/, /doopenmpi/, and/or /dompich/.
 
    - Set /donetcdf4\under{}fortran/, /doopenmpi/, and/or /dompich/ to 1.
 
@@ -754,14 +852,14 @@ and you have to open /Software Update/ again to install the command line tools.
      source /opt/intel/bin/compilervars.sh intel64
    #+END_SRC
 
-   - For PGI, you also have to set the ~PGIPATH~.
+   - For PGI, you also have to set the ~pgipath~.
 
-   - Run the script on the command line and give your sudo password if you install into ~prefix=/usr/local~.
+   - Run he script on the command line and give your sudo password if you install into ~prefix=/usr/local~.
 
    After having installed /openmpi/, one can also install /mpi4py/ in Python, for example:
 
    #+BEGIN_SRC bash
-     env MPICC=/usr/local/openmpi-4.1.7-gfortran/bin/mpicc python -m pip install mpi4py
+     env MPICC=/usr/local/openmpi-4.1.6-gfortran/bin/mpicc python -m pip install mpi4py
    #+END_SRC
 
-   However, homebrew upgrades also netcdf-C to newer versions if you install or update a package that depends on it. Then the netcdf-fortran package installed with install\under{}netcdf will not work anymore (it will link to the old, uninstalled version) and you have to rerun the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] with /donetcdf4\under{}fortran=1/ and ~fortran_compilers="gfortran"~. I still do it this way to minimize conflicts between different Fortran compilers and also re-installing netcdf-fortran with install\under{}netcdf is very fast.
+   However, homebrew upgrades also netcdf-C to newer versions if you install or update a package that depends on it. Then the netcdf-fortran package installed with install\under{}netcdf will not work anymore (it will link to the old, uninstalled version) and you have to rerun the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] with /donetcdf4\under{}fortran=1/ and ~fortran_compilers="gfortran"~. I still do it this way to minimize conflicts between different Fortran compilers and re-installing netcdf-fortran with install\under{}netcdf for gfortran is very fast.

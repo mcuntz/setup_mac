@@ -47,25 +47,29 @@
 ;;   :bind (("C-c f" . origami-recursively-toggle-node)
 ;; 	 ("C-c h f" . hydra-origami/body))
 ;;   :config
-(use-package vimish-fold
-  :bind (("C-c f" . vimish-fold-toggle)
- 	 ("C-c h f" . hydra-vimish-fold/body))
-  :config
-  (defhydra hydra-vimish-fold (:color red :hint nil)
-    "
-    _f_: fold   _u_: unfold _r_: refold _q_: quit     _U_: unfold all _R_: refold all
-    _t_: toggle _d_: delete _n_: next   _p_: previous _T_: toggle all _D_: delete all
-    "
-    ("f" vimish-fold)
-    ("u" vimish-fold-unfold)
-    ("r" vimish-fold-refold)
-    ("q" nil :color blue)
-    ("U" vimish-fold-unfold-all)
-    ("R" vimish-fold-refold-all)
-    ("t" vimish-fold-toggle)
-    ("d" vimish-fold-delete)
-    ("n" vimish-fold-next-fold)
-    ("p" vimish-fold-previous-fold)
-    ("T" vimish-fold-toggle-all)
-    ("D" vimish-fold-delete-all))
-  (vimish-fold-global-mode 1))
+
+;; (use-package vimish-fold
+;;   :bind (("C-c f" . vimish-fold-toggle)
+;;  	 ("C-c h f" . hydra-vimish-fold/body))
+;;   :config
+;;   (defhydra hydra-vimish-fold (:color red :hint nil)
+;;     "
+;;     _f_: fold   _u_: unfold _r_: refold _q_: quit     _U_: unfold all _R_: refold all
+;;     _t_: toggle _d_: delete _n_: next   _p_: previous _T_: toggle all _D_: delete all
+;;     "
+;;     ("f" vimish-fold)
+;;     ("u" vimish-fold-unfold)
+;;     ("r" vimish-fold-refold)
+;;     ("q" nil :color blue)
+;;     ("U" vimish-fold-unfold-all)
+;;     ("R" vimish-fold-refold-all)
+;;     ("t" vimish-fold-toggle)
+;;     ("d" vimish-fold-delete)
+;;     ("n" vimish-fold-next-fold)
+;;     ("p" vimish-fold-previous-fold)
+;;     ("T" vimish-fold-toggle-all)
+;;     ("D" vimish-fold-delete-all))
+;;   (vimish-fold-global-mode 1))
+
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+;; (global-set-key (kbd "C-c f") 'hs-toggle-hiding)

@@ -2,7 +2,7 @@
 # Non-interactive
 #
 
-# set paths at Eve@UFZ and Gadi/Raijin@NCI-Australia even when non-interactive
+# set paths at Linux systems even when non-interactive
 [[ -f /etc/bashrc ]] && source /etc/bashrc
 # # set paths at MPI Hamburg even when non-interactive
 # [[ -e /client/etc/profile.zmaw ]] && source /client/etc/profile.zmaw
@@ -19,7 +19,7 @@ elif [[ -e /usr/local/bin/brew ]] ; then
     export HOMEBREW_CELLAR="/usr/local/Cellar";
     export HOMEBREW_REPOSITORY="/usr/local";
 fi
-if [[ "${HOMEBREW_PREFIX:-nil}" != "nil" ]] ; then
+if [[ -n ${HOMEBREW_PREFIX} ]] ; then
     export PATH=${HOMEBREW_PREFIX}/bin:${HOMEBREW_PREFIX}/sbin:${PATH}
     export MANPATH="${HOMEBREW_PREFIX}/share/man${MANPATH+:$MANPATH}:"
     export INFOPATH="${HOMEBREW_PREFIX}/share/info:${INFOPATH:-}"
@@ -40,6 +40,26 @@ if [[ -d ${HOME}/.pyenv ]] ; then
     export PATH=${PYENV_ROOT}/shims:${PATH}
     if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
     if command -v pyenv virtualenv-init 1>/dev/null 2>&1 ; then eval "$(pyenv virtualenv-init -)" ; fi
+fi
+
+# Use miniconda in non-interactive scripts
+# miniconda direct install
+myconda="${HOME}/miniconda3"
+# # miniconda from pyenv
+# myconda="${HOME}/.pyenv/versions/miniconda3-4.7.12"
+if [[ -f ${myconda}/bin/conda ]] ; then
+    # initialize conda
+    __conda_setup="$(${myconda}/bin/conda 'shell.bash' 'hook' 2> /dev/null)"
+    if [[ $? -eq 0 ]] ; then
+	eval "$__conda_setup"
+    else
+	if [[ -f "${myconda}/etc/profile.d/conda.sh" ]] ; then
+            source "${myconda}/etc/profile.d/conda.sh"
+	else
+            export PATH="${myconda}/bin:${PATH}"
+	fi
+    fi
+    unset __conda_setup
 fi
 
 # use julia also in non-interactive scripts
@@ -96,7 +116,9 @@ apppath() {
 # anaconda might install netcdf, which is hence in ${HOME}/.pyenv/shims
 # but anaconda might not be the active python version and ncdump,
 # for example, might not work -> use version of homebrew
-export PATH=$(prepath ${PATH} ${HOMEBREW_PREFIX}/opt/netcdf/bin)
+if [[ -n ${HOMEBREW_PREFIX} ]] ; then
+    export PATH=$(prepath ${PATH} ${HOMEBREW_PREFIX}/opt/netcdf/bin)
+fi
 export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
 export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
 # export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
@@ -106,20 +128,25 @@ export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
 # else # other
 #     homelocal=${HOME}/local
 # fi
-if [[ -d ${HOME}/local ]] ; then homelocal=${HOME}/local ; fi
-export PATH=$(prepath ${PATH} ${homelocal}/bin)
-export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${homelocal}/lib)
-export MANPATH=$(apppath ${MANPATH} ${homelocal}/share/man)
-export MANPATH=$(apppath ${MANPATH} ${homelocal}/man)
+if [[ -d ${HOME}/local ]] ; then
+    export PATH=$(prepath ${PATH} ${HOME}/local/bin)
+    export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/local/lib)
+    export MANPATH=$(apppath ${MANPATH} ${HOME}/local/share/man)
+    export MANPATH=$(apppath ${MANPATH} ${HOME}/local/man)
+fi
 # pip install --user
 export PATH=$(prepath ${PATH} ${HOME}/bin)
 # homebrew
-export PATH=$(apppath ${PATH} ${HOMEBREW_PREFIX}/sbin)
-export INFOPATH=$(prepath ${INFOPATH} ${HOMEBREW_PREFIX}/share/info)
+if [[ -n ${HOMEBREW_PREFIX} ]] ; then
+    export PATH=$(apppath ${PATH} ${HOMEBREW_PREFIX}/sbin)
+    export INFOPATH=$(prepath ${INFOPATH} ${HOMEBREW_PREFIX}/share/info)
+fi
 # mac
 export MANPATH=$(apppath ${MANPATH} /usr/share/man)
 export MANPATH=$(apppath ${MANPATH} /usr/local/share/man)
-export MANPATH=$(prepath ${MANPATH} ${HOMEBREW_PREFIX}/share/man)
+if [[ -n ${HOMEBREW_PREFIX} ]] ; then
+    export MANPATH=$(prepath ${MANPATH} ${HOMEBREW_PREFIX}/share/man)
+fi
 
 # MANPATH after install_netcdf
 export MANPATH=$(apppath ${MANPATH} ${HOME}/bin/man)
@@ -157,10 +184,12 @@ export IDL_STARTUP=${HOME}/bin/idlstartup.pro
 #         CONFIGURE_ARGS="${CONFIGURE_ARGS} --with-$ext-dir=$(brew --prefix $ext)"
 #     done
 #     ruby-install ruby
-if [[ -f ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/chruby.sh ]] ; then
-    source ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/chruby.sh
-    source ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/auto.sh
-    chruby ruby-3.2.2
+if [[ -n ${HOMEBREW_PREFIX} ]] ; then
+    if [[ -f ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/chruby.sh ]] ; then
+	source ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/chruby.sh
+	source ${HOMEBREW_PREFIX}/opt/chruby/share/chruby/auto.sh
+	chruby ruby-3.2.2
+    fi
 fi
 
 #
@@ -209,9 +238,15 @@ if [[ -f ${HOME}/.fzf.bash ]] ; then
 fi
 
 # bash completion
-if [[ -f "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]] ; then
-    export BASH_COMPLETION_COMPAT_DIR="${HOMEBREW_PREFIX}/etc/bash_completion.d"
-    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+if [[ -n ${HOMEBREW_PREFIX} ]] ; then
+    if [[ -f "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]] ; then
+	export BASH_COMPLETION_COMPAT_DIR="${HOMEBREW_PREFIX}/etc/bash_completion.d"
+	source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+    fi
+else
+    if [[ -f /etc/profile.d/bash_completion.sh ]] ; then
+	source /etc/profile.d/bash_completion.sh
+    fi
 fi
 [[ -f ${HOME}/bin/binCompletions.bash ]] && source ${HOME}/bin/binCompletions.bash
 [[ -f ${HOME}/prog/github/ido/ido_bash_complete ]] && source ${HOME}/prog/github/ido/ido_bash_complete
@@ -263,7 +298,7 @@ else
 fi
 [[ "${domain}" == "R" ]] && domain='EXPLOR'
 [[ "${maschine}" == "FRONTEND" ]] && domain='.UFZ.DE'
-[[ "${maschine}" == "AVAKAS-FRONTEND" ]] && domain='MCIA.UNI-BORDEAUX.FR'
+[[ "${maschine}" == "LOGIN" ]] && domain='LOGIN'
 [[ "${maschine:0:4}" == "GADI" ]] && maschine='GADI'
 
 #
@@ -295,14 +330,16 @@ elif [[ "${maschinen}" == "FRONTEND1" ]] ; then
     [[ -f ${HOME}/.bashrc.eve2 ]] && source ${HOME}/.bashrc.eve2
 elif [[ "${maschinen}" == "FRONTEND2" ]] ; then
     [[ -f ${HOME}/.bashrc.eve2 ]] && source ${HOME}/.bashrc.eve2
-elif [[ "${maschine}" == "AVAKAS-FRONTEND" ]] ; then
-    [[ -f ${HOME}/.bashrc.avakas ]] && source ${HOME}/.bashrc.avakas
 elif [[ "${maschine}" == "VM-OQX" ]] ; then
     [[ -f ${HOME}/.bashrc.explor ]] && source ${HOME}/.bashrc.explor
 elif [[ "${maschine}" == "RAIJIN" ]] ; then
     [[ -f ${HOME}/.bashrc.raijin ]] && source ${HOME}/.bashrc.raijin
 elif [[ "${maschine}" == "GADI" ]] ; then
     [[ -f ${HOME}/.bashrc.gadi ]] && source ${HOME}/.bashrc.gadi
+elif [[ "${maschine}" == "LOGIN" ]] ; then
+    [[ -f ${HOME}/.bashrc.curta ]] && source ${HOME}/.bashrc.curta
+elif [[ "${maschine}" == "BIOCOMP" ]] ; then
+    [[ -f ${HOME}/.bashrc.biocomp ]] && source ${HOME}/.bashrc.biocomp
 fi
 
 #
@@ -350,14 +387,16 @@ if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export BASH_SILENCE_DEPRECATION_WARNING=1
     export HOMEBREW_NO_ANALYTICS=1
     # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.0.full.mc16
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mc16
+    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mc16
+    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag.7.2.key
 fi
 
 # Special Mac Mini INRAE 2021
 if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
     export BASH_SILENCE_DEPRECATION_WARNING=1
     export HOMEBREW_NO_ANALYTICS=1
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mcmini
+    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mcmini
+    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag.7.2.key
 fi
 
 #
@@ -365,6 +404,12 @@ fi
 #
 
 if [[ "${ossystem}" == "LINUX" ]] ; then
+    # biocomp
+    if [[ "${maschine}" == "BIOCOMP" ]] ; then
+        export EDITOR="emacs -nw"
+        export LANG=en_AU.UTF-8
+        # unset SSH_ASKPASS
+    fi
     # Gadi
     if [[ "${maschine}" == "GADI" ]] ; then
         export EDITOR="emacs -nw"
@@ -382,8 +427,7 @@ if [[ "${ossystem}" == "LINUX" ]] ; then
         unset SSH_ASKPASS
     fi
     # Bordeaux
-    if [[ "${maschine}" == "AVAKAS-FRONTEND" ]] ; then
-        module load torque
+    if [[ "${maschine}" == "LOGIN" ]] ; then
         export EDITOR="emacs"
         export LANG=en_AU.UTF-8
     fi
