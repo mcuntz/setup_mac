@@ -74,7 +74,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 	Uninstall all casks (you might have to type your password several times for this, e.g. to remove LaTeX):
 
        #+BEGIN_SRC bash
-         # emacs temurin panoply quarto motrix
+         # basictex emacs motrix panoply quarto temurin
          for c in $(brew list --casks) ; do brew uninstall ${c} ; done
        #+END_SRC
 
@@ -93,7 +93,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
          [[ -d /opt/homebrew ]] && sudo rm -r /opt/homebrew
        #+END_SRC
 
-       Remove LaTeX:
+       Remove (remnants of) LaTeX:
 
        #+BEGIN_SRC bash
          sudo rm -r /usr/local/texlive/
@@ -120,7 +120,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
 
 * Setup macOS
-  The steps are intent to be done (roughly) in order.
+  The steps are intended to be done (roughly) in order. You have to open new login shells several times during the process. If something does not work after installation, opening a new login shell might do the trick.
 
 ** Check for system updates
    Check for updates of macOS in /System Preferences/ > /Software Update/ (macOS <= 12) or /System Settings/ > /General/ > /Software Update/ (macOS >= 13).
@@ -375,6 +375,12 @@ and you have to open /Software Update/ again to install the command line tools.
      #+BEGIN_SRC bash
        brew install r           # statistical computing environment
      #+END_SRC
+     #+BEGIN_SRC bash
+       brew install --cask quarto  # jupyter/Rmarkdown like notebooks in markdown
+     #+END_SRC
+     #+BEGIN_SRC bash
+       brew install --cask motrix  # download manager
+     #+END_SRC
 
      And some installations of the helpers:
 
@@ -455,7 +461,7 @@ and you have to open /Software Update/ again to install the command line tools.
          ncctools vruler apacite biblatex biber blindtext pgfgantt \
          biblatex-chicago biblatex-apa fontawesome5 cormorantgaramond \
          sectsty pdfcol soul anyfontsize doublestroke doublestroke \
-         arydshln subfiles mwe easytable gradientframe pbox floatrow \
+         arydshln subfiles mwe easy gradientframe pbox floatrow \
          fontinst fltpoint tabfigures mnsymbol mdsymbol \
          collection-fontutils easy csquotes nomencl regexpatch \
          comment stmaryrd doi acronym minitoc placeins tikzfill \
@@ -764,4 +770,4 @@ and you have to open /Software Update/ again to install the command line tools.
      env MPICC=/usr/local/openmpi-4.1.7-gfortran/bin/mpicc python -m pip install mpi4py
    #+END_SRC
 
-   However, homebrew upgrades also netcdf-C to newer versions if you install or update a package that depends on it. Then the netcdf-fortran package installed with install\under{}netcdf will not work anymore (it will link to the old, uninstalled version) and you have to rerun the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] with /donetcdf4\under{}fortran=1/ and ~fortran_compilers="gfortran"~. I still do it this way to minimize conflicts between different Fortran compilers and also re-installing netcdf-fortran with install\under{}netcdf is very fast.
+   However, homebrew upgrades also netcdf-C to newer versions if you install or update a package that depends on it. Then the netcdf-fortran package installed with install\under{}netcdf will not work anymore (it will link to the old, uninstalled C version) and you have to rerun the script [[https://github.com/mcuntz/install_netcdf][install\under{}netcdf]] with /donetcdf4\under{}fortran=1/ and ~fortran_compilers="gfortran"~. I still do it this way to minimize conflicts between different Fortran compilers; and re-installing netcdf-fortran with install\under{}netcdf is very fast.
