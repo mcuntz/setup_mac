@@ -63,19 +63,18 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
        You have to open a new login terminal that it takes effect.
 
-       Check the casks installed with Homebrew.
+       Check the casks installed with Homebrew. This might not work anymore because you changed the shell, e.g. to /zsh/. Then copy the box below that sets the /HOMEBREW_PREFIX/ into this new login terminal ([[#homebrew][Homebrew]]).
 
        #+BEGIN_SRC bash
-         brew list
+         brew list --casks
        #+END_SRC
 
-        Best to note them somewhere.
+        Best to note them somewhere (basictex font-source-code-pro emacs motrix panoply quarto temurin).
 
-	Uninstall all casks (you might have to type your password several times for this, e.g. to remove LaTeX):
+	Uninstall all casks (you might have to type your password several times for this if not even for each casks):
 
        #+BEGIN_SRC bash
-         # basictex emacs motrix panoply quarto temurin
-         for c in $(brew list --casks) ; do brew uninstall ${c} ; done
+	 for c in $(brew list --casks) ; do brew uninstall ${c} ; done
        #+END_SRC
 
        Remove Homebrew (password needed):
@@ -296,7 +295,7 @@ and you have to open /Software Update/ again to install the command line tools.
        brew install cmake
      #+END_SRC
      #+BEGIN_SRC bash
-       # this takes considerable time
+       # geos and gdal take considerable time to install
        for i in geos gdal nco ncview ; do brew install ${i} ; done
      #+END_SRC
      #+BEGIN_SRC bash
@@ -371,6 +370,9 @@ and you have to open /Software Update/ again to install the command line tools.
      #+END_SRC
      #+BEGIN_SRC bash
        brew install git         # version control system
+     #+END_SRC
+     #+BEGIN_SRC bash
+       brew install rsync       # better Unicode support in newer rsync versions
      #+END_SRC
      #+BEGIN_SRC bash
        brew install r           # statistical computing environment
@@ -563,9 +565,9 @@ and you have to open /Software Update/ again to install the command line tools.
 
      #+BEGIN_SRC bash
        pyenv install --list
-       pyenv install 3.12.8
+       pyenv install 3.13.1
        pyenv rehash
-       pyenv global 3.12.8
+       pyenv global 3.13.1
      #+END_SRC
 
      Remember that you always have to /rehash/ after you installed a new version or new virtual environment.
@@ -583,39 +585,40 @@ and you have to open /Software Update/ again to install the command line tools.
      Note that I actually install Python versions currently as follows:
 
      #+BEGIN_SRC bash
-       brew install tcl-tk@8
+       # most probably already installed
+       brew install openssl readline sqlite3 xz zlib tcl-tk@8
      #+END_SRC
      #+BEGIN_SRC bash
        env LDFLAGS=" \
-           -L$(brew --prefix openssl@1.1)/lib \
+           -L$(brew --prefix openssl)/lib \
            -L$(brew --prefix readline)/lib \
            -L$(brew --prefix sqlite3)/lib \
            -L$(brew --prefix xz)/lib \
            -L$(brew --prefix zlib)/lib \
            -L$(brew --prefix tcl-tk@8)/lib" \
            CPPFLAGS=" \
-           -I$(brew --prefix openssl@1.1)/include \
+           -I$(brew --prefix openssl)/include \
            -I$(brew --prefix readline)/include \
            -I$(brew --prefix sqlite3)/include \
            -I$(brew --prefix xz)/include \
            -I$(brew --prefix zlib)/include \
            -I$(brew --prefix tcl-tk@8)/include" \
-           PKG_CONFIG_PATH="$(brew --prefix openssl@1.1)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk@8)/lib/pkgconfig" \
+           PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk@8)/lib/pkgconfig" \
         PYTHON_CONFIGURE_OPTS=" \
         --enable-optimizations \
         --enable-framework=${HOME}/Library/Frameworks" \
-        pyenv install 3.12.8
+        pyenv install 3.13.1
      #+END_SRC
      #+BEGIN_SRC bash
        pyenv rehash
      #+END_SRC
 
-     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0), enables a framework build, and turns on profile guided optimization as well as link time optimization for Python, being about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.12.8= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then, which is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
+     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0), enables a framework build, and turns on profile guided optimization as well as link time optimization for Python, being about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.13.1= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then, which is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
 
      Virtual environments are then created as:
 
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.12.8 mypy
+       pyenv virtualenv 3.13.1 mypy
        pyenv rehash
      #+END_SRC
 
@@ -661,7 +664,7 @@ and you have to open /Software Update/ again to install the command line tools.
        fi
      #+END_SRC
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.12.8 pystd
+       pyenv virtualenv 3.13.1 pystd
        pyenv rehash
        pyenv global pystd
        pyenv rehash
