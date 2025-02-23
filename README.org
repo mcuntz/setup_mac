@@ -605,15 +605,14 @@ and you have to open /Software Update/ again to install the command line tools.
            -I$(brew --prefix tcl-tk@8)/include" \
            PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk@8)/lib/pkgconfig" \
         PYTHON_CONFIGURE_OPTS=" \
-        --enable-optimizations \
-        --enable-framework=${HOME}/Library/Frameworks" \
+        --enable-optimizations" \
         pyenv install 3.13.1
      #+END_SRC
      #+BEGIN_SRC bash
        pyenv rehash
      #+END_SRC
 
-     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0), enables a framework build, and turns on profile guided optimization as well as link time optimization for Python, being about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.13.1= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain. Python has to be a framework (=--enable-framework=) if /wxPython/ is used (see the [[https://github.com/pyenv/pyenv/wiki][pyenv wiki]] for details). This needs administrator rights since macOS 13 Ventura. Each installation of packages, creation of virtual environments, etc. will need sudo then, which is a nuisance. So I rather install the framework in my local Library folder (~--enable-framework=${HOME}/Library/Frameworks~). This only works with pyenv version >= 2.3.12, otherwise it fails due to a bug in pyenv.
+     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0) and turns on profile guided optimization as well as link time optimization for Python, being then about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.13.1= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain.
 
      Virtual environments are then created as:
 
