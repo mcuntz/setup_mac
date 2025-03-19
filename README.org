@@ -71,10 +71,10 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 
         Best to note them somewhere (basictex font-source-code-pro emacs motrix panoply quarto temurin).
 
-	Uninstall all casks (you might have to type your password several times for this if not even for each casks):
+        Uninstall all casks (you might have to type your password several times for this if not even for each casks):
 
        #+BEGIN_SRC bash
-	 for c in $(brew list --casks) ; do brew uninstall ${c} ; done
+         for c in $(brew list --casks) ; do brew uninstall ${c} ; done
        #+END_SRC
 
        Remove Homebrew (password needed):
@@ -447,28 +447,31 @@ and you have to open /Software Update/ again to install the command line tools.
    #+BEGIN_SRC bash
      sudo tlmgr update --self ; \
      sudo tlmgr install \
-         wasysym german titlesec wasy elsarticle \
-         supertabular lineno helvetic textpos multirow subfigure appendix \
-         lipsum dinbrief a0poster wallpaper collection-fontsrecommended \
-         dvipng kastrup boondox newtx type1cm ucs dvipng a0poster floatflt \
-         enumitem lastpage hyphenat footmisc simplekv chemfig units \
-         ntheorem algorithms cleveref a4wide lettrine mdframed \
-         needspace preprint xifthen ifmtarg algorithmicx changepage \
-         sidecap sttools marginnote draftwatermark everypage fontinst \
-         fltpoint tabfigures mnsymbol mdsymbol collection-fontutils \
-         fontaxes was pdfcrop latexmk fncychap tabulary varwidth \
-         framed capt-of makecell xstring moreverb wrapfig \
-         adjustbox collectbox threeparttable capt-of pgf simplekv \
-         cmbright tcolorbox environ titling gensymb program breakurl \
-         ncctools vruler apacite biblatex biber blindtext pgfgantt \
-         biblatex-chicago biblatex-apa fontawesome5 cormorantgaramond \
-         sectsty pdfcol soul anyfontsize doublestroke doublestroke \
-         arydshln subfiles mwe easy gradientframe pbox floatrow \
-         fontinst fltpoint tabfigures mnsymbol mdsymbol \
-         collection-fontutils easy csquotes nomencl regexpatch \
-         comment stmaryrd doi acronym minitoc placeins tikzfill \
-         listingsutf8 mhchem bigfoot changes etoolbox truncate \
-         xkeyval todonotes ulem xcolor siunitx glossaries glossaries-extra
+	  a0poster a4wide acronym adjustbox algorithmicx \
+	  algorithms anyfontsize apacite appendix arydshln \
+	  biber biblatex biblatex-apa biblatex-chicago \
+	  bigfoot blindtext boondox breakurl capt-of changepage \
+	  changes chemfig cleveref cmbright collectbox \
+	  collection-fontsrecommended collection-fontutils comment \
+	  cormorantgaramond csquotes dinbrief doi doublestroke \
+	  draftwatermark dvipng easy elsarticle enumitem \
+	  environ etoolbox everypage floatflt floatrow fltpoint \
+	  fncychap fontawesome5 fontaxes fontinst footmisc  \
+	  framed gensymb german glossaries glossaries-extra \
+	  gradientframe helvetic hyphenat ifmtarg kastrup \
+	  lastpage latexmk lettrine lineno lipsum \
+	  listingsutf8 makecell marginnote mdframed mdsymbol \
+	  mhchem minitoc mnsymbol moreverb multirow mwe  \
+	  ncctools needspace newtx nomencl ntheorem pbox \
+	  pdfcol pdfcrop pgf pgfgantt placeins preprint program psnfss \
+	  regexpatch sectsty sidecap simplekv siunitx soul \
+	  stmaryrd sttools subfigure subfiles supertabular \
+	  tabfigures tabulary tcolorbox textpos threeparttable \
+	  tikzfill titlesec titling todonotes truncate type1cm \
+	  ucs ulem units varwidth vruler wallpaper was wasy \
+	  wasysym wrapfig xcolor xifthen xkeyval xstring \
+	  arev bera fira iwona kurier lato ly1 mathastext newtxsf \
+	  opensans psnfss sansmathfonts sfmath sourcesanspro 
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
