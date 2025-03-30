@@ -424,13 +424,16 @@ and you have to open /Software Update/ again to install the command line tools.
 
    Then I install my setup by copying it to =~/.emacs.d=.
 
-   I use the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] that is also used in Spacemacs and install aspell for spell checking:
+   I use the font [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] that is also used in Spacemacs, install aspell for spell checking, and [[https://github.com/astral-sh/ruff][ruff]] for linting Python code:
 
    #+BEGIN_SRC bash
      brew install --cask font-source-code-pro
    #+END_SRC
    #+BEGIN_SRC bash
      brew install aspell
+   #+END_SRC
+   #+BEGIN_SRC bash
+     brew install ruff
    #+END_SRC
 
    If you open the new Emacs for the first time, it will install and byte-compile some packages. This might take some time.
@@ -471,7 +474,7 @@ and you have to open /Software Update/ again to install the command line tools.
 	  ucs ulem units varwidth vruler wallpaper was wasy \
 	  wasysym wrapfig xcolor xifthen xkeyval xstring \
 	  arev bera fira iwona kurier lato ly1 mathastext newtxsf \
-	  opensans psnfss sansmathfonts sfmath sourcesanspro 
+	  opensans psnfss sansmathfonts sfmath sourcesanspro
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
@@ -569,13 +572,10 @@ and you have to open /Software Update/ again to install the command line tools.
      #+BEGIN_SRC bash
        pyenv install --list
        pyenv install 3.13.1
-       pyenv rehash
        pyenv global 3.13.1
      #+END_SRC
 
-     Remember that you always have to /rehash/ after you installed a new version or new virtual environment.
-
-     Try to rehash first if a problem occurs with /pyenv/. For example, some new Homebrew packages might upgrade /pyenv/ as well. Then you get an error such as
+     Try to rehash first if a problem occurs with /pyenv/: =pyenv rehash=. For example, some new Homebrew packages might upgrade /pyenv/ as well. Then you get an error such as:
 
      #+BEGIN_SRC bash
        /Users/cuntz/.pyenv/shims/python: line 21:
@@ -611,9 +611,6 @@ and you have to open /Software Update/ again to install the command line tools.
         --enable-optimizations" \
         pyenv install 3.13.1
      #+END_SRC
-     #+BEGIN_SRC bash
-       pyenv rehash
-     #+END_SRC
 
      This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0) and turns on profile guided optimization as well as link time optimization for Python, being then about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.13.1= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain.
 
@@ -621,10 +618,16 @@ and you have to open /Software Update/ again to install the command line tools.
 
      #+BEGIN_SRC bash
        pyenv virtualenv 3.13.1 mypy
-       pyenv rehash
      #+END_SRC
 
-     The virtual environment /mypy/ can then be used just as any installed Python version with /pyenv/. For example:
+     The virtual environment /mypy/ can then be used just as any installed Python version with /pyenv/. For example, use virtual environment /mypy/ in the current shell:
+
+     #+BEGIN_SRC bash
+       pyenv activate mypy
+     #+END_SRC
+
+     Or always use /mypy/ in the current directory:
+
      #+BEGIN_SRC bash
        pyenv local mypy
      #+END_SRC
@@ -633,7 +636,6 @@ and you have to open /Software Update/ again to install the command line tools.
 
      #+BEGIN_SRC bash
        pyenv install miniforge3-latest
-       pyenv rehash
        pyenv global miniforge3-latest
        pyenv virtualenv mypy
      #+END_SRC
@@ -649,10 +651,10 @@ and you have to open /Software Update/ again to install the command line tools.
    - *Essential Python packages*
 
      Anaconda comes with hundreds of packages. I tend to use a Python version with pyenv or miniforge and install my essential packages with /pip/ or /conda/mamba/. These are currently in my main environment:\\
-     numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, cftime, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, xarray, numpydoc, pytest, pytest-cov, flake8, gdal, f90nml, pykdtree, cython, pyshp, six, wheel, sphinx, sphinx_book_theme
+     numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, cftime, netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py, schwimmbad, xarray, numpydoc, pytest, pytest-cov, gdal, f90nml, pykdtree, cython, pyshp, six, wheel, sphinx, sphinx_book_theme
 
      and mostly this subset in other virtual environments:\\
-     numpy, scipy, matplotlib, pandas, netcdf4, xarray, ipython, flake8, wheel
+     numpy, scipy, matplotlib, pandas, netcdf4, xarray, ipython, wheel
 
      There is/was a problem with Apple's Accelerate framework on Apple Silicon (M1/2) so that one should use /OpenBLAS/. You also need to tell /pip/ where to find the HDF5 library and the GEOS library and the like. You do not need the lines with =OPENBLAS= and =HDF5-DIR= if you are on macOS on Intel and Homebrew installs into =/usr/local=; this directory is searched automatically. Here I install my standard python virtual environment (pystd):
 
@@ -667,9 +669,7 @@ and you have to open /Software Update/ again to install the command line tools.
      #+END_SRC
      #+BEGIN_SRC bash
        pyenv virtualenv 3.13.1 pystd
-       pyenv rehash
        pyenv global pystd
-       pyenv rehash
      #+END_SRC
      #+BEGIN_SRC bash
        # test if install works
@@ -677,7 +677,7 @@ and you have to open /Software Update/ again to install the command line tools.
      #+END_SRC
      #+BEGIN_SRC bash
        for i in wheel scipy matplotlib ipython pandas cftime netcdf4 \
-           xarray ipython flake8 ; do \
+           xarray ipython ; do \
            python -m pip install ${i} ; done
      #+END_SRC
      #+BEGIN_SRC bash
