@@ -8,13 +8,17 @@
 ;;         mac-control-modifier 'control
 ;;         ns-function-modifier 'hyper))
 
+(defun is-linux-p
+    ()
+  (eq system-type 'gnu/linux))
+
 ;; key bindings C- Ctrl, M- option, S- shift, s- command
 
 ;; miscellaneous
 ;; (global-set-key [f1]       'advertised-undo)
 (global-set-key (kbd "<f2>")    'query-replace-regexp)
 (global-set-key (kbd "<f3>")    'comment-or-uncomment-region)
-(global-set-key (kbd "<f12>")   'kill-this-buffer)
+(global-set-key (kbd "<f12>")   'kill-current-buffer)
 (global-set-key (kbd "C-x C-g") 'goto-line)
 (global-set-key (kbd "C-h")     'delete-backward-char)
 (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
@@ -40,7 +44,16 @@
 ;; quarto
 (global-set-key (kbd "C-c e") 'polymode-eval-chunk)
 
-;; https://emacs.stackexchange.com/questions/352/how-to-override-major-mode-bindings
+(when (is-linux-p)
+  (global-set-key (kbd "C-v") 'yank)
+  ;; Use alt instead of Apple key
+  (global-set-key (kbd "M-c") 'kill-ring-save)
+  (global-set-key (kbd "M-v") 'yank)
+  (global-set-key (kbd "M-a") 'mark-whole-buffer)
+  (global-set-key (kbd "M-z") 'undo)
+  (global-set-key (kbd "M-<up>")   'beginning-of-buffer)
+  (global-set-key (kbd "M-<down>") 'end-of-buffer)
+  )
 
 ;; Main use is to have my key bindings have the highest priority
 ;; https://github.com/kaushalmodi/.emacs.d/blob/master/elisp/modi-mode.el

@@ -3,7 +3,8 @@
 ;; flyspell
 
 
-(setq ispell-program-name (locate-file "aspell" '("/usr/local/bin" "/opt/homebrew/bin")))
+(setq ispell-program-name
+      (locate-file "aspell" '("/usr/local/bin" "/opt/homebrew/bin")))
 
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)

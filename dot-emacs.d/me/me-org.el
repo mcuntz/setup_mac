@@ -6,7 +6,11 @@
     ()
   (eq system-type 'darwin))
 
-(when (is-mac-p)
+(defun is-linux-p
+    ()
+  (eq system-type 'gnu/linux))
+
+(when (or (is-mac-p) (is-linux-p))
   (straight-use-package 'toc-org))
 
 (eval-after-load "org"

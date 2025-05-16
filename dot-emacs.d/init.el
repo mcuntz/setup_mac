@@ -70,7 +70,7 @@
 
 ;; Setup straight.el
 ;; https://github.com/radian-software/straight.el#getting-started
-(when (is-mac-p)
+(when (or (is-mac-p) (is-linux-p))
   (defvar bootstrap-version)
   (let ((bootstrap-file
 	 (expand-file-name
@@ -126,15 +126,17 @@
 
 ;; Frame
 (add-to-list 'default-frame-alist '(width  . 90))
-(add-to-list 'default-frame-alist '(height . 45))
 (when (is-mac-p)
+ (add-to-list 'default-frame-alist '(height . 45))
  (set-face-attribute 'default nil
                      :family "Source Code Pro"
                      :height 150
                      :weight 'normal))
 (when (is-linux-p)
+ (add-to-list 'default-frame-alist '(height . 40))
  (set-face-attribute 'default nil
-                     :height 150
+                     :family "Source Code Pro"
+                     :height 140
                      :weight 'normal))
 
 ;; prevent (old < 28?) error on startup

@@ -13,6 +13,10 @@
     ()
   (eq system-type 'darwin))
 
+(defun is-linux-p
+    ()
+  (eq system-type 'gnu/linux))
+
 (use-package undo-tree
   :defer t
   :init
@@ -38,5 +42,5 @@ See variable `undo-tree-history-directory-alist'." dir))
          ("H-z" . undo-tree-undo)
 	 ("s-Z" . undo-tree-redo)
          ("H-Z" . undo-tree-redo)))
-(when (is-mac-p)
+(when (or (is-mac-p) (is-linux-p))
   (global-undo-tree-mode))
