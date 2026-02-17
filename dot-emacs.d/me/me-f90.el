@@ -1,6 +1,6 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- Fortran ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; f90
+;;; Code:
 
 ;; ;; Regexp of comment-like directive like "!HPF\\$", not to be indented (default "!hpf\\$").
 ;; (setq f90-directive-comment-re "#")
@@ -35,6 +35,7 @@
   (setq f90-associate-indent 2)
   (setq f90-critical-indent 2)
   (setq f90-continuation-indent 5))
+
 (defun f90-eddypro-style ()
   (interactive)
   (setq f90-do-indent 4)
@@ -44,3 +45,7 @@
   (setq f90-associate-indent 4)
   (setq f90-critical-indent 4)
   (setq f90-continuation-indent 4))
+
+(provide 'me-f90)
+
+;;; me-f90.el ends here

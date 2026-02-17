@@ -111,6 +111,7 @@
 (setq tool-bar-mode nil)
 (setq transient-mark-mode t)
 (put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
 ;; Set default coding system (especially for Windows)
 (set-default-coding-systems 'utf-8)
 ;; ;; turn off beeps, make them flash!
@@ -148,25 +149,18 @@
 ;; keyboard macros
 (fset 'comment-on-line-above
       [?\C-k ?\C-p ?\C-e return ?\C-y tab ?\C-n ?\C-e])
-(load "me-hydra")
+(load "me-misc")
 (load "me-undo")
 (load "me-ivy")
 (load "me-flycheck")
-(load "me-flyspell")
-(load "me-org")
+(load "me-spell")
 (load "me-f90")
 (load "me-python")
-(load "me-r")
-(load "me-rst")
 (load "me-latex")
 (load "me-git")
-(load "me-parenthesis")
-(load "me-fold")
-(load "me-kill")
-(load "me-yaml")
-(load "me-unfill")
+(load "me-prog")
 (load "me-html")
-(load "me-quarto")
+(load "me-markdown")
 (load "me-tests")
 
 ;; modes

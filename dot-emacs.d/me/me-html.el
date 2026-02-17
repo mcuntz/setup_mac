@@ -1,6 +1,6 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- html ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; html
+;;; Code:
 
 ;; https://www.reddit.com/r/emacs/comments/1b7yhep/lets_surround_part_1/
 (defun my-surround-region (prefix suffix)
@@ -38,3 +38,7 @@
   "Surround the active region with hard-coded strings"
   (interactive)
   (my-surround-region "<sup>" "</sup>"))
+
+(provide 'me-html)
+
+;;; me-html.el ends here

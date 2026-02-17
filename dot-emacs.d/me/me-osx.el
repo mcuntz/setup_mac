@@ -1,11 +1,12 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- macOS ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; macOS related
-
-;; https://github.com/CSRaghunandan/.emacs.d
+;;; Code:
 
 (defun is-mac-p ()
   (eq system-type 'darwin))
+
+
+;; https://github.com/CSRaghunandan/.emacs.d
 
 (when (is-mac-p)
   (setq ns-function-modifier 'hyper ; make Fn key do Hyper
@@ -48,3 +49,8 @@
       (t
        (when (require 'osx-clipboard nil t)
          (osx-clipboard-mode +1))))
+
+
+(provide 'me-osx)
+
+;;; me-osx.el ends here

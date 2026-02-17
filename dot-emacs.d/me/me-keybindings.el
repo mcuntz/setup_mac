@@ -1,15 +1,8 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- key bindings ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; key bindings
+;;; Code:
 
-;; (when (is-mac-p)
-;;   (setq mac-command-modifier 'meta
-;;         mac-option-modifier 'super
-;;         mac-control-modifier 'control
-;;         ns-function-modifier 'hyper))
-
-(defun is-linux-p
-    ()
+(defun is-linux-p ()
   (eq system-type 'gnu/linux))
 
 ;; key bindings C- Ctrl, M- option, S- shift, s- command
@@ -42,7 +35,7 @@
 (global-set-key (kbd "C-c f") 'hs-toggle-hiding)
 
 ;; quarto
-(global-set-key (kbd "C-c e") 'polymode-eval-chunk)
+(global-set-key (kbd "C-c c") 'polymode-eval-region-or-chunk)
 
 (when (is-linux-p)
   (global-set-key (kbd "C-v") 'yank)
@@ -90,29 +83,6 @@
 (define-key my-mode-map (kbd "C-c <right>") #'next-window-any-frame)
 (define-key my-mode-map (kbd "C-c <left>") #'previous-window-any-frame)
 
+(provide 'me-keybindings)
 
-;; DID NOT WORK
-;; ;; drag-and-drop
-;; ;; https://stackoverflow.com/questions/3805658/how-to-configure-emacs-drag-and-drop-to-open-instead-of-append-on-osx
-;; ;; (if (fboundp 'ns-find-file)
-;; ;;     (global-set-key [ns-drag-file] 'ns-find-file))
-;; ;; (setq ns-pop-up-frames nil)
-;; ;; or
-;; ;; Find the file, w/shift insert filename; w/meta insert file contents.
-;; ;; Note that the emacs window must be selected (CMD-TAB) for the modifiers
-;; ;; to register.
-;; (define-key global-map [M-ns-drag-file] 'ns-insert-file)
-;; (define-key global-map [S-ns-drag-file] 'ns-insert-filename)
-;; (define-key global-map [ns-drag-file] 'ns-find-file-in-frame)
-;; (defun ns-insert-filename ()
-;;   "Insert contents of first element of `ns-input-file' at point."
-;;   (interactive)
-;;   (let ((f (pop ns-input-file)))
-;;     (insert f))
-;;   (if ns-input-file   ; any more? Separate by " "
-;;       (insert " ")))
-;; (defun ns-find-file-in-frame ()
-;;   "Do a `find-file' with the `ns-input-file' as argument; staying in frame."
-;;   (interactive)
-;;   (let ((ns-pop-up-frames nil))
-;;     (ns-find-file)))
+;;; me-keybindings.el ends here

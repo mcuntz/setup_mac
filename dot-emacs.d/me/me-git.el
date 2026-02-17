@@ -1,6 +1,6 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- git ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; git
+;;; Code:
 
 ;; https://github.com/CSRaghunandan/.emacs.d/
 
@@ -11,3 +11,7 @@
          (:map dired-mode-map
                ("l" . magit-dired-log)))
   :bind* (("C-c m s" . magit-status)))
+
+(provide 'me-git)
+
+;;; me-git.el ends here

@@ -24,6 +24,7 @@ alias trash='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\*
 alias bc='bc -l'
 alias h='history 50'
 alias ilocate='locate -i'
+alias dusk='du -skh'
 # calculator
 function c() {
     echo "${1}" | sed -e 's/[eE]+*/\*10\^/g' | bc -l
@@ -32,6 +33,7 @@ function c() {
 function fbackup() {
     dd=$(date -r "${1}" +"%Y%m%d") ; cp "${1}" "${1%.*}.${dd}.${1##*.}"
 }
+alias dfvue0='dfvue -i 0 -m "-9999"'
 
 ###############################################################################
 # Telnet and FTP

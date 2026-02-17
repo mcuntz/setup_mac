@@ -5,7 +5,7 @@
 #+TITLE: Setting up macOS for scientific computing and software development
 
 Author: Matthias Cuntz, mc (at) macu (dot) de\\
-Modified: 03.05.2024
+Modified: 17.02.2026
 
 Inspired by guides of [[https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b][Dirk Avery]], [[https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883][Vinicius De Antoni]], [[https://sourabhbajaj.com/mac-setup/][Sourabh Bajaj]], [[https://github.com/nicolashery/mac-dev-setup][Nicolas Hery]].
 
@@ -127,7 +127,7 @@ This is a reminder for myself how to setup a new Mac or updating the OS, which m
 ** Xcode
    A full Xcode installation is not always needed. Most often, the Xcode Command Line Tools (CLT) are enough, for example for Homebrew. But some development software needs a full Xcode installation such as the FreePGI Fortran Compiler. So one can, for example, install the Xcode CLT only, and install the full Xcode only if another program demands it. Note that installing the full XCode takes considerable time (count rather half an hour or more).
 
-   The normal way to install the XCode Command Line Tools (CLT) from the terminal would be:
+   The normal way to install the XCode Command Line Tools (CLT) from the terminal would be (watch out for the pop-up window):
 
    #+BEGIN_SRC bash
      xcode-select --install
@@ -497,8 +497,6 @@ and you have to open /Software Update/ again to install the command line tools.
 
    - [[https://www.zotero.org][Zotero]], reference manager,
 
-   - [[http://www.skype.com/en/][Skype]], video calls, I still use it,
-
    - [[https://www.sourcetreeapp.com][SourceTree]], git GUI originally for bitbucket but works with other git repositories as well,
 
    - [[https://www.spotify.com/][Spotify]], streaming music,
@@ -510,7 +508,7 @@ and you have to open /Software Update/ again to install the command line tools.
 ** Myriad Pro
    I like the Myriad Pro font and AGU journals currently use it. The Myriad Pro font comes with the Adobe Acrobat Reader.
 
-   To install for non-LaTeX programs, one can install in Font Book the four /otf/-files from the directory '/Applications/Adobe Acrobat Reader DC.app/Contents/Resources/Resource/Font'.
+   To install for non-LaTeX programs, one can install in Font Book the four /otf/-files from the directory '/Applications/Adobe Acrobat DC/Adobe Acrobat.app/Contents/Resources/Resource/Font/'.
 
    An extended set of glyphs are given in the zip file 'MyriadPro.zip':\\
    unzip MyriadPro.zip and drag the folder with the .otf files into Font Book.
@@ -525,7 +523,7 @@ and you have to open /Software Update/ again to install the command line tools.
      cd FontPro
      mkdir otf
      FONT=MyriadPro
-     cp "/Applications/Adobe Acrobat Reader.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
+     cp "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
      ./scripts/makeall ${FONT}
      echo y | sudo ./scripts/install
      sudo updmap-sys --enable Map=${FONT}.map
@@ -571,8 +569,8 @@ and you have to open /Software Update/ again to install the command line tools.
 
      #+BEGIN_SRC bash
        pyenv install --list
-       pyenv install 3.13.1
-       pyenv global 3.13.1
+       pyenv install 3.14.3
+       pyenv global 3.14.3
      #+END_SRC
 
      Try to rehash first if a problem occurs with /pyenv/: =pyenv rehash=. For example, some new Homebrew packages might upgrade /pyenv/ as well. Then you get an error such as:
@@ -609,15 +607,15 @@ and you have to open /Software Update/ again to install the command line tools.
            PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk@8)/lib/pkgconfig" \
         PYTHON_CONFIGURE_OPTS=" \
         --enable-optimizations" \
-        pyenv install 3.13.1
+        pyenv install 3.14.3
      #+END_SRC
 
-     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0) and turns on profile guided optimization as well as link time optimization for Python, being then about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.13.1= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain.
+     This uses the newer Tcl/Tk version 8.6 from Homebrew for /tkinter/ (but not v9.0) and turns on profile guided optimization as well as link time optimization for Python, being then about 10% faster than without optimization. Optimization takes significantly more time to install Python. If you do not use /tkinter/ and just want to try out a Python version, =pyenv install 3.14.3= is just fine. Otherwise I recommend the optimization because you do not install Python too often but get a significant gain.
 
      Virtual environments are then created as:
 
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.13.1 mypy
+       pyenv virtualenv 3.14.3 mypy
      #+END_SRC
 
      The virtual environment /mypy/ can then be used just as any installed Python version with /pyenv/. For example, use virtual environment /mypy/ in the current shell:
@@ -668,7 +666,7 @@ and you have to open /Software Update/ again to install the command line tools.
        fi
      #+END_SRC
      #+BEGIN_SRC bash
-       pyenv virtualenv 3.13.1 pystd
+       pyenv virtualenv 3.14.3 pystd
        pyenv global pystd
      #+END_SRC
      #+BEGIN_SRC bash

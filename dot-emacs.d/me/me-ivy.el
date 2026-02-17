@@ -1,6 +1,6 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- ivy ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; ivy
+;;; Code:
 
 ;; https://github.com/CSRaghunandan/.emacs.d
 
@@ -77,3 +77,7 @@
 
 ;; hydra for ivy, its a part of the same repo as swiper
 (use-package ivy-hydra)
+
+(provide 'me-ivy)
+
+;;; me-ivy.el ends here

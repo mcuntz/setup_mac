@@ -1,21 +1,15 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- undo ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; undo-tree
+;;; Code:
 
-;; (use-package undo-tree
-;;   :bind (("s-z" . undo-tree-undo)
-;;          ("H-z" . undo-tree-undo)
-;; 	 ("s-Z" . undo-tree-redo)
-;;          ("H-Z" . undo-tree-redo))
-;;   :config (global-undo-tree-mode))
-
-(defun is-mac-p
-    ()
+(defun is-mac-p ()
   (eq system-type 'darwin))
 
-(defun is-linux-p
-    ()
+(defun is-linux-p ()
   (eq system-type 'gnu/linux))
+
+
+;; undo-tree
 
 (use-package undo-tree
   :defer t
@@ -42,5 +36,11 @@ See variable `undo-tree-history-directory-alist'." dir))
          ("H-z" . undo-tree-undo)
 	 ("s-Z" . undo-tree-redo)
          ("H-Z" . undo-tree-redo)))
+
 (when (or (is-mac-p) (is-linux-p))
   (global-undo-tree-mode))
+
+
+(provide 'me-undo)
+
+;;; me-undo.el ends here

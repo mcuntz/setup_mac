@@ -1,10 +1,7 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; package --- python ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; python
+;;; Code:
 
-;; (require 'python)
-;; (setq python-shell-interpreter "ipython")
-;; (setq python-shell-completion-native-disabled-interpreters '("ipython"))
 
 (use-package pyenv-mode
   :init
@@ -22,12 +19,6 @@
     (pyenv-mode-set global-pyenv)
     (setq pyenv-current-version global-pyenv)))
 (add-hook 'after-init-hook 'pyenv-init)
-
-;; ;; https://www.reddit.com/r/emacs/comments/1em4ua3/emacs_for_python/
-;; (require 'python)
-;; (setq python-shell-interpreter "ipython")
-;; (setq python-shell-interpreter-args "-i --simple-prompt")
-
 
 ;; https://stackoverflow.com/questions/24119221/customize-window-splitting-in-emacs-python-mode
 ;; If you want to customize behavior for python-mode buffers only, you can simply wrap the call to setq (last line of the code in the answer) in a function: (defun prefer-side-by-side-splits () ...) and add that function to python-mode-hook via (add-hook 'python-mode-hook 'prefer-side-by-side-splits)
@@ -53,3 +44,8 @@
                    (split-window-right))))))))
 
 (setq split-window-preferred-function 'my-split-window-sensibly)
+
+
+(provide 'me-python)
+
+;;; me-python.el ends here
