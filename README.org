@@ -474,7 +474,8 @@ and you have to open /Software Update/ again to install the command line tools.
 	  ucs ulem units varwidth vruler wallpaper was wasy \
 	  wasysym wrapfig xcolor xifthen xkeyval xstring \
 	  arev bera fira iwona kurier lato ly1 mathastext newtxsf \
-	  opensans psnfss sansmathfonts sfmath sourcesanspro
+	  opensans psnfss sansmathfonts sfmath zref authoraftertitle \
+          totcount
    #+END_SRC
 
    I also install LaTeXML so that Emacs' org-mode can convert LaTeX equations to MathML on export:
@@ -523,6 +524,7 @@ and you have to open /Software Update/ again to install the command line tools.
      cd FontPro
      mkdir otf
      FONT=MyriadPro
+     # older: cp "/Applications/Adobe Acrobat Reader.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
      cp "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
      ./scripts/makeall ${FONT}
      echo y | sudo ./scripts/install
