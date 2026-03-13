@@ -4,26 +4,13 @@
 
 # set paths at Linux systems even when non-interactive
 [[ -f /etc/bashrc ]] && source /etc/bashrc
-# # set paths at MPI Hamburg even when non-interactive
-# [[ -e /client/etc/profile.zmaw ]] && source /client/etc/profile.zmaw
+
+# directory with setup scripts
+bashd=${HOME}/.bash.d
+[[ -d ${bashd} ]] || { echo "no .bash.d directory"; return; }
 
 # set homebrew also in non-interactive scripts
-if [[ -d /opt/homebrew ]] ; then
-    # eval $(/opt/homebrew/bin/brew shellenv)
-    # or by hand to append rather than prepand path
-    export HOMEBREW_PREFIX="/opt/homebrew";
-    export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-    export HOMEBREW_REPOSITORY="/opt/homebrew";
-elif [[ -e /usr/local/bin/brew ]] ; then
-    export HOMEBREW_PREFIX="/usr/local";
-    export HOMEBREW_CELLAR="/usr/local/Cellar";
-    export HOMEBREW_REPOSITORY="/usr/local";
-fi
-if [[ -n ${HOMEBREW_PREFIX} ]] ; then
-    export PATH=${HOMEBREW_PREFIX}/bin:${HOMEBREW_PREFIX}/sbin:${PATH}
-    export MANPATH="${HOMEBREW_PREFIX}/share/man${MANPATH+:$MANPATH}:"
-    export INFOPATH="${HOMEBREW_PREFIX}/share/info:${INFOPATH:-}"
-fi
+source ${bashd}/homebrew.sh
 
 # make sure /usr/local/bin is at the beginning of PATH
 if [[ -n $(echo ${PATH} | grep "/usr/local/bin") ]] ; then
@@ -32,120 +19,96 @@ fi
 export PATH=/usr/local/bin:${PATH}
 
 # use pyenv also in non-interactive scripts
-if [[ -d ${HOME}/.pyenv ]] ; then
-    export PYENV_ROOT="${HOME}/.pyenv"
-    if [[ -d ${PYENV_ROOT}/libexec ]] ; then  # local install from github
-        export PATH=${PYENV_ROOT}/libexec:${PATH}
-    fi
-    export PATH=${PYENV_ROOT}/shims:${PATH}
-    if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
-    if command -v pyenv virtualenv-init 1>/dev/null 2>&1 ; then eval "$(pyenv virtualenv-init -)" ; fi
+source ${bashd}/pyenv.sh
+
+# use miniconda in non-interactive scripts
+source ${bashd}/conda.sh
+
+# # use julia also in non-interactive scripts
+# if [[ -d ${HOME}/.julia/julia-1.8.3 ]] ; then
+#     export PATH=${PATH}:${HOME}/.julia/julia-1.8.3/bin
+# fi
+
+# set licence keys
+ossystem=$(uname -s)
+if [[ ${ossystem} == [Dd]arwin ]] ; then
+    source ${bashd}/licence.sh
 fi
 
-# Use miniconda in non-interactive scripts
-# miniconda direct install
-myconda="${HOME}/miniconda3"
-# # miniconda from pyenv
-# myconda="${HOME}/.pyenv/versions/miniconda3-4.7.12"
-if [[ -f ${myconda}/bin/conda ]] ; then
-    # initialize conda
-    __conda_setup="$(${myconda}/bin/conda 'shell.bash' 'hook' 2> /dev/null)"
-    if [[ $? -eq 0 ]] ; then
-	eval "$__conda_setup"
-    else
-	if [[ -f "${myconda}/etc/profile.d/conda.sh" ]] ; then
-            source "${myconda}/etc/profile.d/conda.sh"
-	else
-            export PATH="${myconda}/bin:${PATH}"
-	fi
-    fi
-    unset __conda_setup
+# .bashrc
+[[ -f ${HOME}/.bashrc ]] && source ${HOME}/.bashrc
+
+#
+# More PATH directories
+#
+
+# IDL/GDL
+[[ -d /Applications/itt/idl ]] && export IDL_DIR=/Applications/itt/idl
+[[ -d /Applications/exelis/idl ]] && export IDL_DIR=/Applications/exelis/idl
+export IDL_STARTUP=${HOME}/bin/idlstartup.pro
+
+# functions apppath, prepath
+source ${bashd}/bash_lib.sh
+
+# matthias' bash and python utilities
+export PATH=$(prepath ${PATH} ${HOME}/bin)
+export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
+export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
+
+# local bin on clusters
+if [[ -d ${HOME}/local ]] ; then
+    export PATH=$(prepath ${PATH} ${HOME}/local/bin)
+    export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/local/lib)
 fi
 
-# use julia also in non-interactive scripts
-if [[ -d ${HOME}/.julia/julia-1.8.3 ]] ; then
-    export PATH=${PATH}:${HOME}/.julia/julia-1.8.3/bin
+# PYTHONPATH
+export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/python/lib)
+
+# other software on macOS
+ossystem=$(uname -s)
+if [[ ${ossystem} == [Dd]arwin ]] ; then
+    # anaconda might install netcdf, which is hence in ${HOME}/.pyenv/shims
+    # but anaconda might not be the active python version and ncdump,
+    # for example, might not work -> use version of homebrew
+    if [[ -n ${HOMEBREW_PREFIX} ]] ; then
+        export PATH=$(prepath ${PATH} ${HOMEBREW_PREFIX}/opt/netcdf/bin)
+    fi
+
+    export PATH=$(apppath ${PATH} /opt/pkgconfig/bin)
+    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/2.7/bin)
+    for ((i=6; i<=20; i++)) ; do
+        export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.${i}/bin)
+    done
+    if [[ -d /opt/pgi ]] ; then
+        export PGI=/opt/pgi
+        export PATH=$(apppath ${PATH} ${PGI}/osx86-64/2019/bin)
+    fi
 fi
 
 # If not running interactively, don't do anything more
-[[ -z "$PS1" ]] && return
+# s[[ -z "${PS1}" ]] && return
+[[ $- != *i* ]] && return
 
 # --------------------------------------------------------------------
 # Interactive session - general settings
 #
 
 #
-# Pathes
+# man and info path
 #
 
-# after pathmunge of H Schwartz: https://github.com/hrs/dotfiles/
-prepath() {
-    # return prepended arbitrary PATH variable
-    #   export MANPATH=$(${MANPATH} /path/to/add)
-    if [[ $# -gt 1 ]] ; then
-        if ! echo ${1} | grep -E -q "(^|:)${2}($|:)" ; then
-            # /path/to/add not yet in PATH; /path/to/add must exist
-            [[ -d ${2} ]] && echo ${2}:${1} || echo ${1}
-        else
-            # /path/to/add already in PATH
-            echo ${1}
-        fi
-    else
-        # PATH does not exist yet; /path/to/add must exist
-        [[ -d ${1} ]] && echo ${1} || echo ""
-    fi
-}
-apppath() {
-    # return appended arbitrary PATH variable
-    #   export MANPATH=$(${MANPATH} /path/to/add)
-    if [[ $# -gt 1 ]] ; then
-        if ! echo ${1} | grep -E -q "(^|:)${2}($|:)" ; then
-            # /path/to/add not yet in PATH; /path/to/add must exist
-            [[ -d ${2} ]] && echo ${1}:${2} || echo ${1}
-        else
-            # /path/to/add already in PATH
-            echo ${1}
-        fi
-    else
-        # PATH does not exist yet; /path/to/add must exist
-        [[ -d ${1} ]] && echo ${1} || echo ""
-    fi
-}
-
-# PATH
-# anaconda might install netcdf, which is hence in ${HOME}/.pyenv/shims
-# but anaconda might not be the active python version and ncdump,
-# for example, might not work -> use version of homebrew
-if [[ -n ${HOMEBREW_PREFIX} ]] ; then
-    export PATH=$(prepath ${PATH} ${HOMEBREW_PREFIX}/opt/netcdf/bin)
-fi
-export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
-export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
-# export PATH=$(prepath ${PATH} ${HOME}/prog/github/jams_python/bin)
-# user version of /usr/local
-# if [[ -d ${HOME}/../shared/local ]] ; then  # explor
-#     homelocal=${HOME}/../shared/local
-# else # other
-#     homelocal=${HOME}/local
-# fi
+# on clusters
 if [[ -d ${HOME}/local ]] ; then
-    export PATH=$(prepath ${PATH} ${HOME}/local/bin)
-    export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/local/lib)
     export MANPATH=$(apppath ${MANPATH} ${HOME}/local/share/man)
     export MANPATH=$(apppath ${MANPATH} ${HOME}/local/man)
-fi
-# pip install --user
-export PATH=$(prepath ${PATH} ${HOME}/bin)
-# homebrew
-if [[ -n ${HOMEBREW_PREFIX} ]] ; then
-    export PATH=$(apppath ${PATH} ${HOMEBREW_PREFIX}/sbin)
-    export INFOPATH=$(prepath ${INFOPATH} ${HOMEBREW_PREFIX}/share/info)
 fi
 # mac
 export MANPATH=$(apppath ${MANPATH} /usr/share/man)
 export MANPATH=$(apppath ${MANPATH} /usr/local/share/man)
+# homebrew
 if [[ -n ${HOMEBREW_PREFIX} ]] ; then
     export MANPATH=$(prepath ${MANPATH} ${HOMEBREW_PREFIX}/share/man)
+    export INFOPATH=$(prepath ${INFOPATH} ${HOMEBREW_PREFIX}/share/info)
 fi
 
 # MANPATH after install_netcdf
@@ -161,20 +124,6 @@ ff=$(find /usr/local/ -maxdepth 1 -type d -name netcdf-3.\*)
 ff=$(find /usr/local/ -maxdepth 1 -type d -name openmpi-.\*)
 [[ -n "${ff}" ]] && export MANPATH=$(apppath ${MANPATH} ${ff}/share/man)
 export MANPATH=$(apppath ${MANPATH} /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/man)
-
-# PYTHONPATH
-# if [[ -d /usr/local/lib/python2.7/site-packages ]] ; then export PYTHONPATH="${PYTHONPATH}:/usr/local/lib/python2.7/site-packages" ; fi
-# export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/jams_python)
-# export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/github/pyeee)
-export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/python/lib)
-# export PYTHONPATH=$(apppath ${PYTHONPATH} ${HOME}/prog/jams/janalyse)
-
-# IDL/GDL
-export IDL_STARTUP=${HOME}/bin/idlstartup.pro
-
-# # TAU
-# # export PATH="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/:/Applications/TAU/tau/apple/bin:$PATH"
-# export PATH=$(prepath ${PATH} /Applications/TAU/tau/apple/bin)
 
 # RUBY
 # Install
@@ -223,19 +172,20 @@ if [[ "${SHELL}" != "/bin/ksh" ]] ; then
 fi
 
 # Display
-if [[ "${DISPLAY=}" == "" ]] ; then
+if [[ -z ${DISPLAY} ]] ; then
     export DISPLAY=$(ps uxww | awk '$NF ~ /^:[0-9]+$/ {print $NF;}' | head -1)
-    [[ -z "${DISPLAY=}" ]] && export DISPLAY=:0
+    [[ -z ${DISPLAY} ]] && export DISPLAY=:0
 fi
-
-# Aliases
-[[ -f ${HOME}/.bashrc ]] && source ${HOME}/.bashrc
 
 # command line fuzzy finder
 if [[ -f ${HOME}/.fzf.bash ]] ; then
     source ${HOME}/.fzf.bash
     export FZF_DEFAULT_COMMAND=fd
 fi
+
+#
+# Completions
+#
 
 # bash completion
 if [[ -n ${HOMEBREW_PREFIX} ]] ; then
@@ -252,166 +202,46 @@ fi
 [[ -f ${HOME}/prog/github/ido/ido_bash_complete ]] && source ${HOME}/prog/github/ido/ido_bash_complete
 [[ -f ${HOME}/prog/jams/bash/jams_bash_complete ]] && source ${HOME}/prog/jams/bash/jams_bash_complete
 [[ -f ${HOME}/prog/jams/utils/jams_utils_complete ]] && source ${HOME}/prog/jams/utils/jams_utils_complete
-# [[ -f ${HOME}/prog/jams/utils/cdoCompletions.bash ]] && source ${HOME}/prog/jams/utils/cdoCompletions.bash
 
 # tldr path
 if [[ -d ${HOME}/.tealdeer ]] ; then export TEALDEER_CONFIG_DIR=${HOME}/.tealdeer ; fi
 
 # --------------------------------------------------------------------
-# Interactive session - machine-specific  settings
-#
-
-#
-# Current machine/computing system
+# Interactive session - machine-specific settings
 #
 
 # win/mac/linux
-ossystem=$(uname -s | cut -f1-6 | tr '[a-z]' '[A-Z]')
-[[ "${ossystem}" == "CYGWIN_NT-5.1" ]] && ossystem=$(uname -s | cut -c1-6 | tr '[a-z]' '[A-Z]')
-# mac address of main wifi adapter
-ether=$(echo $(ifconfig en0 ether 2>/dev/null | grep -v option | sed -n -e 2p | sed -e '/ether/s/ *ether //'))
-# machine's network name
-maschine=$(uname -n | tr -d '[0-9]' | tr '[a-z]' '[A-Z]') # w/o number
-# OS main revision number
-osver=$(uname -r)
-osver=${osver%%\.*}
-# network domain
-domainprog="domainname"
-if [[ "$(which $domainprog)" == "" ]] ; then
-    if [[ "${ossystem}" == "DARWIN" ]] ; then
-        domainprog="hostname"
-    else
-        domainprog="hostname --domain"
-    fi
-fi
-longdomain=$(${domainprog} | sed -e 's/(none)//' | tr -d '[0-9]' | tr '[a-z]' '[A-Z]')
-[[ "${longdomain}" == "" ]] && longdomain=$(hostname --domain 2> /dev/null | sed -e 's/(none)//' | tr -d '[0-9]' | tr '[a-z]' '[A-Z]')
-[[ "${longdomain}" == "BGC" ]] && longdomain=$(hostname --domain | tr '[a-z]' '[A-Z]')
-[[ "${longdomain}" == "" ]] && longdomain=$(hostname | tr -d '[0-9]' | tr '[a-z]' '[A-Z]')
-ndomain=${#longdomain}
-if [[ "${SHELL}" == "/bin/ksh" ]] ; then
-    nstart=$(( $ndomain - 6 ))
-    domain=$(echo ${longdomain} | cut -c${nstart}-${ndomain})
-else
-    nstart=$(( $ndomain - 7 ))
-    domain=${longdomain:$nstart:7}
-fi
-[[ "${domain}" == "R" ]] && domain='EXPLOR'
-[[ "${maschine}" == "FRONTEND" ]] && domain='.UFZ.DE'
-[[ "${maschine}" == "LOGIN" ]] && domain='LOGIN'
-[[ "${maschine:0:4}" == "GADI" ]] && maschine='GADI'
+ossystem=$(uname -s)
 
-#
-# OS system version- and machine-specific aliases
-#
+# machine-specific .bashrc files
+[[ -f ${bashd}/bashrc.sh ]] && source ${bashd}/bashrc.sh
 
-if [[ "${ossystem}" == "DARWIN" ]] ; then
-    osdigit=$(( $osver - 4 ))
-    for ((i=9; i<=19; i++)) ; do
-        [[ ${osver} -eq ${i} && -f ${HOME}/.bashrc.10.${osdigit} ]] && source ${HOME}/.bashrc.10.${osdigit}
-    done
-    osdigit=$(( $osver - 15 ))
-    [[ ${osver} -eq 20 && -f ${HOME}/.bashrc.11.${osdigit} ]] && source ${HOME}/.bashrc.11.${osdigit}
-    osdigit=$(( $osver - 9 ))
-    [[ ${osver} -gt 20 && -f ${HOME}/.bashrc.${osdigit} ]] && source ${HOME}/.bashrc.${osdigit}
-elif [[ "${ossystem}" == "CYGWIN" ]] ; then
-    [[ -f ${HOME}/.bashrc.cygwin ]] && source ${HOME}/.bashrc.cygwin
-elif [[ "${ossystem}" == "LINUX" && "${domain}" == "ENA.MPG" ]] ; then
-    [[ -f ${HOME}/.bashrc.mpi-bgc ]] && source ${HOME}/.bashrc.mpi-bgc
-elif [[ "${ossystem}" == "LINUX" && "${domain}" == "ZMAW.DE" ]] ; then
-    [[ -f ${HOME}/.bashrc.zmaw ]] && source ${HOME}/.bashrc.zmaw
-elif [[ "${ossystem}" == "LINUX" && "${domain}" == "DKRZ.DE" ]] ; then
-    [[ -f ${HOME}/.bashrc.dkrz ]] && source ${HOME}/.bashrc.dkrz
-elif [[ "${maschine}" == "TORNADO" ]] ; then
-    [[ -f ${HOME}/.bashrc.dkrz ]] && source ${HOME}/.bashrc.dkrz
-elif [[ "${maschine}" == "BLIZZARD" ]] ; then
-    [[ -f ${HOME}/.bashrc.blizzard ]] && source ${HOME}/.bashrc.blizzard
-elif [[ "${maschinen}" == "FRONTEND1" ]] ; then
-    [[ -f ${HOME}/.bashrc.eve2 ]] && source ${HOME}/.bashrc.eve2
-elif [[ "${maschinen}" == "FRONTEND2" ]] ; then
-    [[ -f ${HOME}/.bashrc.eve2 ]] && source ${HOME}/.bashrc.eve2
-elif [[ "${maschine}" == "VM-OQX" ]] ; then
-    [[ -f ${HOME}/.bashrc.explor ]] && source ${HOME}/.bashrc.explor
-elif [[ "${maschine}" == "RAIJIN" ]] ; then
-    [[ -f ${HOME}/.bashrc.raijin ]] && source ${HOME}/.bashrc.raijin
-elif [[ "${maschine}" == "GADI" ]] ; then
-    [[ -f ${HOME}/.bashrc.gadi ]] && source ${HOME}/.bashrc.gadi
-elif [[ "${maschine}" == "LOGIN" ]] ; then
-    [[ -f ${HOME}/.bashrc.curta ]] && source ${HOME}/.bashrc.curta
-elif [[ "${maschine}" == "BIOCOMP" ]] ; then
-    [[ -f ${HOME}/.bashrc.biocomp ]] && source ${HOME}/.bashrc.biocomp
-fi
+if [[ ${ossystem} == [Dd]arwin ]] ; then
+    #
+    # macOS setup
+    #
 
-#
-# macOS setup
-#
+    export BASH_SILENCE_DEPRECATION_WARNING=1
+    export HOMEBREW_NO_ANALYTICS=1
 
-# all macOS
-if [[ "${ossystem}" == "DARWIN" ]] ; then
-    # Licenses@ufz
-    [[ "${domain}" == ".UFZ.DE" || "${maschinen}" == "CES241M.LOCAL" ]] && export LM_LICENSE_FILE=27001@license
-    export PATH=$(apppath ${PATH} /opt/pkgconfig/bin)
-    [[ -d /Applications/itt/idl ]] && export IDL_DIR=/Applications/itt/idl
-    [[ -d /Applications/exelis/idl ]] && export IDL_DIR=/Applications/exelis/idl
-    export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/2.7/bin)
-    for ((i=6; i<=10; i++)) ; do
-	export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.${i}/bin)
-    done
     if [[ -d /opt/pgi ]] ; then
-        export PGI=/opt/pgi
         export MANPATH=$(apppath ${MANPATH} ${PGI}/osx86-64/2019/man)
-        export PATH=$(apppath ${PATH} ${PGI}/osx86-64/2019/bin)
     fi
-fi
 
-# Special MacBoock Air 2014
-if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.1.node-lock.air
-fi
+elif [[ ${ossystem} == [Ll]inux ]] ; then
+    #
+    # Linux setup
+    #
 
-# Special MacBoock Pro UFZ 2014
-if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.1.node-lock.macbook
-fi
-
-# Special MacBoock Pro 13" INRA 2016
-if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
-    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.6.2.full.mcinra
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.0.full.mcinra
-    export INTEL_LICENSE_FILE=${HOME}/bin/licences/ifort_licence_2019.lic.mcinra
-    export HOMEBREW_NO_ANALYTICS=1
-fi
-
-# Special MacBoock Pro 16" INRAE 2020
-if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
-    export BASH_SILENCE_DEPRECATION_WARNING=1
-    export HOMEBREW_NO_ANALYTICS=1
-    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.0.full.mc16
-    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mc16
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag.7.2.key
-fi
-
-# Special Mac Mini INRAE 2021
-if [[ "${ether}" == "??:??:??:??:??:??" ]] ; then
-    export BASH_SILENCE_DEPRECATION_WARNING=1
-    export HOMEBREW_NO_ANALYTICS=1
-    # export NAG_KUSARI_FILE=${HOME}/bin/licences/nag_license.7.1.full.mcmini
-    export NAG_KUSARI_FILE=${HOME}/bin/licences/nag.7.2.key
-fi
-
-#
-# Linux setup
-#
-
-if [[ "${ossystem}" == "LINUX" ]] ; then
-    # biocomp
-    if [[ "${maschine}" == "BIOCOMP" ]] ; then
+    unamen=$(uname -n)
+    if [[ ${unamen} == master01 || ${unamen} == *.cluster.local ]] ; then
+	# biocomp
         export EDITOR="emacs -nw"
         export LANG=en_AU.UTF-8
         # unset SSH_ASKPASS
-    fi
-    # Gadi
-    if [[ "${maschine}" == "GADI" ]] ; then
+    # elif [[ $(hostname --domain) == gadi* ]] ; then
+    elif [[ ${unamen} == gadi* ]] ; then
+	# gadi
         export EDITOR="emacs -nw"
         export LANG=en_AU.UTF-8
         unset SSH_ASKPASS
@@ -419,52 +249,16 @@ if [[ "${ossystem}" == "LINUX" ]] ; then
         # export PYTHONPATH=$(prepath ${PYTHONPATH} /g/data/x45/intelpython/lib/python3.7/site-packages)
         export PATH=$(apppath ${PATH} /g/data/x45/python3.10.4/bin)
         export PYTHONPATH=$(prepath ${PYTHONPATH} /g/data/x45/python3.10.4/lib/python3.10/site-packages)
-    fi
-    # Explor
-    if [[ "${maschine}" == "VM-OQX" ]] ; then
+    elif [[ ${unamen} == login* ]] ; then
+	# Bordeaux
+        export EDITOR="emacs"
+        export LANG=en_AU.UTF-8
+    elif [[ $(hostname --domain) == *explor ]] ; then
+	# Explor
         export EDITOR="emacs -nw"
         export LANG=en_AU.UTF-8
         unset SSH_ASKPASS
     fi
-    # Bordeaux
-    if [[ "${maschine}" == "LOGIN" ]] ; then
-        export EDITOR="emacs"
-        export LANG=en_AU.UTF-8
-    fi
-    # UFZ
-    if [[ "${domain}" == ".UFZ.DE" ]] ; then
-        [[ "${maschine}" == "UFZNX" ]] && export EDITOR="emacs -nw" || export EDITOR="nano -w"
-        export LANG=en_AU.UTF-8
-        unset SSH_ASKPASS
-    fi
-    # MPI-BGC
-    if [[ "${domain}" == "ENA.MPG" ]] ; then
-        [[ -z "$PROFILEREAD" ]] && source /etc/profile
-        export PRINTER=A_2_005_HP8000
-    fi
-    # MPI-MET
-    if [[ "${domain}" == "ZMAW.DE" ]] ; then
-        export PRINTER=g1715-m2
-        stty erase ^?
-        # # locally compiled ncview
-        # export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/sw/sarge-ia32/udunits-1.12.4/lib/"
-    fi
-    # Migale
-    if [[ "${maschine}" == "MIGALE" ]] ; then
-        export LANG=en_AU.UTF-8
-        unset SSH_ASKPASS
-    fi
-fi
-
-#
-# Unix setup
-#
-
-# Special DKRZ - Power6
-if [[ "${ossystem}" == "AIX" ]] ; then
-    export EDITOR="emacs -nw"
-    # python 2.6 (default 2.3)
-    [[ "${maschine}" == "BLIZZARD" ]] && module load PYTHON
 fi
 
 #

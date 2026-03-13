@@ -1,81 +1,165 @@
-###############################################################################
-# Practical stuff
-# alias lpstat='lpstat -s'
-alias more='more -u'
-alias zip='zip -r'
-alias rm='rm -i'
-alias mv='mv -i'
-alias cp='cp -ip'
-alias pwd='echo $PWD'
-function ff() { find . -name \*$1\* -print ; }
-function iff() { find . -iname \*$1\* -print ; }
-alias g='grep -Ein'
-alias t='tail -250'
-alias xx='chmod 755'
-alias ls='ls -F'
-alias ll='ls -alF'
-alias lh='ls -ahlF'
-alias ltr='ls -atrF'
-alias lltr='ls -altrF'
-# diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical
-alias diff='diff -bBiwrs'
-alias trash='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\* -o -name \#\*\# -o -name .xvpics -o -name WS_FTP.LOG -o -name Backup\*.wbk -o -name ftperror\* -o -name ftpout\* \) -print -exec rm -f {} \; '
-# alias trashall=trash
-alias bc='bc -l'
-alias h='history 50'
-alias ilocate='locate -i'
-alias dusk='du -skh'
-# calculator
-function c() {
-    echo "${1}" | sed -e 's/[eE]+*/\*10\^/g' | bc -l
-}
-# file backup with last modification date
-function fbackup() {
-    dd=$(date -r "${1}" +"%Y%m%d") ; cp "${1}" "${1%.*}.${dd}.${1##*.}"
-}
-alias dfvue0='dfvue -i 0 -m "-9999"'
+# --------------------------------------------------------------------
+# Non-interactive
+#
 
-###############################################################################
-# Telnet and FTP
-alias ftp='ftp -i'
-alias qgadi="ssh gadi 'source /etc/bashrc ; qstat -u moc801'"
-alias qcatgadi="ssh gadi 'source /etc/bashrc ; qcat'"
-alias qexplor="ssh explor 'source /etc/bashrc ; squeue -u zzy20'"
-alias qcurta="ssh curta 'source /etc/bashrc ; squeue -u mcuntz'"
-alias qiam="ssh iam 'source /etc/bashrc ; module load slurm ; squeue -u mcuntz'"
-alias qbiocomp=qiam
+# directory with setup scripts
+bashd=${HOME}/.bash.d
+[[ -d ${bashd} ]] || { echo "no .bash.d directory"; return; }
 
-###############################################################################
-# LaTeX
-function techit() {
-    IN=${1%.*}
-    BIB=bibtex
-    if [[ $# -gt 1 ]] ; then BIB=biber ; fi
-    printf "\n\nLaTeX 1 (2x)\n\n"
-    pdflatex ${IN}
-    pdflatex ${IN}
-    printf "\n\nBibTeX\n\n"
-    ${BIB} ${IN};
-    printf "\n\nLaTeX 2 (2x)\n\n"
-    pdflatex ${IN}
-    pdflatex ${IN}
-    latex_count=5
-    while grep -Es 'Rerun (LaTeX|to get cross-references right)' ${IN}.log && [ ${latex_count} -gt 0 ] ; do
-        if [[ latex_count == 5 ]] ; then printf "\n\nLaTeX 3 (max 5x)\n\n" ; fi
-	      pdflatex ${IN}
-	      ((latex_count--))
-    done
-}
-function btechit() {
-    techit ${1} "biber"
-}
-# function cleartechit() { IN=${1%.*} ; \rm ${IN}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,lof,log,lot,nav,out,run.xml,snm,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
-function cleartechit() { \rm ${1%.*}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,loc,lof,log,lot,maf,mtc,mtc?,nav,out,run.xml,snm,soc,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
-alias clearbtechit=cleartechit
+# set homebrew also in non-interactive scripts
+if [[ -z ${HOMEBREW_PREFIX} ]] ; then
+    [[ -f ${bashd}/homebrew.sh ]] && source ${bashd}/homebrew.sh
+fi
 
-# alias dvips='dvips -j0 -Ppdf -Pdownload35 -G0 -t a4 -D 1200 -Z -mode ljfzzz'
-# alias dvipdf='dvipdfmx'
-# alias xdvi='xdvi -hush'
-# alias dvi='xdvi -hush'
-# function techdiss() { latex diss; latex diss; bibtex kap01; bibtex kap02; bibtex kap03; bibtex kap04; bibtex sum; latex diss; latex diss; latex diss; \dvips -Ppdf -o diss.ps diss ; }
-# function cleartechdiss() { cleartechit diss; cleartechit deck; cleartechit title; cleartechit abstract; cleartechit toc; cleartechit kap01; cleartechit kap02; cleartechit kap03; cleartechit kap04; cleartechit sum; cleartechit lof; cleartechit lot; cleartechit merci ; }
+# make sure /usr/local/bin is at the beginning of PATH
+if [[ -n $(echo ${PATH} | grep "/usr/local/bin") ]] ; then
+    export PATH=$(echo ${PATH} | sed 's|^/usr/local/bin:||' | sed 's|:/usr/local/bin$||' | sed 's|:/usr/local/bin:|:|')
+fi
+export PATH=/usr/local/bin:${PATH}
+
+# use pyenv also in non-interactive scripts
+if [[ -z ${PYENV_ROOT} ]] ; then
+    [[ -f ${bashd}/pyenv.sh ]] && source ${bashd}/pyenv.sh
+fi
+
+# Use miniconda in non-interactive scripts
+if [[ -z ${CONDA_PREFIX} ]] ; then
+    [[ -f ${bashd}/conda.sh ]] && source ${bashd}/conda.sh
+fi
+
+# set licence keys
+ossystem=$(uname -s)
+if [[ ${ossystem} == [Dd]arwin && -z ${NAG_KUSARI_FILE} ]] ; then
+    [[ -f ${bashd}/licence.sh ]] && source ${bashd}/licence.sh
+fi
+
+# IDL/GDL
+if [[ -z ${IDL_DIR} ]] ; then
+    [[ -d /Applications/itt/idl ]] && export IDL_DIR=/Applications/itt/idl
+    [[ -d /Applications/exelis/idl ]] && export IDL_DIR=/Applications/exelis/idl
+fi
+if [[ -z ${IDL_STARTUP} ]] ; then
+    export IDL_STARTUP=${HOME}/bin/idlstartup.pro
+fi
+
+# more pathes
+source ${bashd}/bash_lib.sh
+
+# matthias' bash and python utilities
+[[ -z $(echo ${PATH} | grep "${HOME}/bin") ]] && export PATH=$(prepath ${PATH} ${HOME}/bin)
+[[ -z $(echo ${PATH} | grep "${HOME}/prog/jams/utils") ]] && export PATH=$(prepath ${PATH} ${HOME}/prog/jams/utils)
+[[ -z $(echo ${PATH} | grep "${HOME}/prog/github/ido") ]] && export PATH=$(prepath ${PATH} ${HOME}/prog/github/ido)
+
+# local bin on clusters
+if [[ -d ${HOME}/local ]] ; then
+    if [[ -z $(echo ${PATH} | grep "${HOME}/local/bin") ]] ; then
+	export PATH=$(prepath ${PATH} ${HOME}/local/bin)
+	export LD_LIBRARY_PATH=$(apppath ${LD_LIBRARY_PATH} ${HOME}/local/lib)
+    fi
+fi
+
+# other software on macOS
+if [[ ${ossystem} == [Dd]arwin ]] ; then
+    # homebrew
+    if [[ -n ${HOMEBREW_PREFIX} ]] ; then
+	# anaconda might install netcdf, which is hence in ${HOME}/.pyenv/shims
+	# but anaconda might not be the active python version and ncdump,
+	# for example, might not work -> use version of homebrew
+	[[ -z $(echo ${PATH} | grep "${HOMEBREW_PREFIX}/opt/netcdf/bin") ]] && export PATH=$(prepath ${PATH} ${HOMEBREW_PREFIX}/opt/netcdf/bin)
+    fi
+
+    [[ -z $(echo ${PATH} | grep "/opt/pkgconfig/bin") ]] && export PATH=$(apppath ${PATH} /opt/pkgconfig/bin)
+
+    # Python.frameworks not implemented here
+    # for ((i=6; i<=20; i++)) ; do
+    #     export PATH=$(apppath ${PATH} /Library/Frameworks/Python.framework/Versions/3.${i}/bin)
+    # done
+fi
+
+# --------------------------------------------------------------------
+# Interactive
+#
+
+if [[ $- == *i* ]] ; then
+    ###############################################################################
+    # Practical stuff
+    # alias lpstat='lpstat -s'
+    alias more='more -u'
+    alias zip='zip -r'
+    alias rm='rm -i'
+    alias mv='mv -i'
+    alias cp='cp -ip'
+    alias pwd='echo $PWD'
+    function ff() { find . -name \*$1\* -print ; }
+    function iff() { find . -iname \*$1\* -print ; }
+    alias g='grep -Ein'
+    alias t='tail -250'
+    alias xx='chmod 755'
+    alias ls='ls -F'
+    alias ll='ls -alF'
+    alias lh='ls -ahlF'
+    alias ltr='ls -atrF'
+    alias lltr='ls -altrF'
+    # diff -b blanks, -B blank lines, -i case, -w 1 or several white spaces, -r recursive, -s report identical
+    alias diff='diff -bBiwrs'
+    alias trash='find . \( -name \*~ -o -name .\*~ -o -name \*.flc -o -name .saves\* -o -name \#\*\# -o -name .xvpics -o -name WS_FTP.LOG -o -name Backup\*.wbk -o -name ftperror\* -o -name ftpout\* \) -print -exec rm -f {} \; '
+    # alias trashall=trash
+    alias bc='bc -l'
+    alias h='history 50'
+    alias ilocate='locate -i'
+    alias dusk='du -skh'
+    # calculator
+    function c() {
+        echo "${1}" | sed -e 's/[eE]+*/\*10\^/g' | bc -l
+    }
+    # file backup with last modification date
+    function fbackup() {
+        dd=$(date -r "${1}" +"%Y%m%d") ; cp "${1}" "${1%.*}.${dd}.${1##*.}"
+    }
+    alias dfvue0='dfvue -i 0 -m "-9999"'
+
+    ###############################################################################
+    # Telnet and FTP
+    alias ftp='ftp -i'
+    alias qgadi="ssh gadi 'source /etc/bashrc ; qstat -u moc801'"
+    alias qcatgadi="ssh gadi 'source /etc/bashrc ; qcat'"
+    alias qexplor="ssh explor 'source /etc/bashrc ; squeue -u zzy20'"
+    alias qcurta="ssh curta 'source /etc/bashrc ; squeue -u mcuntz'"
+    alias qiam="ssh iam 'source /etc/bashrc ; module load slurm ; squeue -u mcuntz'"
+    alias qbiocomp=qiam
+
+    ###############################################################################
+    # LaTeX
+    function techit() {
+        IN=${1%.*}
+        BIB=bibtex
+        if [[ $# -gt 1 ]] ; then BIB=biber ; fi
+        printf "\n\nLaTeX 1 (2x)\n\n"
+        pdflatex ${IN}
+        pdflatex ${IN}
+        printf "\n\nBibTeX\n\n"
+        ${BIB} ${IN};
+        printf "\n\nLaTeX 2 (2x)\n\n"
+        pdflatex ${IN}
+        pdflatex ${IN}
+        latex_count=5
+        while grep -Es 'Rerun (LaTeX|to get cross-references right)' ${IN}.log && [ ${latex_count} -gt 0 ] ; do
+            if [[ latex_count == 5 ]] ; then printf "\n\nLaTeX 3 (max 5x)\n\n" ; fi
+    	      pdflatex ${IN}
+    	      ((latex_count--))
+        done
+    }
+    function btechit() {
+        techit ${1} "biber"
+    }
+    # function cleartechit() { IN=${1%.*} ; \rm ${IN}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,lof,log,lot,nav,out,run.xml,snm,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
+    function cleartechit() { \rm ${1%.*}.{abs,aux,bbl,bcf,blg,brf,dvi,fdb_latexmk,fff,fls,idx,ilg,ind,loc,lof,log,lot,maf,mtc,mtc?,nav,out,run.xml,snm,soc,spl,synctex.gz,tex.flc,tex~,thm,toc,ttt} ; }
+    alias clearbtechit=cleartechit
+
+    # alias dvips='dvips -j0 -Ppdf -Pdownload35 -G0 -t a4 -D 1200 -Z -mode ljfzzz'
+    # alias dvipdf='dvipdfmx'
+    # alias xdvi='xdvi -hush'
+    # alias dvi='xdvi -hush'
+    # function techdiss() { latex diss; latex diss; bibtex kap01; bibtex kap02; bibtex kap03; bibtex kap04; bibtex sum; latex diss; latex diss; latex diss; \dvips -Ppdf -o diss.ps diss ; }
+    # function cleartechdiss() { cleartechit diss; cleartechit deck; cleartechit title; cleartechit abstract; cleartechit toc; cleartechit kap01; cleartechit kap02; cleartechit kap03; cleartechit kap04; cleartechit sum; cleartechit lof; cleartechit lot; cleartechit merci ; }
+fi
