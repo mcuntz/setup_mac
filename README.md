@@ -20,8 +20,7 @@ my dot-files as a reference.
   - [Check for system updates](#check-for-system-updates)
   - [Xcode](#xcode)
   - [Xcode Command Line Tools (CLT)](#xcode-command-line-tools-clt)
-  - [Set preferences of macOS and standard
-    apps](#set-preferences-of-macos-and-standard-apps)
+  - [Set preferences of macOS and standard apps](#set-preferences-of-macos-and-standard-apps)
   - [Set the default shell \#1](#set-the-default-shell-1)
   - [App Store](#app-store)
   - [XQuartz](#xquartz)
@@ -36,8 +35,7 @@ my dot-files as a reference.
   - [locate](#locate)
   - [Payware](#payware)
   - [Additional software](#additional-software)
-  - [netcdf4fortran and openmpi development
-    packages](#netcdf4underfortran-and-openmpi-development-packages)
+  - [netcdf4fortran and openmpi development packages](#netcdf4underfortran-and-openmpi-development-packages)
 
 # How to update the OS
 
@@ -491,7 +489,7 @@ still there.
   ```
 
   ``` bash
-  brew install --cask motrix  # download manager
+  brew install --cask copilot-cli  # MS Copilot on the command line
   ```
 
   All in one go is:
@@ -501,7 +499,7 @@ still there.
 	   enscript imagemagick ffmpeg pandoc pkg-config graphviz \
 	   doxygen subversion git rsync r
   brew install --cask quarto
-  brew install --cask motrix
+  brew install --cask copilot-cli
   ```
 
   Afterwards some installations of the helpers:
@@ -557,16 +555,17 @@ byte-compile some packages. This might take some time.
 ## LaTeX
 
 One can download LaTeX from [MacTeX](https://tug.org/mactex/) or use a
-Homebrew cask. I have chosen Homebrew's cask this time because I use the
-BasicTeX installation and I let Homebrew handle the update between years
-(`brew upgrade --cask basictex`), which is always a hassle otherwise.
+Homebrew cask. I use the BasicTeX installation and add all packages I
+ever needed. Thence Homebrew handles the update between years (`brew
+upgrade --cask basictex`), which is always a hassle otherwise.
 
 ``` bash
 brew install --cask basictex
 ```
 
-If you chose BasicTeX, then install immediately a few LaTeX packages,
-which I encountered during different projects:
+Either after a new install or after an upgrade, I install a rather few
+LaTeX packages, which I encountered during different projects, journal
+templates, etc.:
 
 ``` bash
 sudo tlmgr update --self ; \
@@ -596,85 +595,103 @@ sudo tlmgr install \
  wasysym wrapfig xcolor xifthen xkeyval xstring \
  arev bera fira iwona kurier lato ly1 mathastext newtxsf \
  opensans psnfss sansmathfonts sfmath zref authoraftertitle \
-     totcount
+ totcount
 ```
 
-I also install LaTeXML so that Emacs' org-mode can convert LaTeX
-equations to MathML on export:
+I also install LaTeXML so that Emacs' org-mode, for example, can
+convert LaTeX equations to MathML on export:
 
 ``` bash
 brew install latexml
 ```
 
-## Freeware
-
-Some essential Freeware for me:
-
-- [AppCleaner](http://www.freemacsoft.net/appcleaner/), for removing
-  apps and all their traces,
-
-- [Adobe
-  Reader](https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html),
-  because Preview has problems with some PDFs,
-
-- [Firefox Developer
-  Edition](https://www.mozilla.org/en-US/firefox/all/), Safari is not
-  always supported. [Chrome](https://www.google.com/chrome/) is probably
-  the most supported browser. I sometimes also use
-  [Opera](https://www.opera.com),
-
-- [LaTeXiT](http://www.chachatelier.fr/latexit/), exporting LaTeX
-  equations as graphics,
-
-- [Rectangle](https://rectangleapp.com), moving windows with keystrokes,
-
-- [Zotero](https://www.zotero.org), reference manager,
-
-- [SourceTree](https://www.sourcetreeapp.com), git GUI originally for
-  bitbucket but works with other git repositories as well,
-
-- [Spotify](https://www.spotify.com/), streaming music,
-
-- [VLC](http://www.videolan.org/vlc/), video player for all formats,
-
-- [Engauge
-  Digitizer](https://github.com/markummitchell/engauge-digitizer),
-  recover data points from graphs.
+And I (re-)install the font Myriad Pro also for LaTeX.
 
 ## Myriad Pro
 
 I like the Myriad Pro font and AGU journals currently use it. The Myriad
 Pro font comes with the Adobe Acrobat Reader.
 
-To install for non-LaTeX programs, one can install in Font Book the four
-*otf*-files from the directory '*Applications/Adobe Acrobat DC/Adobe
-Acrobat.app/Contents/Resources/Resource/Font*'.
+To install for non-LaTeX programs, one can install in Font Book the
+four *otf*-files from the directory
+'*/Applications/Adobe Acrobat DC/Adobe Acrobat.app/Contents/Resources/Resource/Font/*'
+(on older systems
+'*/Applications/Adobe Acrobat Reader.app/Contents/Resources/Resource/Font*)'.
 
-An extended set of glyphs are given in the zip file 'MyriadPro.zip':  
-unzip MyriadPro.zip and drag the folder with the .otf files into Font
-Book.
+An extended set of glyphs (SemiCondensed, etc.) are given in the zip
+file 'MyriadPro.zip': unzip MyriadPro.zip and drag the folder with the
+.otf files into Font Book.
 
-To install Myriad Pro for LaTeX, using the Adobe fonts, one can launch
-the following commands in terminal:
+To install Myriad Pro for LaTeX, one launches the following commands in terminal:
 
 ``` bash
-for i in fontinst fltpoint tabfigures mnsymbol mdsymbol \
-    collection-fontutils ; do \
-    sudo tlmgr install ${i} ; done
-git clone https://github.com/sebschub/FontPro.git
-cd FontPro
-mkdir otf
+# tools needed for FontPro
+sudo tlmgr install fontinst fltpoint tabfigures mnsymbol mdsymbol \
+     collection-fontutils
+
+# FontPro tool: copy of https://github.com/sebschub/FontPro
+curl -L -o FontPro.zip https://raw.githubusercontent.com/mcuntz/setup_mac/master/FontPro.zip
+unzip FontPro.zip
+\rm FontPro.zip
+
+# Myriad Pro font, 30 styles
 FONT=MyriadPro
-# older: cp "/Applications/Adobe Acrobat Reader.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
-cp "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/Contents/Resources/Resource/Font/"${FONT}*.otf otf/
+curl -L -o ${FONT}.zip https://raw.githubusercontent.com/mcuntz/setup_mac/master/${FONT}.zip
+unzip ${FONT}.zip
+\rm ${FONT}.zip
+if [[ -d __MACOSX ]] ; then \rm -r __MACOSX ; fi
+# move them into FontPro directory
+mkdir FontPro/otf
+mv ${FONT}/${FONT}*.otf FontPro/otf/
+rmdir ${FONT}
+
+# make the LaTeX fonts
+cd FontPro
 ./scripts/makeall ${FONT}
 echo y | sudo ./scripts/install
 sudo updmap-sys --enable Map=${FONT}.map
 sudo -H mktexlsr
 kpsewhich ${FONT}.map
+
+# clean up
 cd ..
 \rm -fr FontPro
 ```
+
+## Freeware
+
+Some essential Freeware for me:
+
+- [Adobe
+  Reader](https://www.adobe.com/acrobat/pdf-reader.html),
+  because Preview sometimes has problems with certain PDFs.
+
+- [AppCleaner](http://www.freemacsoft.net/appcleaner/), for removing
+  apps and all their traces.
+
+- [DeepL](https://www.deepl.com/en/translator), translation and
+  writing tool.
+
+- [f.lux](https://justgetflux.com/), night shift also for external
+  displays.
+
+- [Firefox Developer
+  Edition](https://www.mozilla.org/en-US/firefox/all/), Safari is not
+  always supported. [Chrome](https://www.google.com/chrome/) is
+  probably the most supported browser. I sometimes also use
+  [Opera](https://www.opera.com), and [Brave](https://brave.com/) on
+  older systems.
+
+- [LaTeXiT](http://www.chachatelier.fr/latexit/), exporting LaTeX
+  equations as graphics.
+
+- [LibreOffice](https://www.libreoffice.org/), free office suite.
+
+- [Spotify](https://www.spotify.com/), streaming music.
+
+- [VLC](http://www.videolan.org/vlc/), video player for all formats.
+
+- [Zotero](https://www.zotero.org), reference manager.
 
 ## Python
 
