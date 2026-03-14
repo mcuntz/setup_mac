@@ -525,7 +525,7 @@ setups. This makes loading Emacs pretty fast. My current setup is in
 I install Emacs with Homebrew:
 
 ``` bash
-brew install --cask emacs
+brew install --cask emacs-app
 ```
 
 Coming from another Emacs, backup `.emacs` and `.emacs.d`:
