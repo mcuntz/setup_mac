@@ -1,16 +1,16 @@
 Author: Matthias Cuntz, mc (at) macu (dot) de  
-Modified: 17.02.2026
+Modified: 2026-03-14
 
 Inspired by guides of [Dirk
 Avery](https://medium.com/faun/zero-to-hero-set-up-your-mac-for-software-development-919ede3df83b),
 [Vinicius De
 Antoni](https://medium.com/better-programming/setting-up-your-mac-for-web-development-in-2020-659f5588b883),
-[Sourabh Bajaj](https://sourabhbajaj.com/mac-setup/), [Nicolas
+[Sourabh Bajaj](https://sourabhbajaj.com/mac-setup/), and [Nicolas
 Hery](https://github.com/nicolashery/mac-dev-setup).
 
-This is a reminder for myself how to setup a new Mac or updating the OS,
-which might be useful for others. The repository includes some of my
-dot-files as a reference.
+This is a reminder for myself how to setup a new Mac or updating the
+OS, which might be useful for others. The repository includes some of
+my dot-files as a reference.
 
 # Table of Contents <span class="tag" tag-name="TOC"><span class="smallcaps">TOC</span></span>
 
@@ -19,13 +19,14 @@ dot-files as a reference.
 - [Setup macOS](#setup-macos)
   - [Check for system updates](#check-for-system-updates)
   - [Xcode](#xcode)
+  - [Xcode Command Line Tools (CLT)](#xcode-command-line-tools-clt)
   - [Set preferences of macOS and standard
     apps](#set-preferences-of-macos-and-standard-apps)
-  - [Set the default shell](#set-the-default-shell)
+  - [Set the default shell \#1](#set-the-default-shell-1)
   - [App Store](#app-store)
   - [XQuartz](#xquartz)
   - [Homebrew](#homebrew)
-  - [Set your default shell \#2](#set-your-default-shell-2)
+  - [Set the default shell \#2](#set-the-default-shell-2)
   - [Homebrew \#2](#homebrew-2)
   - [Emacs](#emacs)
   - [LaTeX](#latex)
@@ -46,47 +47,38 @@ There are basically two options:
 
 2.  Use *Software Update* to update macOS on top of the existing OS.
 
-In both cases, a little bit of preparation helps. I do not use the first
-option anymore. It is covered in earlier versions of this document such
-as in README14.org.
+In both cases, a little bit of preparation helps. I do not use the
+first option anymore. It is covered in earlier versions of this
+document such as in README14.org. All macOS menu options are for macOS
+\>= 13.
 
 ## Update via *Software Update*
 
 ### Before starting
 
-1.  It is always recommended to make a backup of your system before an
-    upgrade.
+1.  It is always recommended to make a backup of your personal files
+    before an upgrade.
 
 2.  Update all your installed apps in *Applications*. The newest
     versions of the applications will probably already be suitable for
     the new macOS version. It avoids the problem that you cannot open
-    anymore the old version of the application on the new macOS just to
-    do the update. You'd then have to uninstall/install the application
-    again, which might need the licence key, etc.
+    anymore the old version of the application on the new macOS just
+    to do the update. You'd then have to uninstall/install the
+    application again, which might need the licence key, etc.
 
-    For this, open each non-Apple application and *Check for Updates…*.
+    For this, open each non-Apple application and *Check for
+    Updates…*.
 
-    Use the *App Store…* for all Apple programs and apps downloaded from
-    the App Store..
+    Use the *App Store…* for all Apple programs and apps downloaded
+    from the App Store.
 
 3.  The *Software Update* takes care of all your accounts, passwords,
-    etc. The step before takes care of all the installed applications.
+    etc. The steps before take care of all the installed applications.
     But anything installed from the command line will (most probably)
     not work anymore. So I first uninstall all the things that will be
     installed in the steps below, which are Homebrew (including the
-    installed casks), LaTeX, Python/pyenv, and everything installed with
-    installnetcdf. I also first set back Apple's bash shell as default
-    because the newer bash shell used until now is removed together with
-    Homebrew and you run into trouble if it is still set as your default
-    shell afterwards.
-
-    Set Apple's bash shell as default:
-
-    ``` bash
-    chsh -s /bin/bash
-    ```
-
-    You have to open a new login terminal that it takes effect.
+    installed casks), LaTeX, Python/pyenv, and everything installed
+    with [installnetcdf](https://github.com/mcuntz/install_netcdf).
 
     Check the casks installed with Homebrew. This might not work anymore
     because you changed the shell, e.g. to *zsh*. Then copy the box
@@ -97,8 +89,8 @@ as in README14.org.
     brew list --casks
     ```
 
-    Best to note them somewhere (basictex font-source-code-pro emacs
-    motrix panoply quarto temurin).
+    Best to note them somewhere (basictex emacs font-source-code-pro
+    panoply temurin copilot-cli emacs-app motrix quarto).
 
     Uninstall all casks (you might have to type your password several
     times for this if not even for each casks):
@@ -106,12 +98,27 @@ as in README14.org.
     ``` bash
     for c in $(brew list --casks) ; do brew uninstall ${c} ; done
     ```
+	
+	Before uninstalling Homebrew, I also first set back Apple's bash
+    shell as default because the newer bash shell used from Homebrew
+    will be removed together with the whole Homebrew and you will run
+    into trouble if it is still set as your default shell afterwards.
+
+    Set Apple's (old) bash shell as default:
+
+    ``` bash
+    chsh -s /bin/bash
+    ```
+
+    You have to open a new login terminal for it to take effect.
 
     Remove Homebrew (password needed):
 
     ``` bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
     ```
+
+    and related files:
 
     ``` bash
     [[ -f ${HOME}/.fzf.bash ]] && rm -f ${HOME}/.fzf.bash
@@ -142,10 +149,11 @@ as in README14.org.
     ```
 
     Remove everything under `/usr/local`. This seems extreme but Apple
-    has nothing installed under `/usr/local`, so it comes all from you
-    or Homebrew. You might change into `/usr/local` and remove selected
-    directories by hand. For example, our virus scanner at work installs
-    its uninstall-script in `/usr/local`.
+    has nothing installed under `/usr/local`, so all there is comes
+    from you or Homebrew. You might change into `/usr/local` and
+    remove selected directories by hand. For example, our virus
+    scanner at work installs its uninstall-script in `/usr/local`,
+    which you probably want to keep. Otherwise:
 
     ``` bash
     rm -rf /usr/local/*
@@ -153,9 +161,8 @@ as in README14.org.
 
 ### Installing macOS via *Software Update*
 
-Go to *System Preferences* \> *Software Update* (macOS \<= 12) or to
-*System Settings* \> *General* \> *Software Update* (macOS \>= 13).
-Select to install the new macOS and follow the on-screen instructions.
+Go to *System Settings* \> *General* \> *Software Update*.  Select to
+install the new macOS and follow the on-screen instructions.
 
 # Setup macOS
 
@@ -165,19 +172,34 @@ work after installation, opening a new login shell might do the trick.
 
 ## Check for system updates
 
-Check for updates of macOS in *System Preferences* \> *Software Update*
-(macOS \<= 12) or *System Settings* \> *General* \> *Software Update*
-(macOS \>= 13).
+Check for updates of macOS in *System Settings* \> *General* \>
+*Software Update*.
 
 ## Xcode
 
 A full Xcode installation is not always needed. Most often, the Xcode
-Command Line Tools (CLT) are enough, for example for Homebrew. But some
-development software needs a full Xcode installation such as the FreePGI
-Fortran Compiler. So one can, for example, install the Xcode CLT only,
-and install the full Xcode only if another program demands it. Note that
-installing the full XCode takes considerable time (count rather half an
-hour or more).
+Command Line Tools (CLT) are enough, for example for Homebrew. But
+some development software needs a full Xcode installation such as the
+FreePGI Fortran Compiler. So one can, for example, install the Xcode
+CLT only, and install the full Xcode only if another program demands
+it. Note that installing the full XCode takes considerable time (count
+rather half an hour or more).
+
+The full Xcode can be installed from the App Store. You have to open
+it once and confirm the Usage Agreement in order to use the bundled
+tools. If you install Xcode, it is reasonable to complete the Xcode
+installation and the one-time opening before starting with
+[Homebrew](#homebrew). Otherwise, it might install the command line
+tools CLT twice, but it costs only download bandwidth and time.
+
+While waiting for XCode to install, you can download and install the
+other apps from [App Store](#app-store), [XQuartz](#xquartz) and some
+[Freeware](#freeware) except
+[LaTeXiT](http://www.chachatelier.fr/latexit/), which needs LaTeX
+first. You can also [Set preferences of macOS and standard
+apps](#set-preferences-of-macos-and-standard-apps).
+
+## Xcode Command Line Tools (CLT)
 
 The normal way to install the XCode Command Line Tools (CLT) from the
 terminal would be (watch out for the pop-up window):
@@ -186,68 +208,23 @@ terminal would be (watch out for the pop-up window):
 xcode-select --install
 ```
 
-There was a glitch (in macOS 13 Ventura) if you installed with *Software
-Update* and had a full XCode installation: the XCode Command Line Tools
-did not get updated so that gfortran, for example, clashes with XCode's
-clang compiler. So I first uninstalled CLT and reinstalled them again:
-
-``` bash
-sudo rm -rf /Library/Developer/CommandLineTools
-sudo xcode-select --install
-```
-
 On macOS 14 Sonoma, this prints *xcode-select: note: install requested
 for command line developer tools* and you have to open *Software Update*
 again to install the command line tools.
 
-This still pointed to the compiler within the XCode app:
-
-``` bash
-xcode-select --print-path
-# /Applications/Xcode.app/Contents/Developer/
-```
-
-This can be
-[fixed](https://stackoverflow.com/questions/72428802/c-lang-llvm-option-parsing-unknown-command-line-argument-when-running-gfort)
-by pointing to clang within the CLT:
-
-``` bash
-sudo xcode-select -switch /Library/Developer/CommandLineTools
-```
-
-You might let Homebrew do the job, i.e. it will install the XCode
-Command Line Tools if they are missing.
-
-The full Xcode can be installed from the App Store. You have to open it
-once and confirm the Usage Agreement in order to use the bundled tools.
-If you install Xcode, it is reasonable to complete the Xcode
-installation and the one-time opening before starting with
-[Homebrew](#homebrew). Otherwise, it might install the command line
-tools CLT twice, but it costs only download bandwidth and time.
-
-While waiting for XCode to install, you can download and install the
-other apps from [App Store](#app-store), [XQuartz](#xquartz) and some
-[Freeware](#freeware) except
-[LaTeXiT](http://www.chachatelier.fr/latexit/) and
-[SourceTree](https://www.sourcetreeapp.com). You can also [Set
-preferences of macOS and standard
-apps](#set-preferences-of-macos-and-standard-apps).
+You might also let [Homebrew](#homebrew) do the job, i.e. it will
+install the XCode Command Line Tools if they are missing.
 
 ## Set preferences of macOS and standard apps
 
-Set *System Preferences* (macOS \<= 12) or *System Settings* (macOS \>=
-13) such as: Check for updates of macOS in *System Preferences* \>
-*Software Update* (macOS \<= 12) or *System Settings* \> *General* \>
-*Software Update* (macOS \>= 13) .
+Set *System Settings* such as: Check for updates of macOS in *System
+Settings* \> *General* \> *Software Update*.
 
-- Set computer name in *Sharing* \> *Computer Name* or in *General* \>
-  *Sharing* \> *Local hostname*
+- Set computer name in *General* \> *Sharing* \> *Local hostname*
 
-- Unset all in *Mission Control* or in *Desktop & Dock* \> *Mission
-  Control*
+- Unset all in *Desktop & Dock* \> *Mission Control*
 
-- Set *Keyboard* \> *Modifier Keys…* \> *Caps Lock Key* to *No Action*
-  or set *Keyboard* \> *Keyboard Shortcuts* \> *Modifier Keys* \> *Caps
+- Set *Keyboard* \> *Keyboard Shortcuts* \> *Modifier Keys* \> *Caps
   Lock Key* to *No Action*
 
 Set preferences/settings in standard macOS apps such as:
@@ -258,10 +235,11 @@ Set preferences/settings in standard macOS apps such as:
 
   - Unset tickbox *Profiles* \> *Advanced* \> *Set locale environment
     variables on startup*
+
 - Finder
   - Set tickbox *Advanced* \> *Show all filename extensions*
 
-## Set the default shell
+## Set the default shell \#1
 
 Apple is now using *zsh* as its default shell. If you want to stay with
 *bash*, change it in the terminal:
@@ -277,17 +255,22 @@ every time you open a new terminal window, set in your `.bash_profile`:
 export BASH_SILENCE_DEPRECATION_WARNING=1
 ```
 
-My current `.bash_profile` is as dot-bashprofile in this repository
-along with the two sub-config files `.bashrc` as dot-bashrc for general
-aliases and functions and `.bashrc.15` as dot-bashrc.15 for macOS 15
-Sequoia-specific aliases and functions.
+My current [.bash_profile](dot-bash_profile) is the file
+[dot-bash_profile](dot-bash_profile) in this repository, which uses
+specific setup scripts in the folder [.bash.d](dot-bash.d/). There are
+also the file [.bashrc](dot-bashrc) for the setup of non-login shells
+and for general aliases and functions, which uses also
+[.bash.d](dot-bash.d/). And there is the file
+[.bashrc.15](dot-bashrc.15) for specific aliases, etc. for macOS 15
+(Sequoia).
 
 ## App Store
 
 Even when you installed using *Software Update*, you should check for
-updates. Do not look only in *App Store…* \> *Updates* but also on your
-account (on the bottom left) if there is an update. Xcode did not show
-up in *Updates* for me but I had to update it from the account page.
+updates. Do not look only in *App Store…* \> *Updates* but also on
+your account (on the bottom left) if there is an update. Xcode, for
+example, did not show up in *Updates* and I had to update it from the
+account page.
 
 ## XQuartz
 
@@ -302,45 +285,16 @@ Install [Homebrew](http://brew.sh) for easy \*nix package installation.
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-This installs Homebrew into `/usr/local` on macOS Intel and into
-`/opt/homebrew` on macOS Apple Silicon (M1, M2, etc.).
+This installs Homebrew into `/usr/local` on Intel Macs and into
+`/opt/homebrew` on Macs with Apple Silicon (M1, M2, etc.). You want to
+setup you shell so that Homebrew is found automatically. I do this in
+[.bash_profile](dot-bash_profile), using the script
+[dot-bash.d/homebrew.sh](dot-bash.d/homebrew.sh). It can happen on
+clusters, for example, that the current shell did not inherit from a
+login shell. So I also setup Homebrew in [.bashrc](dot-bashrc) if not
+done yet.
 
-You might want to put into your `.bash_profile` for macOS Intel:
-
-``` bash
-[[ -x $(which brew) ]] && eval $(brew shellenv)
-```
-
-and for macOS Apple Silicon (Mx):
-
-``` bash
-[[ -d /opt/homebrew ]] && eval $(/opt/homebrew/bin/brew shellenv)
-```
-
-so that Homebrew can be found. This sets, for example, the environment
-variables `HOMEBREW_PREFIX`, `HOMEBREW_CELLAR`, and
-`HOMEBREW_REPOSITORY` and prepends the `$PATH` with Homebrew's bin
-directory. I set this manually because I want to have Homebrew's bin
-directory at the end rather than at the beginning of the system `$PATH`
-such as:
-
-``` bash
-if [[ -d /opt/homebrew ]] ; then
-    # eval $(/opt/homebrew/bin/brew shellenv)
-    # or by hand to append rather than prepand path
-    export HOMEBREW_PREFIX="/opt/homebrew";
-    export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-    export HOMEBREW_REPOSITORY="/opt/homebrew";
-    export PATH=${PATH}:/opt/homebrew/bin
-elif [[ -e /usr/local/bin/brew ]] ; then
-    export HOMEBREW_PREFIX="/usr/local";
-    export HOMEBREW_CELLAR="/usr/local/Cellar";
-    export HOMEBREW_REPOSITORY="/usr/local";
-    export PATH=${PATH}:/usr/local/bin
-fi
-```
-
-## Set your default shell \#2
+## Set the default shell \#2
 
 Apple moved to *zsh* because of the license change of *bash* from GPLv2
 to GPLv3 with its version 4.0. The current bash shell on macOS is hence
@@ -353,11 +307,7 @@ brew install bash
 ```
 
 ``` bash
-# add the following line to /etc/shells
-# /usr/local/bin/bash
-# or
-# /opt/homebrew/bin/bash
-sudo nano /etc/shells
+echo "${HOMEBREW_PREFIX}/bin/bash" | cat /etc/shells - > .ttmmpp ; sudo mv .ttmmpp /etc/shells
 ```
 
 ``` bash
@@ -366,9 +316,10 @@ chsh -s ${HOMEBREW_PREFIX}/bin/bash
 
 Note that your shell scripts will probably still use the Apple default
 bash shell because they often have the shebang line `#!/bin/bash`. The
-most portable way to write shell scripts is to use `#!/usr/bin/env bash`
-as your shebang. This will take the first *bash* in your `$PATH`, which
-would now be `/usr/local/bin/bash` or `/opt/homebrew/bin/bash`.
+most portable way to write shell scripts (or any other script) is to
+use `#!/usr/bin/env bash` as your shebang. This will take the first
+*bash* in your `${PATH}`, which would now be `/usr/local/bin/bash` or
+`/opt/homebrew/bin/bash`.
 
 You can now use *bash-completion* with the new bash shell.
 
@@ -400,22 +351,24 @@ After a system update such as from *System Preferences* \> *Software
 Update*, there might be a link `Relocated Items/` on your Desktop
 pointing to `/Users/Shared/Relocated Items`. This is a copy of the
 changed `/etc/shells`. As long as Apple does not modify `/etc/shells`
-during an update, the edited version stays untouched, though. One can
-safely delete the link on the Desktop and also the directory under
-`/Users/Shared`. It does not hurt to do a `cat /etc/shells` in the
-terminal before, checking that your edits are still there.
+during an update, the edited version of `/etc/shells` stays untouched,
+though. One can safely delete the link on the Desktop and also the
+directory under `/Users/Shared`. It does not hurt to do a `cat
+/etc/shells` in the terminal before, checking that your edits are
+still there.
 
 ## Homebrew \#2
 
 - **GNU compiler and netCDF software**
 
-  The gcc suite includes *gfortran*. *make* is the build system of
+  The gcc suite includes *gfortran*. *Cmake* is the build system of
   various software packages. Install *nco*, *ncview*, and *Panoply* to
   work with and visualise netCDF files. This installs the netcdf-C
-  version, which comes with *ncdump*, etc. Homebrew had netcdf-C,
-  netcdf-C++, and netcdf-Fortran bundled in *netcdf* before. They are
-  individual packages now. *netcdf* installs the netcdf-C package only.
-  See installnetcdf below for Fortran support.
+  version, which comes with *ncdump*, etc. netcdf-C, netcdf-C++, and
+  netcdf-Fortran are individual packages. *netcdf* installs the
+  netcdf-C package only. See
+  [installnetcdf](https://github.com/mcuntz/install_netcdf) for
+  Fortran support.
 
   ``` bash
   brew install gcc
@@ -456,11 +409,10 @@ terminal before, checking that your edits are still there.
 
 - **Install more practical software**
 
-  Some more practical software such as, *fd* for a faster find,
-  *ripgrep* for grepping across a directory tree, the statistical
-  computing environment *R*, the version control system *subversion*,
-  and the command-line fuzzy finder *fzf*, and the tldr implementation
-  *tealdeer* for more concise help pages:
+  Install some more practical software such as, *fd* for a faster
+  find, *ripgrep* for grepping across a directory tree, the
+  statistical computing environment *R*, or the command-line fuzzy
+  finder *fzf* (mostly used with Ctrl-r):
 
   ``` bash
   brew install htop        # dynamic real-time information of running processes
@@ -488,10 +440,6 @@ terminal before, checking that your edits are still there.
 
   ``` bash
   brew install wget        # retrieve files from web servers
-  ```
-
-  ``` bash
-  brew install tealdeer    # simples help pages for command-line tools
   ```
 
   ``` bash
@@ -539,7 +487,7 @@ terminal before, checking that your edits are still there.
   ```
 
   ``` bash
-  brew install --cask quarto  # jupyter/Rmarkdown like notebooks in markdown
+  brew install --cask quarto  # jupyter/Rmarkdown like notebooks
   ```
 
   ``` bash
@@ -552,24 +500,6 @@ terminal before, checking that your edits are still there.
   ${HOMEBREW_PREFIX}/opt/fzf/install
   ```
 
-  ``` bash
-  tldr --update
-  ```
-
-  I also set `${HOME}/.tealdeer` as my configuration directory for
-  *tealdeer* in `.bash_profile`,
-
-  ``` bash
-  export TEALDEER_CONFIG_DIR=${HOME}/.tealdeer
-  ```
-
-  and get a standard config file `${HOME}/.tealdeer/config.toml` that I
-  edit to tailor to my taste:
-
-  ``` bash
-  tldr --seed-config
-  ```
-
 ## Emacs
 
 I used to use [Aquamacs](http://aquamacs.org), then used
@@ -578,8 +508,9 @@ setups ([doom](https://github.com/doomemacs/doomemacs),
 [dotemacs](https://github.com/angrybacon/dotemacs),
 [boremacs](https://codeberg.org/kngwyu/boremacs),
 [minemacs](https://github.com/abougouffa/minemacs), etc.). Now I am
-using my own setup by copy/paste different bits from the other setups.
-My current setup is in `dot-emacs.d` in this repository.
+using my own simple setup by copy/paste different bits from other
+setups. This makes loading Emacs pretty fast. My current setup is in
+[.emacs.d](dot-emacs.d).
 
 I install Emacs with Homebrew:
 

@@ -203,9 +203,6 @@ fi
 [[ -f ${HOME}/prog/jams/bash/jams_bash_complete ]] && source ${HOME}/prog/jams/bash/jams_bash_complete
 [[ -f ${HOME}/prog/jams/utils/jams_utils_complete ]] && source ${HOME}/prog/jams/utils/jams_utils_complete
 
-# tldr path
-if [[ -d ${HOME}/.tealdeer ]] ; then export TEALDEER_CONFIG_DIR=${HOME}/.tealdeer ; fi
-
 # --------------------------------------------------------------------
 # Interactive session - machine-specific settings
 #
