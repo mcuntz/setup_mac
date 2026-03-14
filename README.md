@@ -289,7 +289,7 @@ This installs Homebrew into `/usr/local` on Intel Macs and into
 `/opt/homebrew` on Macs with Apple Silicon (M1, M2, etc.). You want to
 setup you shell so that Homebrew is found automatically. I do this in
 [.bash_profile](dot-bash_profile), using the script
-[dot-bash.d/homebrew.sh](dot-bash.d/homebrew.sh). It can happen on
+[.bash.d/homebrew.sh](dot-bash.d/homebrew.sh). It can happen on
 clusters, for example, that the current shell did not inherit from a
 login shell. So I also setup Homebrew in [.bashrc](dot-bashrc) if not
 done yet.
@@ -494,7 +494,17 @@ still there.
   brew install --cask motrix  # download manager
   ```
 
-  And some installations of the helpers:
+  All in one go is:
+
+  ``` bash
+  brew install htop tree fd bat ripgrep fzf wget ghostscript \
+	   enscript imagemagick ffmpeg pandoc pkg-config graphviz \
+	   doxygen subversion git rsync r
+  brew install --cask quarto
+  brew install --cask motrix
+  ```
+
+  Afterwards some installations of the helpers:
 
   ``` bash
   ${HOMEBREW_PREFIX}/opt/fzf/install
@@ -538,11 +548,7 @@ brew install --cask font-source-code-pro
 ```
 
 ``` bash
-brew install aspell
-```
-
-``` bash
-brew install ruff
+brew install aspell ruff
 ```
 
 If you open the new Emacs for the first time, it will install and
