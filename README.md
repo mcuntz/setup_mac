@@ -33,7 +33,6 @@ my dot-files as a reference.
   - [Myriad Pro](#myriad-pro)
   - [Python](#python)
   - [locate](#locate)
-  - [Payware](#payware)
   - [Additional software](#additional-software)
   - [netcdf4fortran and openmpi development packages](#netcdf4underfortran-and-openmpi-development-packages)
 
@@ -78,10 +77,10 @@ document such as in README14.org. All macOS menu options are for macOS
     installed casks), LaTeX, Python/pyenv, and everything installed
     with [installnetcdf](https://github.com/mcuntz/install_netcdf).
 
-    Check the casks installed with Homebrew. This might not work anymore
-    because you changed the shell, e.g. to *zsh*. Then copy the box
-    below that sets the *HOMEBREW<sub>PREFIX</sub>* into this new login
-    terminal ([Homebrew](#homebrew)).
+    Check the casks installed with Homebrew. This might not work
+    anymore because you changed the shell, e.g. to *zsh*. Then copy
+    the box below that sets the *HOMEBREW<sub>PREFIX</sub>* into this
+    new login terminal ([Homebrew](#homebrew)).
 
     ``` bash
     brew list --casks
@@ -96,8 +95,8 @@ document such as in README14.org. All macOS menu options are for macOS
     ``` bash
     for c in $(brew list --casks) ; do brew uninstall ${c} ; done
     ```
-	
-	Before uninstalling Homebrew, I also first set back Apple's bash
+    
+    Before uninstalling Homebrew, I also first set back Apple's bash
     shell as default because the newer bash shell used from Homebrew
     will be removed together with the whole Homebrew and you will run
     into trouble if it is still set as your default shell afterwards.
@@ -165,8 +164,9 @@ install the new macOS and follow the on-screen instructions.
 # Setup macOS
 
 The steps are intended to be done (roughly) in order. You have to open
-new login shells several times during the process. If something does not
-work after installation, opening a new login shell might do the trick.
+new login shells several times during the process. If something does
+not work after installation, opening a new login shell might do the
+trick.
 
 ## Check for system updates
 
@@ -207,8 +207,8 @@ xcode-select --install
 ```
 
 On macOS 14 Sonoma, this prints *xcode-select: note: install requested
-for command line developer tools* and you have to open *Software Update*
-again to install the command line tools.
+for command line developer tools* and you have to open *Software
+Update* again to install the command line tools.
 
 You might also let [Homebrew](#homebrew) do the job, i.e. it will
 install the XCode Command Line Tools if they are missing.
@@ -239,15 +239,16 @@ Set preferences/settings in standard macOS apps such as:
 
 ## Set the default shell \#1
 
-Apple is now using *zsh* as its default shell. If you want to stay with
-*bash*, change it in the terminal:
+Apple is now using *zsh* as its default shell. If you want to stay
+with *bash*, change it in the terminal:
 
 ``` bash
 chsh -s /bin/bash
 ```
 
 To get rid of the nagging reminder that the default shell is now zsh
-every time you open a new terminal window, set in your `.bash_profile`:
+every time you open a new terminal window, set in your
+`.bash_profile`:
 
 ``` bash
 export BASH_SILENCE_DEPRECATION_WARNING=1
@@ -277,7 +278,8 @@ programs. Get it from [XQuartz](http://xquartz.macosforge.org/).
 
 ## Homebrew
 
-Install [Homebrew](http://brew.sh) for easy \*nix package installation.
+Install [Homebrew](http://brew.sh) for easy \*nix package
+installation.
 
 ``` bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -294,11 +296,11 @@ done yet.
 
 ## Set the default shell \#2
 
-Apple moved to *zsh* because of the license change of *bash* from GPLv2
-to GPLv3 with its version 4.0. The current bash shell on macOS is hence
-3.2 from 2007. If you want to use the latest version of *bash*, install
-it with Homebrew, "whitelist" the new shell as a login shell, and choose
-it as your default login shell:
+Apple moved to *zsh* because of the license change of *bash* from
+GPLv2 to GPLv3 with its version 4.0. The current bash shell on macOS
+is hence 3.2 from 2007. If you want to use the latest version of
+*bash*, install it with Homebrew, "whitelist" the new shell as a login
+shell, and choose it as your default login shell:
 
 ``` bash
 brew install bash
@@ -325,8 +327,8 @@ You can now use *bash-completion* with the new bash shell.
 brew install bash-completion@2
 ```
 
-You then have to put the following lines in your `.bash_profile` to use
-bash-completion:
+You then have to put the following lines in your `.bash_profile` to
+use bash-completion:
 
 ``` bash
 if [[ -f "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]] ; then
@@ -336,8 +338,8 @@ fi
 ```
 
 Note that these lines have to be after the sourcing of `.fzf.bash` in
-your `.bash_profile` if you installed *fzf*, otherwise you get an error
-such as `programmable_completion: source: possible retry loop`.
+your `.bash_profile` if you installed *fzf*, otherwise you get an
+error such as `programmable_completion: source: possible retry loop`.
 
 You can do the exact same steps for the zsh shell. Apples version of
 *zsh* is rather new but if you want to have the newest developments,
@@ -393,9 +395,9 @@ still there.
   brew install --cask panoply
   ```
 
-  *HDF5* from Homebrew is not thread-safe so *cdo* will need the -L flag
-  if piping, i.e. more than one operator is given to *cdo* in one call
-  such as `cdo -timmean -selvar,Tair infile outfile`. I use in my
+  *HDF5* from Homebrew is not thread-safe so *cdo* will need the -L
+  flag if piping, i.e. more than one operator is given to *cdo* in one
+  call such as `cdo -timmean -selvar,Tair infile outfile`. I use in my
   `.bashrc`:
 
   ``` bash
@@ -496,8 +498,8 @@ still there.
 
   ``` bash
   brew install htop tree fd bat ripgrep fzf wget ghostscript \
-	   enscript imagemagick ffmpeg pandoc pkg-config graphviz \
-	   doxygen subversion git rsync r
+       enscript imagemagick ffmpeg pandoc pkg-config graphviz \
+       doxygen subversion git rsync r
   brew install --cask quarto
   brew install --cask copilot-cli
   ```
@@ -609,20 +611,21 @@ And I (re-)install the font Myriad Pro, also for LaTeX.
 
 ## Myriad Pro
 
-I like the Myriad Pro font and AGU journals currently use it. The Myriad
-Pro font comes with the Adobe Acrobat Reader.
+I like the Myriad Pro font and AGU journals currently use it. The
+Myriad Pro font comes with the Adobe Acrobat Reader.
 
 To install for non-LaTeX programs, one can install in Font Book the
-four *otf*-files from the directory
-'*/Applications/Adobe Acrobat DC/Adobe Acrobat.app/Contents/Resources/Resource/Font/*'
-(on older systems
-'*/Applications/Adobe Acrobat Reader.app/Contents/Resources/Resource/Font*)'.
+four *otf*-files from the directory '*/Applications/Adobe Acrobat
+DC/Adobe Acrobat.app/Contents/Resources/Resource/Font/*' (on older
+systems '*/Applications/Adobe Acrobat
+Reader.app/Contents/Resources/Resource/Font*)'.
 
 An extended set of glyphs (SemiCondensed, etc.) are given in the zip
 file `MyriadPro.zip` in this repository: unzip MyriadPro.zip and drag
 the folder with the .otf files into Font Book.
 
-To install Myriad Pro for LaTeX, one launches the following commands in Terminal:
+To install Myriad Pro for LaTeX, one launches the following commands
+in Terminal:
 
 ``` bash
 # tools needed for FontPro
@@ -662,8 +665,7 @@ cd ..
 
 Some essential Freeware:
 
-- [Adobe
-  Reader](https://www.adobe.com/acrobat/pdf-reader.html),
+- [Adobe Reader](https://www.adobe.com/acrobat/pdf-reader.html),
   because Preview sometimes has problems with certain PDFs.
 
 - [AppCleaner](http://www.freemacsoft.net/appcleaner/), for removing
@@ -704,17 +706,17 @@ Python on macOS can be a real mess at times, as noted by
 [XKCD](https://xkcd.com/1987/):
 
 <img src="https://imgs.xkcd.com/comics/python_environment.png"
-alt="Python path on my system" data-align="center" width="600"
-height="600"/>
+alt="Python path on my system" data-align="center" width="450"
+height="450"/>
 
 macOS Catalina (10.15) still came with Python version 2.7.16 as its
-default version. Official support for Python 2 has ended Januar 2020. So
-you want to install Python 3. From macOS Big Sur (11.5) onwards, macOS
-comes with Python 3 (from macOS 13 Ventura, is is actually part of the
-XCode command line tools). But I still recommend to install Python with
-*pyenv* and *pyenv-virtualenv*: you can install different Python
-versions, use different virtual environments in different directories
-(projects) very easily, etc.
+default version. Official support for Python 2 has ended
+Januar 2020. So you want to install Python 3. From macOS Big Sur
+(11.5) onwards, macOS comes with Python 3 (from macOS 13 Ventura, is
+is actually part of the XCode command line tools). But I still
+recommend to install Python with *pyenv* and *pyenv-virtualenv*: you
+can install different Python versions, use different virtual
+environments in different directories (projects) very easily, etc.
 
 *pyenv* and *pyenv-virtualenv* makes that very easy: see the great
 (slightly older) article [pyenv: Multi-version Python development on
@@ -729,7 +731,9 @@ brew install pyenv
 brew install pyenv-virtualenv
 ```
 
-See [.bash.d/pyenv.sh](dot-bash.d/pyenv.sh) for the setup in *.bash_profile* and/or *.bashrc* (cf. [Homebrew](#homebrew) for an explanation of this "double" setup).
+See [.bash.d/pyenv.sh](dot-bash.d/pyenv.sh) for the setup in
+*.bash_profile* and/or *.bashrc* (cf. [Homebrew](#homebrew) for an
+explanation of the "and" setup).
 
 Current available Python version can be listed by 
 
@@ -744,7 +748,8 @@ pyenv install 3.14.3
 pyenv global 3.14.3
 ```
 
-A concise reference is given in on the [pyenv Github](https://github.com/pyenv/pyenv?tab=readme-ov-file#usage).
+A concise reference is given in on the [pyenv
+Github](https://github.com/pyenv/pyenv?tab=readme-ov-file#usage).
 
 I currently install Python actually like this:
 
@@ -797,14 +802,12 @@ pyenv global mypy
 
   I tend to use a Python version with pyenv and install my essential
   packages with *pip*. These are currently in my main environment
-  (pystd):
-
+  (pystd):  
   numpy, scipy, matplotlib, cartopy, ipython, pandas, cftime,
   netcdf4, statsmodels, scikit-learn,
   dask, xarray, pykdtree, cython, pyshp, six, gdal
   
-  And a few more for development:
-  
+  And a few more for development:  
   jupyter, xlrd, openpyxl, mpi4py, schwimmbad, f90nml, cdsapi,
   customtkinter, hvplot, icoscp_core, pyflakes, pyperclip, seaborn,
   numpydoc, pytest, pytest-cov, wheel, sphinx, sphinx\_book\_theme.
@@ -832,9 +835,9 @@ pyenv global mypy
   ```
 
   ``` bash
-  for i in scipy matplotlib ipython pandas \
-		   cftime netcdf4 statsmodels scikit-learn \
-		   dask xarray pykdtree cython pyshp six ; do \
+  for i in scipy matplotlib ipython pandas cftime netcdf4 \
+          statsmodels scikit-learn dask xarray pykdtree \
+          cython pyshp six ; do \
       python -m pip install ${i} ; done
   ```
 
@@ -861,9 +864,9 @@ pyenv global mypy
   ``` bash
   # other development packages
   for i in jupyter xlrd openpyxl mpi4py schwimmbad f90nml \
-		   cdsapi customtkinter hvplot icoscp_core pyflakes \
-		   pyperclip seaborn numpydoc pytest pytest-cov wheel \
-		   sphinx sphinx_book_theme ; do \
+          cdsapi customtkinter hvplot icoscp_core pyflakes \
+          pyperclip seaborn numpydoc pytest pytest-cov wheel \
+          sphinx sphinx_book_theme ; do \
       python -m pip install ${i} ; done
   ```
 
@@ -878,34 +881,17 @@ command:
 sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
 ```
 
-This might already be running (*Operation already in progress* or *Load
-failed: 5: Input//output error*).
-
-## Payware
-
-Install Payware, which is for me:
-
-- Microsoft Office,
-
-- [Antidote](https://www.antidote.info/en), spell and grammar checker
-  for English and French,
-
-- [NAG compiler](http://www.nag.co.uk/downloads/npdownloads.asp), very
-  meticulous Fortran compiler,
-
-- [Intel oneAPI Base
-  Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html)
-  and [Intel oneAPI HPC
-  Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html),
-  C/C++/Fortran compiler producing very fast code,
-
-- [CyberGhost](https://www.cyberghostvpn.com/), VPN client,
+This might already be running (*Operation already in progress* or
+*Load failed: 5: Input//output error*).
 
 ## Additional software
 
-Install additional software from you institution or similar such as VPN
-clients, cloud services, etc. For INRAE this is: WithSecure Antivirus,
-GlobalProtect VPN, StorageMadeEasy.
+Install additional software from you institution or other payware
+similar such as VPN clients, cloud services, etc. For INRAE this is:
+WithSecure Antivirus, GlobalProtect VPN, Microsoft Office, the
+meticulous Fortran compiler from
+[NAG](http://www.nag.co.uk/downloads/npdownloads.asp), and the spell
+and grammar checker [Antidote](https://www.antidote.info/en).
 
 ## netcdf4fortran and openmpi development packages
 
@@ -921,13 +907,14 @@ This will automatically update netcdf-fortran for gfortran if a newer
 version of netcdf-C and/or netcdf-fortran becomes available.
 
 However, if you use other Fortran compilers as well, you might want to
-use the script [installnetcdf](https://github.com/mcuntz/install_netcdf)
-to install it and not flood your namespace with different versions of
+use the script
+[installnetcdf](https://github.com/mcuntz/install_netcdf) to install
+it and not flood your namespace with different versions of
 `netcdf.mod`, etc. The script
 [installnetcdf](https://github.com/mcuntz/install_netcdf) installs
-netcdf-fortran, openmpi, and/or mpich development packages for different
-Fortran compilers. The script is well documented and we just describe
-the general steps.
+netcdf-fortran, openmpi, and/or mpich development packages for
+different Fortran compilers. The script is well documented and we just
+describe the general steps.
 
 - Look for the latest versions (numbers) of
   [netcdf-fortran](https://downloads.unidata.ucar.edu/netcdf/),
