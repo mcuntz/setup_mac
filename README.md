@@ -255,7 +255,7 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 
 My current [.bash_profile](dot-bash_profile) is the file
 [dot-bash_profile](dot-bash_profile) in this repository, which uses
-specific setup scripts in the folder [.bash.d](dot-bash.d/). There are
+specific setup scripts in the folder [.bash.d](dot-bash.d/). There is
 also the file [.bashrc](dot-bashrc) for the setup of non-login shells
 and for general aliases and functions, which uses also
 [.bash.d](dot-bash.d/). And there is the file
@@ -605,7 +605,7 @@ convert LaTeX equations to MathML on export:
 brew install latexml
 ```
 
-And I (re-)install the font Myriad Pro also for LaTeX.
+And I (re-)install the font Myriad Pro, also for LaTeX.
 
 ## Myriad Pro
 
@@ -619,10 +619,10 @@ four *otf*-files from the directory
 '*/Applications/Adobe Acrobat Reader.app/Contents/Resources/Resource/Font*)'.
 
 An extended set of glyphs (SemiCondensed, etc.) are given in the zip
-file 'MyriadPro.zip': unzip MyriadPro.zip and drag the folder with the
-.otf files into Font Book.
+file `MyriadPro.zip` in this repository: unzip MyriadPro.zip and drag
+the folder with the .otf files into Font Book.
 
-To install Myriad Pro for LaTeX, one launches the following commands in terminal:
+To install Myriad Pro for LaTeX, one launches the following commands in Terminal:
 
 ``` bash
 # tools needed for FontPro
@@ -660,7 +660,7 @@ cd ..
 
 ## Freeware
 
-Some essential Freeware for me:
+Some essential Freeware:
 
 - [Adobe
   Reader](https://www.adobe.com/acrobat/pdf-reader.html),
@@ -669,31 +669,43 @@ Some essential Freeware for me:
 - [AppCleaner](http://www.freemacsoft.net/appcleaner/), for removing
   apps and all their traces.
 
+- [Chrome](https://www.google.com/chrome/), Safari is not always
+  supported. Chrome is probably the most supported browser. I
+  sometimes also use [Brave](https://brave.com/) on older systems,
+  [Opera](https://www.opera.com), and [Firefox Developer
+  Edition](https://www.mozilla.org/en-US/firefox/all/).
+
 - [DeepL](https://www.deepl.com/en/translator), translation and
   writing tool.
 
 - [f.lux](https://justgetflux.com/), night shift also for external
   displays.
 
-- [Firefox Developer
-  Edition](https://www.mozilla.org/en-US/firefox/all/), Safari is not
-  always supported. [Chrome](https://www.google.com/chrome/) is
-  probably the most supported browser. I sometimes also use
-  [Opera](https://www.opera.com), and [Brave](https://brave.com/) on
-  older systems.
+- [ImageJ](https://imagej.net/ij/), image processing.
 
 - [LaTeXiT](http://www.chachatelier.fr/latexit/), exporting LaTeX
   equations as graphics.
 
 - [LibreOffice](https://www.libreoffice.org/), free office suite.
 
-- [Spotify](https://www.spotify.com/), streaming music.
+- [Signal](https://signal.org/) and
+  [WhatsApp](https://www.whatsapp.com/), messengers.
 
 - [VLC](http://www.videolan.org/vlc/), video player for all formats.
+
+- [VScodium](https://github.com/VSCodium/vscodium), fully open-source
+  VSCode.
 
 - [Zotero](https://www.zotero.org), reference manager.
 
 ## Python
+
+Python on macOS can be a real mess at times, as noted by
+[XKCD](https://xkcd.com/1987/):
+
+<img src="https://imgs.xkcd.com/comics/python_environment.png"
+alt="Python path on my system" data-align="center" width="600"
+height="600"/>
 
 macOS Catalina (10.15) still came with Python version 2.7.16 as its
 default version. Official support for Python 2 has ended Januar 2020. So
@@ -704,167 +716,105 @@ XCode command line tools). But I still recommend to install Python with
 versions, use different virtual environments in different directories
 (projects) very easily, etc.
 
-Installation of Python versions can be a real mess at times, as noted by
-[XKCD](https://xkcd.com/1987/):
-
-<img src="https://imgs.xkcd.com/comics/python_environment.png"
-alt="Python path on my system" data-align="center" width="300"
-height="300" />
-
 *pyenv* and *pyenv-virtualenv* makes that very easy: see the great
-article [pyenv: Multi-version Python development on
+(slightly older) article [pyenv: Multi-version Python development on
 Mac](https://medium.com/faun/pyenv-multi-version-python-development-on-mac-578736fb91aa)
 by Dirk Avery.
 
-To install pyenv with Homebrew:
+To install pyenv and pyenv-virtualenv with Homebrew:
 
 ``` bash
-brew install openssl readline sqlite3 xz zlib
+brew install openssl readline sqlite3 xz zlib tcl-tk@8 libb2 zstd
 brew install pyenv
 brew install pyenv-virtualenv
 ```
 
-You have to set the following in your `.bash_profile` so that the shell
-always finds the currently chosen Python version as the first entry.
+See [.bash.d/pyenv.sh](dot-bash.d/pyenv.sh) for the setup in *.bash_profile* and/or *.bashrc* (cf. [Homebrew](#homebrew) for an explanation of this "double" setup).
+
+Current available Python version can be listed by 
 
 ``` bash
-export PYENV_ROOT="${HOME}/.pyenv"
-export PATH=${PYENV_ROOT}/shims:${PATH}
-if command -v pyenv 1>/dev/null 2>&1 ; then eval "$(pyenv init -)" ; fi
-if command -v pyenv virtualenv-init 1>/dev/null 2>&1 ; then eval "$(pyenv virtualenv-init -)" ; fi
+pyenv install --list
 ```
 
-Note that the `$PATH` environment must be prepended with
-`${PYENV_ROOT}/shims` and not `${PYENV_ROOT}/bin` as given in the
-(older) user guide. Also, this has to be done *after* the addition of
-Homebrew to the system `$PATH` so that the pyenv Python installation can
-be found first; otherwise Homebrew's Python will be found first.
+and installed and switched to simply like this:
 
-- **pyenv and pyenv-virtualenv 101**
+``` bash
+pyenv install 3.14.3
+pyenv global 3.14.3
+```
 
-  After starting a new shell, for example by doing `exec ${SHELL}`, you
-  can start installing and using different Python versions (but see my
-  installation below):
+A concise reference is given in on the [pyenv Github](https://github.com/pyenv/pyenv?tab=readme-ov-file#usage).
 
-  ``` bash
-  pyenv install --list
-  pyenv install 3.14.3
-  pyenv global 3.14.3
-  ```
+I currently install Python actually like this:
 
-  Try to rehash first if a problem occurs with *pyenv*: `pyenv rehash`.
-  For example, some new Homebrew packages might upgrade *pyenv* as well.
-  Then you get an error such as:
+``` bash
+env LDFLAGS=" \
+    -L$(brew --prefix openssl)/lib \
+    -L$(brew --prefix readline)/lib \
+    -L$(brew --prefix sqlite3)/lib \
+    -L$(brew --prefix xz)/lib \
+    -L$(brew --prefix zlib)/lib \
+    -L$(brew --prefix tcl-tk@8)/lib" \
+    CPPFLAGS=" \
+    -I$(brew --prefix openssl)/include \
+    -I$(brew --prefix readline)/include \
+    -I$(brew --prefix sqlite3)/include \
+    -I$(brew --prefix xz)/include \
+    -I$(brew --prefix zlib)/include \
+    -I$(brew --prefix tcl-tk@8)/include" \
+    PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk@8)/lib/pkgconfig" \
+    PYTHON_CONFIGURE_OPTS="--enable-optimizations" \
+    pyenv install 3.14.3
+```
 
-  ``` bash
-  /Users/cuntz/.pyenv/shims/python: line 21:
-  /usr/local/Cellar/pyenv/2.3.12/libexec/pyenv:
-  No such file or directory
-  ```
+This uses the newer Tcl/Tk version 8.6 from Homebrew for *tkinter*
+(but not v9.0) and turns on profile guided optimization as well as
+link time optimization for Python, being then about 10% faster than
+without optimization. It takes significantly more time to install
+Python with optimization. If you do not use *tkinter* and just want to
+try out a Python version, `pyenv install 3.14.3` is just
+fine. Otherwise I recommend the optimization because you do not
+install Python too often but get a significant gain.
 
-  `pyenv rehash` resolves the issue.
 
-  Note that I actually install Python versions currently as follows:
+Virtual environments are then created as:
 
-  ``` bash
-  # most probably already installed
-  brew install openssl readline sqlite3 xz zlib tcl-tk@8
-  ```
+``` bash
+pyenv virtualenv 3.14.3 mypy
+```
 
-  ``` bash
-  env LDFLAGS=" \
-      -L$(brew --prefix openssl)/lib \
-      -L$(brew --prefix readline)/lib \
-      -L$(brew --prefix sqlite3)/lib \
-      -L$(brew --prefix xz)/lib \
-      -L$(brew --prefix zlib)/lib \
-      -L$(brew --prefix tcl-tk@8)/lib" \
-      CPPFLAGS=" \
-      -I$(brew --prefix openssl)/include \
-      -I$(brew --prefix readline)/include \
-      -I$(brew --prefix sqlite3)/include \
-      -I$(brew --prefix xz)/include \
-      -I$(brew --prefix zlib)/include \
-      -I$(brew --prefix tcl-tk@8)/include" \
-      PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk@8)/lib/pkgconfig" \
-   PYTHON_CONFIGURE_OPTS=" \
-   --enable-optimizations" \
-   pyenv install 3.14.3
-  ```
+The virtual environment *mypy* can then be used just as any installed
+Python version with *pyenv*. For example:
 
-  This uses the newer Tcl/Tk version 8.6 from Homebrew for *tkinter*
-  (but not v9.0) and turns on profile guided optimization as well as
-  link time optimization for Python, being then about 10% faster than
-  without optimization. Optimization takes significantly more time to
-  install Python. If you do not use *tkinter* and just want to try out a
-  Python version, `pyenv install 3.14.3` is just fine. Otherwise I
-  recommend the optimization because you do not install Python too often
-  but get a significant gain.
-
-  Virtual environments are then created as:
-
-  ``` bash
-  pyenv virtualenv 3.14.3 mypy
-  ```
-
-  The virtual environment *mypy* can then be used just as any installed
-  Python version with *pyenv*. For example, use virtual environment
-  *mypy* in the current shell:
-
-  ``` bash
-  pyenv activate mypy
-  ```
-
-  Or always use *mypy* in the current directory:
-
-  ``` bash
-  pyenv local mypy
-  ```
-
-  *pyenv* provides also *anaconda*, *miniconda*, *miniforge*, etc. with
-  which you can use conda environments:
-
-  ``` bash
-  pyenv install miniforge3-latest
-  pyenv global miniforge3-latest
-  pyenv virtualenv mypy
-  ```
-
-  You can then install (conda, mamba, and pip) packages in the project:
-
-  ``` bash
-  conda install numpy scipy matplotlib-base
-  ```
-
-  If git tells *gettext not found* after installing anaconda/miniconda,
-  see [Nicolas Hery](https://github.com/nicolashery/mac-dev-setup).
+``` bash
+pyenv shell mypy
+pyenv local mypy
+pyenv global mypy
+```
 
 - **Essential Python packages**
 
-  Anaconda comes with hundreds of packages. I tend to use a Python
-  version with pyenv or miniforge and install my essential packages with
-  *pip* or *conda/mamba*. These are currently in my main environment:  
-  numpy, scipy, matplotlib, cartopy, ipython, jupyter, pandas, cftime,
-  netcdf4, statsmodels, scikit-learn, xlrd, openpyxl, mpi4py,
-  schwimmbad, xarray, numpydoc, pytest, pytest-cov, gdal, f90nml,
-  pykdtree, cython, pyshp, six, wheel, sphinx,
-  sphinx<sub>book</sub>\_theme
+  I tend to use a Python version with pyenv and install my essential
+  packages with *pip*. These are currently in my main environment
+  (pystd):
 
-  and mostly this subset in other virtual environments:  
-  numpy, scipy, matplotlib, pandas, netcdf4, xarray, ipython, wheel
+  numpy, scipy, matplotlib, cartopy, ipython, pandas, cftime,
+  netcdf4, statsmodels, scikit-learn,
+  dask, xarray, pykdtree, cython, pyshp, six, gdal
+  
+  And a few more for development:
+  
+  jupyter, xlrd, openpyxl, mpi4py, schwimmbad, f90nml, cdsapi,
+  customtkinter, hvplot, icoscp_core, pyflakes, pyperclip, seaborn,
+  numpydoc, pytest, pytest-cov, wheel, sphinx, sphinx\_book\_theme.
 
-  There is/was a problem with Apple's Accelerate framework on Apple
-  Silicon (M1/2) so that one should use *OpenBLAS*. You also need to
-  tell *pip* where to find the HDF5 library and the GEOS library and the
-  like. You do not need the lines with `OPENBLAS` and `HDF5-DIR` if you
-  are on macOS on Intel and Homebrew installs into `/usr/local`; this
-  directory is searched automatically. Here I install my standard python
-  virtual environment (pystd):
+  This gives the current environment (pystd):
 
   ``` bash
   # essential subset
   if [[ "$(uname -m)" == "arm64" ]] ; then
-      export OPENBLAS="$(brew --prefix openblas)"
+      # export OPENBLAS="$(brew --prefix openblas)"
       export HDF5_DIR="$(brew --prefix hdf5)"
       export GEOS_DIR="$(brew --prefix geos)"
       export GEOS_CONFIG="$(brew --prefix geos)/bin/geos-config"
@@ -882,22 +832,9 @@ be found first; otherwise Homebrew's Python will be found first.
   ```
 
   ``` bash
-  for i in wheel scipy matplotlib ipython pandas cftime netcdf4 \
-      xarray ipython ; do \
-      python -m pip install ${i} ; done
-  ```
-
-  ``` bash
-  # other standard packages
-  for i in jupyter statsmodels scikit-learn schwimmbad \
-      numpydoc pytest pytest-cov f90nml pykdtree cython pyshp six \
-      xlrd openpyxl ; do \
-      python -m pip install ${i} ; done
-  ```
-
-  ``` bash
-  # other developping packages
-  for i in sphinx sphinx_book_theme  ; do \
+  for i in scipy matplotlib ipython pandas \
+		   cftime netcdf4 statsmodels scikit-learn \
+		   dask xarray pykdtree cython pyshp six ; do \
       python -m pip install ${i} ; done
   ```
 
@@ -919,13 +856,18 @@ be found first; otherwise Homebrew's Python will be found first.
 
   ``` bash
   python -m pip install cartopy
-  # basemap is back in development again :-)
-  # but does not work with Python 3.12 yet :-(
-  # python -m pip install basemap-data
-  # python -m pip install basemap-data-hires
-  # python -m pip install basemap
-  # mpi4py will be installed after installing openmpi later
   ```
+
+  ``` bash
+  # other development packages
+  for i in jupyter xlrd openpyxl mpi4py schwimmbad f90nml \
+		   cdsapi customtkinter hvplot icoscp_core pyflakes \
+		   pyperclip seaborn numpydoc pytest pytest-cov wheel \
+		   sphinx sphinx_book_theme ; do \
+      python -m pip install ${i} ; done
+  ```
+
+  mpi4py will be installed after installing openmpi later.
 
 ## locate
 
