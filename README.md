@@ -21,16 +21,16 @@ my dot-files as a reference.
   - [Xcode](#xcode)
   - [Xcode Command Line Tools (CLT)](#xcode-command-line-tools-clt)
   - [Set preferences of macOS and standard apps](#set-preferences-of-macos-and-standard-apps)
-  - [Set the default shell \#1](#set-the-default-shell-1)
+  - [Set default shell \#1](#set-default-shell-1)
   - [App Store](#app-store)
   - [XQuartz](#xquartz)
   - [Homebrew](#homebrew)
-  - [Set the default shell \#2](#set-the-default-shell-2)
+  - [Set default shell \#2](#set-default-shell-2)
   - [Homebrew \#2](#homebrew-2)
   - [Emacs](#emacs)
   - [LaTeX](#latex)
-  - [Freeware](#freeware)
   - [Myriad Pro](#myriad-pro)
+  - [Freeware](#freeware)
   - [Python](#python)
   - [locate](#locate)
   - [Additional software](#additional-software)
@@ -237,7 +237,7 @@ Set preferences/settings in standard macOS apps such as:
 - Finder
   - Set tickbox *Advanced* \> *Show all filename extensions*
 
-## Set the default shell \#1
+## Set default shell \#1
 
 Apple is now using *zsh* as its default shell. If you want to stay
 with *bash*, change it in the terminal:
@@ -271,6 +271,10 @@ your account (on the bottom left) if there is an update. Xcode, for
 example, did not show up in *Updates* and I had to update it from the
 account page.
 
+My current App Store programs are:  
+Apple Developer, HiddenMe, Keynote, Numbers, Pages, The Unarchiver,
+Whatsapp, Windows App, WordService
+
 ## XQuartz
 
 XQuartz is the X-window system running on macOS, needed for \*nix GUI
@@ -294,7 +298,7 @@ clusters, for example, that the current shell did not inherit from a
 login shell. So I also setup Homebrew in [.bashrc](dot-bashrc) if not
 done yet.
 
-## Set the default shell \#2
+## Set default shell \#2
 
 Apple moved to *zsh* because of the license change of *bash* from
 GPLv2 to GPLv3 with its version 4.0. The current bash shell on macOS
@@ -690,8 +694,7 @@ Some essential Freeware:
 
 - [LibreOffice](https://www.libreoffice.org/), free office suite.
 
-- [Signal](https://signal.org/) and
-  [WhatsApp](https://www.whatsapp.com/), messengers.
+- [Signal](https://signal.org/), messenger.
 
 - [VLC](http://www.videolan.org/vlc/), video player for all formats.
 
