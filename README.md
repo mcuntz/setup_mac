@@ -75,7 +75,7 @@ document such as in README14.org. All macOS menu options are for macOS
     not work anymore. So I first uninstall all the things that will be
     installed in the steps below, which are Homebrew (including the
     installed casks), LaTeX, Python/pyenv, and everything installed
-    with [installnetcdf](https://github.com/mcuntz/install_netcdf).
+    with [install_netcdf](https://github.com/mcuntz/install_netcdf).
 
     Check the casks installed with Homebrew. This might not work
     anymore because you changed the shell, e.g. to *zsh*. Then copy
@@ -371,7 +371,7 @@ still there.
   version, which comes with *ncdump*, etc. netcdf-C, netcdf-C++, and
   netcdf-Fortran are individual packages. *brew install netcdf* installs the
   netcdf-C package only. See
-  [installnetcdf](https://github.com/mcuntz/install_netcdf) for
+  [install_netcdf](https://github.com/mcuntz/install_netcdf) for
   Fortran support.
 
   ``` bash
@@ -913,7 +913,7 @@ However, if you use other Fortran compilers then gfortran as well, you
 might want to separate the Fortran installations and not use
 netcdf-fortran from Homebrew. You can use the script
 `install_fortran_libs.sh` in
-[installnetcdf](https://github.com/mcuntz/install_netcdf) to install
+[install_netcdf](https://github.com/mcuntz/install_netcdf) to install
 netCDF4-Fortran and two MPI libraries in separate directories for
 different Fortran compilers.  
 Set parameters in the section `Setup` of the script.
@@ -922,10 +922,10 @@ Note: homebrew upgrades also netcdf-C to newer versions if you install
 or update a package that depends on it. Then the netCDF4-Fortran
 package installed with `install_fortran_libs.sh` will not work anymore
 (it will still link to the old, uninstalled C version). You then have
-to rerun the script. I still do it this way to minimize conflicts
-between different Fortran compilers (I find them very hard to debug);
-and re-installing netCDF4-Fortran with `install_fortran_libs.sh` is
-very fast.
+to rerun the `install_fortran_libs.sh` script. I still do it this way
+to minimize conflicts between different Fortran compilers (I find them
+very hard to debug); and re-installing netCDF4-Fortran with
+`install_fortran_libs.sh` is very fast.
 
 - **mpi4py**
 
