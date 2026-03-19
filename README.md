@@ -34,7 +34,7 @@ my dot-files as a reference.
   - [Python](#python)
   - [locate](#locate)
   - [Additional software](#additional-software)
-  - [netcdf4fortran and openmpi development packages](#netcdf4underfortran-and-openmpi-development-packages)
+  - [install_fortran_libs](#install-fortran-libs)
 
 # How to update the OS
 
@@ -369,7 +369,7 @@ still there.
   various software packages. Install *nco*, *ncview*, and *Panoply* to
   work with and visualise netCDF files. This installs the netcdf-C
   version, which comes with *ncdump*, etc. netcdf-C, netcdf-C++, and
-  netcdf-Fortran are individual packages. *netcdf* installs the
+  netcdf-Fortran are individual packages. *brew install netcdf* installs the
   netcdf-C package only. See
   [installnetcdf](https://github.com/mcuntz/install_netcdf) for
   Fortran support.
@@ -896,11 +896,11 @@ meticulous Fortran compiler from
 [NAG](http://www.nag.co.uk/downloads/npdownloads.asp), and the spell
 and grammar checker [Antidote](https://www.antidote.info/en).
 
-## netcdf4fortran and openmpi development packages
+## install_fortran_libs
 
 You can install
 [netcdf-fortran](https://downloads.unidata.ucar.edu/netcdf/) for the
-gfortran compiler.
+gfortran compiler with:
 
 ``` bash
 brew install netcdf-fortran
@@ -909,39 +909,25 @@ brew install netcdf-fortran
 This will automatically update netcdf-fortran for gfortran if a newer
 version of netcdf-C and/or netcdf-fortran becomes available.
 
-However, if you use other Fortran compilers as well, you might want to
-use the script
+However, if you use other Fortran compilers then gfortran as well, you
+might want to separate the Fortran installations and not use
+netcdf-fortran from Homebrew. You can use the script
+`install_fortran_libs.sh` in
 [installnetcdf](https://github.com/mcuntz/install_netcdf) to install
-it and not flood your namespace with different versions of
-`netcdf.mod`, etc. The script
-[installnetcdf](https://github.com/mcuntz/install_netcdf) installs
-netcdf-fortran, openmpi, and/or mpich development packages for
-different Fortran compilers. The script is well documented and we just
-describe the general steps.
+netCDF4-Fortran and two MPI libraries in separate directories for
+different Fortran compilers.  
+Set parameters in the section `Setup` of the script.
 
-- Look for the latest versions (numbers) of
-  [netcdf-fortran](https://downloads.unidata.ucar.edu/netcdf/),
-  [openmpi](https://www.open-mpi.org), and/or
-  [mpich](http://www.mpich.org/downloads/) (addresses are also given at
-  the beginning of the script) and set them below *donetcdf4fortran*,
-  *doopenmpi*, and/or *dompich*.
+Note: homebrew upgrades also netcdf-C to newer versions if you install
+or update a package that depends on it. Then the netCDF4-Fortran
+package installed with `install_fortran_libs.sh` will not work anymore
+(it will still link to the old, uninstalled C version). You then have
+to rerun the script. I still do it this way to minimize conflicts
+between different Fortran compilers (I find them very hard to debug);
+and re-installing netCDF4-Fortran with `install_fortran_libs.sh` is
+very fast.
 
-- Set *donetcdf4fortran*, *doopenmpi*, and/or *dompich* to 1.
-
-- Check that `prefix=/usr/local`.
-
-- Set Fortran compiler, e.g. `fortran_compilers="gfortran"`.
-
-- For Intel, you need to source the compiler setup script such as:
-
-``` bash
-source /opt/intel/bin/compilervars.sh intel64
-```
-
-- For PGI, you also have to set the `PGIPATH`.
-
-- Run the script on the command line and give your sudo password if you
-  install into `prefix=/usr/local`.
+- **mpi4py**
 
 After having installed *openmpi*, one can also install *mpi4py* in
 Python, for example:
@@ -950,11 +936,4 @@ Python, for example:
 env MPICC=/usr/local/openmpi-4.1.7-gfortran/bin/mpicc python -m pip install mpi4py
 ```
 
-However, homebrew upgrades also netcdf-C to newer versions if you
-install or update a package that depends on it. Then the netcdf-fortran
-package installed with installnetcdf will not work anymore (it will link
-to the old, uninstalled C version) and you have to rerun the script
-[installnetcdf](https://github.com/mcuntz/install_netcdf) with
-*donetcdf4fortran=1* and `fortran_compilers="gfortran"`. I still do it
-this way to minimize conflicts between different Fortran compilers; and
-re-installing netcdf-fortran with installnetcdf is very fast.
+Enjoy your new system!
