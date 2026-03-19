@@ -34,7 +34,7 @@ my dot-files as a reference.
   - [Python](#python)
   - [locate](#locate)
   - [Additional software](#additional-software)
-  - [install_fortran_libs](#install-fortran-libs)
+  - [install_fortran_libs](#install_fortran_libs)
 
 # How to update the OS
 
